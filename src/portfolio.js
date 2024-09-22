@@ -5,41 +5,31 @@ const settings = {
   isSplash: false, // Change this to false if you don't want Splash screen.
 };
 
+const description =
+  "Ein leidenschaftlicher Mensch, der gerne seine Fähigkeiten in der Softwareentwicklung einsetzt und ständig dazulernt.";
 //SEO Related settings
 const seo = {
   title: "Manuel Schüleins Portfolio",
-  description:
-    "A passionate individual who always thrives to work on end to end products which develop sustainable and scalable social and technical systems to create impact.",
+  description: description,
   og: {
-    title: "Ashutosh Hathidara Portfolio",
+    title: "Maneul Schülein Portfolio",
     type: "website",
-    url: "http://ashutoshhathidara.com/",
+    url: "https://deadmade.github.io",
   },
 };
 
 //Home Page
 const greeting = {
   title: "Manuel Schülein",
-  logo_name: "deadmade",
+  logo_name: "Manuel",
   nickname: "",
-  subTitle:
-    "A passionate individual who always thrives to work on end to end products which develop sustainable and scalable social and technical systems to create impact.",
-  resumeLink:
-    "https://drive.google.com/file/d/1bXRknv_h-XI_3CQ3SGPteGODtvEb7YvI/view?usp=sharing",
+  subTitle: description,
+  resumeLink: "",
   portfolio_repository: "https://github.com/deadmade",
   githubProfile: "https://github.com/deadmade",
 };
 
 const socialMediaLinks = [
-  /* Your Social Media Link */
-  // github: "https://github.com/ashutosh1919",
-  // linkedin: "https://www.linkedin.com/in/ashutosh-hathidara-88710b138/",
-  // gmail: "ashutoshhathidara98@gmail.com",
-  // gitlab: "https://gitlab.com/ashutoshhathidara98",
-  // facebook: "https://www.facebook.com/laymanbrother.19/",
-  // twitter: "https://twitter.com/ashutosh_1919",
-  // instagram: "https://www.instagram.com/layman_brother/"
-
   {
     name: "Github",
     link: "https://github.com/deadmade",
@@ -163,7 +153,9 @@ const degrees = {
       logo_path: "DHBW-Logo.png",
       alt_name: "DHBW Heidenheim",
       duration: "2023 - now",
-      descriptions: [""],
+      descriptions: [
+        "Ich bin ein dualer Student im 3. Semester an der DHBW Heidenheim. Aktuell studiere ich Allgemeine Informatik. In meinem Studium lerne ich die Grundlagen der Informatik und vertiefe mein Wissen in verschiedenen Bereichen.",
+      ],
       website_link: "https://www.heidenheim.dhbw.de/startseite",
     },
     {
@@ -172,7 +164,9 @@ const degrees = {
       logo_path: "fosboslogo.png",
       alt_name: "FOS BOS Donauwörth",
       duration: "2022 - 2023",
-      descriptions: [""],
+      descriptions: [
+        "Um ein Studium an der DHBW Heidenheim zu beginnen, habe ich mein Fachabitur an der FOS BOS Donauwörth absolviert.",
+      ],
       website_link: "https://www.fosbos-donauwoerth.de/",
     },
   ],
@@ -185,33 +179,35 @@ const certifications = {
 // Experience Page
 const experience = {
   title: "Experience",
-  subtitle: "Work, Internship and Volunteership",
+  subtitle: "Arbeits- und Ausbildungserfahrung",
   description:
-    "I have worked with many evolving startups as ML and DL Developer, Designer and Software Architect. I have also worked with some well established companies mostly as AI Developer. I love organising events and that is why I am also involved with many opensource communities as a representative.",
+    "Bisher habe ich Erfahrungen in der Softwareentwicklung durch meine Ausbildung zum Fachinformatiker für Anwendungsentwicklung und mein duales Studium bei 4SELLERS gesammelt.",
   header_image_path: "experience.svg",
   sections: [
     {
-      title: "Work",
-      work: true,
+      title: "Arbeitserfahrung",
+      work: "false",
       experiences: [
         {
           title: "Dualer Studium Allgemeine Informatik",
           company: "4SELLERS GmbH",
           company_url: "https://www.4sellers.de/",
-          logo_path: "tiktok_logo.png",
+          logo_path: "4sellers.png",
           duration: "Oktober 2023 - now",
           location: "Rain am Lech, Bayern, Deutschland",
-          description: "",
+          description:
+            "Nach der erfolgreich Bestandenen Fachabiturprüfung habe ich ein duales Studium bei 4SELLERS begonnen. Derzeit bin ich im Bereich ERP Custom Development tätig. Meine Hauptaufgabe ist es, das Sage ERP-System zu erweitern und anzupassen, um kundenspezifische Lösungen zu implementieren und Geschäftsprozesse zu optimieren. In dieser Funktion arbeite ich intensiv mit T-SQL Datenbanken und programmiere in C# unter Verwendung des .NET Frameworks.",
           color: "#000000",
         },
         {
           title: "Ausbildung zum Fachinformtiker Anwendungsentwicklung",
           company: "4SELLERS GmbH",
           company_url: "https://www.4sellers.de/",
-          logo_path: "tiktok_logo.png",
+          logo_path: "4sellers.png",
           duration: "September 2019 - July 2022",
           location: "Rain am Lech, Bayern, Deutschland",
-          description: "",
+          description:
+            "Meine Ausbildung zum Fachinformatiker für Anwendungsentwicklung bei 4SELLERS habe ich erfolgreich abgeschlossen. Dabei habe ich wertvolle praktische Erfahrungen in der Entwicklung von Visual Studio Extensions, der Arbeit mit dem .NET Framework, C# und der Implementierung von WPF-Anwendungen gesammelt.",
           color: "#000000",
         },
       ],
@@ -222,8 +218,7 @@ const experience = {
 // Projects Page
 const projectsHeader = {
   title: "Projects",
-  description:
-    "My projects makes use of vast variety of latest technology tools. My best experience is to create Data Science projects and deploy them to web applications using cloud infrastructure.",
+  description: "Still in Progrss",
   avatar_image_path: "projects_image.svg",
 };
 
