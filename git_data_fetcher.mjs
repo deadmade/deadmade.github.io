@@ -1,6 +1,7 @@
-import fetch from "node-fetch";
+import { fetch } from "undici";
 import fs from "fs";
 import dotenv from "dotenv";
+
 
 dotenv.config();
 
@@ -11,49 +12,49 @@ const openSource = {
 
 const query_pr = {
   query: `
-	query {
-	  user(login: "${openSource.githubUserName}"){
-	    pullRequests(last: 100, orderBy: {field: CREATED_AT, direction: DESC}){
+  query {
+    user(login: \`${openSource.githubUserName}\`){
+      pullRequests(last: 100, orderBy: {field: CREATED_AT, direction: DESC}){
       totalCount
       nodes{
         id
         title
         url
         state
-	      mergedBy {
-	          avatarUrl
-	          url
-	          login
-	      }
-	      createdAt
-	      number
+        mergedBy {
+            avatarUrl
+            url
+            login
+        }
+        createdAt
+        number
         changedFiles
-	      additions
-	      deletions
+        additions
+        deletions
         baseRepository {
-	          name
-	          url
-	          owner {
-	            avatarUrl
-	            login
-	            url
-	          }
-	        }
+            name
+            url
+            owner {
+              avatarUrl
+              login
+              url
+            }
+          }
       }
     }
-	}
+  }
 }
-	`,
+  `,
 };
 
 const query_issue = {
   query: `query{
 
-		user(login: "${openSource.githubUserName}") {
+    user(login: \`${openSource.githubUserName}\`) {
     issues(last: 100, orderBy: {field:CREATED_AT, direction: DESC}){
       totalCount
       nodes{
-      	id
+        id
         closed
         title
         createdAt
@@ -79,51 +80,51 @@ const query_issue = {
     }
   }
 
-	}`,
+  }`,
 };
 
 const query_org = {
   query: `query{
-	user(login: "${openSource.githubUserName}") {
-	    repositoriesContributedTo(last: 100){
-	      totalCount
-	      nodes{
-	        owner{
-	          login
-	          avatarUrl
-	          __typename
-	        }
-	      }
-	    }
-	  }
-	}`,
+  user(login: \`${openSource.githubUserName}\`) {
+      repositoriesContributedTo(last: 100){
+        totalCount
+        nodes{
+          owner{
+            login
+            avatarUrl
+            __typename
+          }
+        }
+      }
+    }
+  }`,
 };
 
 const query_pinned_projects = {
   query: `
-	query { 
-	  user(login: "${openSource.githubUserName}") { 
-	    pinnedItems(first: 6, types: REPOSITORY) {
-	      totalCount
-	      nodes{
-	        ... on Repository{
-	          id
-		          name
-		          createdAt,
-		          url,
-		          description,
-		          isFork,
-		          languages(first:10){
-		            nodes{
-		              name
-		            }
-		          }
-	        }
-	      }
-		  }
-	  }
-	}
-	`,
+  query { 
+    user(login: \`${openSource.githubUserName}\`) { 
+      pinnedItems(first: 6, types: REPOSITORY) {
+        totalCount
+        nodes{
+          ... on Repository{
+            id
+              name
+              createdAt,
+              url,
+              description,
+              isFork,
+              languages(first:10){
+                nodes{
+                  name
+                }
+              }
+          }
+        }
+      }
+    }
+  }
+  `,
 };
 
 const baseUrl = "https://api.github.com/graphql";
@@ -169,7 +170,7 @@ fetch(baseUrl, {
       }
     );
   })
-  .catch((error) => console.log(JSON.stringify(error)));
+  .catch((error) => console.log("Error occured during Fetching the Pull Request Data",JSON.stringify(error)));
 
 fetch(baseUrl, {
   method: "POST",
@@ -204,7 +205,7 @@ fetch(baseUrl, {
       }
     );
   })
-  .catch((error) => console.log(JSON.stringify(error)));
+  .catch((error) => console.log("Error occured during Fethcing the Issus Data",JSON.stringify(error)));
 
 fetch(baseUrl, {
   method: "POST",
@@ -243,7 +244,7 @@ fetch(baseUrl, {
       }
     );
   })
-  .catch((error) => console.log(JSON.stringify(error)));
+  .catch((error) => console.log("Error occured during getting Contributed Organization", JSON.stringify(error)));
 
 const languages_icons = {
   Python: "logos-python",
