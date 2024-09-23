@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.3bc5b483.css",
-    "main.js": "/static/js/main.d80b5ff7.js",
+    "main.css": "/static/css/main.d2ec1812.css",
+    "main.js": "/static/js/main.cb8b3646.js",
     "static/media/portfolio.gif": "/static/media/portfolio.ed6c89f1485f23014ebd.gif",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.9fa614346b4e81decc62.svg",
     "static/media/fa-brands-400.svg": "/static/media/fa-brands-400.6fcab609e2f62d5c3104.svg",
@@ -23,9 +23,11 @@
     "static/media/GoogleSans-Bold.ttf": "/static/media/GoogleSans-Bold.d907e4bf3e32637a636e.ttf",
     "static/media/contactMail.png": "/static/media/contactMail.d4c9ac42fba95158a55c.png",
     "static/media/fa-solid-900.woff": "/static/media/fa-solid-900.3ef4f1acb44a2df412bf.woff",
+    "static/media/CyberSicherheit.jpg": "/static/media/CyberSicherheit.e97dda0129eb799b641a.jpg",
     "static/media/Agustina.woff": "/static/media/Agustina.eb0c59dda4cc308cba96.woff",
     "static/media/ibm_logo.png": "/static/media/ibm_logo.8204bba7daa4eedf644b.png",
     "static/media/fa-brands-400.woff": "/static/media/fa-brands-400.dc957891d535aa198135.woff",
+    "static/media/UnderstandingTheDigitalWorld.jpg": "/static/media/UnderstandingTheDigitalWorld.280a75e1b03242d22f25.jpg",
     "static/media/codeInLogo.png": "/static/media/codeInLogo.be1b6b9bacd5f2fb1c7e.png",
     "static/media/stanford_logo.png": "/static/media/stanford_logo.de5f29dece094f7bec60.png",
     "static/media/animated_logo.svg": "/static/media/animated_logo.abd0b20ec83cb1f60d42.svg",
@@ -34,6 +36,7 @@
     "static/media/iiitk_logo.png": "/static/media/iiitk_logo.170d558551a09a7d1620.png",
     "static/media/intel_logo.jpg": "/static/media/intel_logo.d7577f35a3dac4e5636d.jpg",
     "static/media/ui_ux_design.svg": "/static/media/ui_ux_design.42a2cdaf132097cc499e.svg",
+    "static/media/TheCProgrammingLanguage.jpg": "/static/media/TheCProgrammingLanguage.1e20401129429599ca82.jpg",
     "static/media/manOnTable.svg": "/static/media/manOnTable.f861b03b5a2d1a28c198.svg",
     "static/media/muffito_logo.png": "/static/media/muffito_logo.a40e290031eaf389bde1.png",
     "static/media/deeplearning_ai_logo.png": "/static/media/deeplearning_ai_logo.f5e1bd288e7a2b30a390.png",
@@ -66,11 +69,11 @@
     "static/media/googleAssistant.svg": "/static/media/googleAssistant.1c2312558eb2e5f04a45.svg",
     "static/media/talksCardBackAlt.svg": "/static/media/talksCardBackAlt.018d87225926eee9ccc3.svg",
     "static/media/talksCardBack.svg": "/static/media/talksCardBack.7dc8695e60efbc2baab8.svg",
-    "main.3bc5b483.css.map": "/static/css/main.3bc5b483.css.map",
-    "main.d80b5ff7.js.map": "/static/js/main.d80b5ff7.js.map"
+    "main.d2ec1812.css.map": "/static/css/main.d2ec1812.css.map",
+    "main.cb8b3646.js.map": "/static/js/main.cb8b3646.js.map"
   },
   "entrypoints": [
-    "static/css/main.3bc5b483.css",
-    "static/js/main.d80b5ff7.js"
+    "static/css/main.d2ec1812.css",
+    "static/js/main.cb8b3646.js"
   ]
 }
