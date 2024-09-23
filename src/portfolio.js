@@ -176,6 +176,38 @@ const certifications = {
   certifications: [],
 };
 
+const books = {
+  books: [
+    {
+      title: "Understanding the Digital World",
+      subtitle: "by Brian W. Kernighan",
+      logo_path: "UnderstandingTheDigitalWorld.jpg",
+      alt_name: "Understanding the Digital World - Brian W. Kernighan",
+      book_link:
+        "https://www.amazon.de/Understanding-Digital-World-Computers-Internet-dp-0691219095/dp/0691219095/ref=dp_ob_title_bk",
+      color_code: "#8C151599",
+    },
+    {
+      title: "The C Programming Language",
+      subtitle: "by Brian W. Kernighan and Dennis M. Ritchie",
+      logo_path: "TheCProgrammingLanguage.jpg",
+      alt_name: "The C Programming Language - Brian W. Kernighan",
+      book_link:
+        "https://www.amazon.com/Programming-Language-2nd-Brian-Kernighan/dp/0131103628",
+      color_code: "#8C151599",
+    },
+    {
+      title: "Cyber-Sicherheit",
+      subtitle: "von Norbert Pohlmann",
+      logo_path: "CyberSicherheit.jpg",
+      alt_name: "Cyber-Sicherheit - Norbert Pohlmann",
+      book_link:
+        "https://www.amazon.de/Cyber-Sicherheit-Architekturen-Eigenschaften-Cyber-Sicherheitssystemen-Digitalisierung/dp/3658253975",
+      color_code: "#8C151599",
+    },
+  ],
+};
+
 // Experience Page
 const experience = {
   title: "Experience",
@@ -260,4 +292,5 @@ export {
   publicationsHeader,
   publications,
   contactPageData,
+  books,
 };
