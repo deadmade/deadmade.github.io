@@ -42,12 +42,12 @@ export default class Main extends Component {
               <Education {...props} theme={this.props.theme} />
             )}
           />
-          <Route
+          {/* <Route
             path="/opensource"
             render={(props) => (
               <Opensource {...props} theme={this.props.theme} />
             )}
-          />
+          /> */}
 
           {settings.isSplash && (
             <Route
