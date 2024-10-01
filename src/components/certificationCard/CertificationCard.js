@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./CertificationCard.css";
-import { Fade } from "react-reveal";
+import { Fade } from "react-awesome-reveal";
 
 class CertificationCard extends Component {
   render() {
     const certificate = this.props.certificate;
     const theme = this.props.theme;
     return (
-      <Fade bottom duration={2000} distance="20px">
+      <Fade direction="up" duration={2000} triggerOnce>
         <div className="cert-card">
           <div className="content">
             <a
