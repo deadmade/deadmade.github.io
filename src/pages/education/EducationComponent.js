@@ -7,9 +7,10 @@ import Certifications from "../../containers/certifications/Certifications";
 import CompetitiveSites from "../../components/competitiveSites/CompetitiveSites";
 import EducationImg from "./EducationImg";
 import { competitiveSites } from "../../portfolio";
-import { certifications } from "../../portfolio";
+import { books, certifications } from "../../portfolio";
 import "./EducationComponent.css";
 import { Fade } from "react-reveal";
+import Books from "../../containers/books/Books";
 
 class Education extends Component {
   render() {
@@ -42,6 +43,8 @@ class Education extends Component {
           {certifications.certifications.length > 0 ? (
             <Certifications theme={this.props.theme} />
           ) : null}
+
+          {books.books.length > 0 ? <Books theme={this.props.theme} /> : null}
         </div>
         <Footer theme={this.props.theme} />
         <TopButton theme={this.props.theme} />
