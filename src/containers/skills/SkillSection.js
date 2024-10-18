@@ -8,6 +8,8 @@ import FullStackImg from "./FullStackImg";
 import CloudInfraImg from "./CloudInfraImg";
 import DesignImg from "./DesignImg";
 import BackendDevImg from "./BackendDevImg.js";
+import DevProductivity from "./DevProductivity.js";
+import DevThinking from "./DevThinking.js";
 
 function GetSkillSvg(props) {
   if (props.fileName === "DataScienceImg")
@@ -18,6 +20,10 @@ function GetSkillSvg(props) {
     return <CloudInfraImg theme={props.theme} />;
   else if (props.fileName === "BackendDevImg")
     return <BackendDevImg theme={props.theme} />;
+  else if (props.fileName === "DevProductivity")
+    return <DevProductivity theme={props.theme} />;
+  else if (props.fileName === "DevThinking")
+    return <DevThinking theme={props.theme} />;
   return <DesignImg theme={props.theme} />;
 }
 

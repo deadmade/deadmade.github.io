@@ -60,7 +60,7 @@ const skills = {
   data: [
     {
       title: "C# Backend Development",
-      fileName: "BackendDevImg",
+      fileName: "DevThinking",
       skills: [
         "⚡ Entwicklung von Backend-Lösungen mit C# ",
         "⚡ Erstellung und Integration von APIs",
@@ -111,7 +111,7 @@ const skills = {
     },
     {
       title: "Entwicklertools",
-      fileName: "DataScienceImg",
+      fileName: "DevProductivity",
       skills: ["⚡ Vim Motions", "⚡ JetBrains IDEs", "⚡ Git Version Control"],
       softwareSkills: [
         {
