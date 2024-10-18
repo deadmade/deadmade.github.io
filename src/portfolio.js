@@ -110,7 +110,7 @@ const skills = {
       ],
     },
     {
-      title: "Tools I Enjoy Using",
+      title: "Entwicklertools",
       fileName: "DataScienceImg",
       skills: ["⚡ Vim Motions", "⚡ JetBrains IDEs", "⚡ Git Version Control"],
       softwareSkills: [
@@ -168,6 +168,17 @@ const degrees = {
         "Um ein Studium an der DHBW Heidenheim zu beginnen, habe ich mein Fachabitur an der FOS BOS Donauwörth absolviert.",
       ],
       website_link: "https://www.fosbos-donauwoerth.de/",
+    },
+    {
+      title: "Staatliche Berufsschule Lauingen",
+      subtitle: "Ausbildung zum Fachinformatiker für Anwendungsentwicklung",
+      logo_path: "bsLauingen.png",
+      alt_name: "BS Lauingen",
+      duration: "2019 - 2022",
+      descriptions: [
+        "Während meiner Ausbildung zum Fachinformatiker für Anwendungsentwicklung bei 4SELLERS habe ich die Berufsschule in Lauingen besucht.",
+      ],
+      website_link: "https://www.bs-lauingen.de/#gsc.tab=0",
     },
   ],
 };
