@@ -112,7 +112,7 @@ const skills = {
     {
       title: "Entwicklertools",
       fileName: "DevProductivity",
-      skills: ["⚡ Vim Motions", "⚡ JetBrains IDEs", "⚡ Git Version Control"],
+      skills: ["⚡ Vim Motions", "⚡ JetBrains IDEs", "⚡ Git Version Control", "⚡ Visual Studio"],
       softwareSkills: [
         {
           skillName: "Vim Motions",
@@ -135,6 +135,13 @@ const skills = {
             color: "#F1502F",
           },
         },
+        {
+          skillName: "Visual Studio",
+          fontAwesomeClassname: "simple-icons:visualstudio",
+          style: {
+            color: "#5C2D91",
+          },
+        }
       ],
     },
   ],
