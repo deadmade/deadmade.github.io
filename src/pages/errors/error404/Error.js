@@ -16,7 +16,7 @@ export default class Error extends Component {
           <Fade bottom duration={2000} distance="40px">
             <h1>Woops</h1>
             <h1 className="error-404">404</h1>
-            <p>The requested page is unavailable at the moment!</p>
+            <p>The requested page is unavailable at the moment :(</p>
             <Link
               className="main-button"
               to="/home"
