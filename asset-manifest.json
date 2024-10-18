@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.d2ec1812.css",
-    "main.js": "/static/js/main.cb8b3646.js",
+    "main.css": "/static/css/main.7b51b690.css",
+    "main.js": "/static/js/main.8fa67d94.js",
     "static/media/portfolio.gif": "/static/media/portfolio.ed6c89f1485f23014ebd.gif",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.9fa614346b4e81decc62.svg",
     "static/media/fa-brands-400.svg": "/static/media/fa-brands-400.6fcab609e2f62d5c3104.svg",
@@ -21,6 +21,7 @@
     "static/media/GoogleSans-Regular.ttf": "/static/media/GoogleSans-Regular.bec0591b6a291c3ca895.ttf",
     "static/media/GoogleSans-Medium.ttf": "/static/media/GoogleSans-Medium.963c3e555aaada9ef8a9.ttf",
     "static/media/GoogleSans-Bold.ttf": "/static/media/GoogleSans-Bold.d907e4bf3e32637a636e.ttf",
+    "static/media/fosboslogo.png": "/static/media/fosboslogo.409f0e9e82c70329d1df.png",
     "static/media/contactMail.png": "/static/media/contactMail.d4c9ac42fba95158a55c.png",
     "static/media/fa-solid-900.woff": "/static/media/fa-solid-900.3ef4f1acb44a2df412bf.woff",
     "static/media/CyberSicherheit.jpg": "/static/media/CyberSicherheit.e97dda0129eb799b641a.jpg",
@@ -33,6 +34,7 @@
     "static/media/animated_logo.svg": "/static/media/animated_logo.abd0b20ec83cb1f60d42.svg",
     "static/media/fa-solid-900.woff2": "/static/media/fa-solid-900.4a83f63fd7dd55c4ca85.woff2",
     "static/media/fa-brands-400.woff2": "/static/media/fa-brands-400.1c638e5f7632ea819e77.woff2",
+    "static/media/bsLauingen.png": "/static/media/bsLauingen.08a3cc3167c96a05e37e.png",
     "static/media/iiitk_logo.png": "/static/media/iiitk_logo.170d558551a09a7d1620.png",
     "static/media/intel_logo.jpg": "/static/media/intel_logo.d7577f35a3dac4e5636d.jpg",
     "static/media/ui_ux_design.svg": "/static/media/ui_ux_design.42a2cdaf132097cc499e.svg",
@@ -48,7 +50,6 @@
     "static/media/legato_logo.png": "/static/media/legato_logo.227e72c7979187840ba3.png",
     "static/media/developerActivity.svg": "/static/media/developerActivity.967f31dad3158d5be07b.svg",
     "static/media/github_logo.png": "/static/media/github_logo.15e591a7397b9ef45656.png",
-    "static/media/fosboslogo.png": "/static/media/fosboslogo.78d4974b518d77eb522c.png",
     "static/media/googleAssistant.jpg": "/static/media/googleAssistant.547075a751cc15673246.jpg",
     "static/media/projects_image.svg": "/static/media/projects_image.0a8062569966b4888c7c.svg",
     "static/media/programmer.svg": "/static/media/programmer.d3060f7bf0527835d72e.svg",
@@ -56,7 +57,6 @@
     "static/media/address_image.svg": "/static/media/address_image.3385d92e5e426e57a5b1.svg",
     "static/media/pwa.png": "/static/media/pwa.5107022416df1293dd12.png",
     "static/media/experience.svg": "/static/media/experience.c50c576af78a4172f78d.svg",
-    "static/media/DHBW-Logo2.jpg": "/static/media/DHBW-Logo2.3bff14516f88b7a17e51.jpg",
     "static/media/fa-regular-400.woff": "/static/media/fa-regular-400.2ccf005a6998d30de3d3.woff",
     "static/media/fa-regular-400.woff2": "/static/media/fa-regular-400.e5917ad1531005ea8c3f.woff2",
     "static/media/feelingProud.svg": "/static/media/feelingProud.288e616ff8dc11bd4713.svg",
@@ -69,11 +69,11 @@
     "static/media/googleAssistant.svg": "/static/media/googleAssistant.1c2312558eb2e5f04a45.svg",
     "static/media/talksCardBackAlt.svg": "/static/media/talksCardBackAlt.018d87225926eee9ccc3.svg",
     "static/media/talksCardBack.svg": "/static/media/talksCardBack.7dc8695e60efbc2baab8.svg",
-    "main.d2ec1812.css.map": "/static/css/main.d2ec1812.css.map",
-    "main.cb8b3646.js.map": "/static/js/main.cb8b3646.js.map"
+    "main.7b51b690.css.map": "/static/css/main.7b51b690.css.map",
+    "main.8fa67d94.js.map": "/static/js/main.8fa67d94.js.map"
   },
   "entrypoints": [
-    "static/css/main.d2ec1812.css",
-    "static/js/main.cb8b3646.js"
+    "static/css/main.7b51b690.css",
+    "static/js/main.8fa67d94.js"
   ]
 }
