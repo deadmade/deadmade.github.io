@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./Hobbies.css";
 import { hobbies } from "../../portfolio";
 import { Fade } from "react-reveal";
+import SoftwareSkill from "../../components/softwareSkills/SoftwareSkill";
 import DesignImg from "./DesignImg";
 import FitnessStats from "./FitnessStats";
 import ReadingBooks from "./Reading";
@@ -34,6 +35,9 @@ class HobbySection extends Component {
                   <h1 className="hobbies-heading" style={{ color: theme.text }}>
                     {hobby.title}
                   </h1>
+                </Fade>
+                <Fade right duration={1500}>
+                  <SoftwareSkill logos={hobby.softwareSkills} />
                 </Fade>
                 <Fade right duration={1500}>
                   <div>

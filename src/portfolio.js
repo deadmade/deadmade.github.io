@@ -301,6 +301,22 @@ const hobbies = {
     {
       title: "Regelmäßiges Training im GYM",
       fileName: "FitnessStats",
+      softwareSkills: [
+        {
+          skillName: "Fitness Studio",
+          fontAwesomeClassname: "mdi:dumbbell",
+          style: {
+            color: "#0000000",
+          },
+        },
+        {
+          skillName: "Fahrrad Fahren",
+          fontAwesomeClassname: "mingcute:riding-line",
+          style: {
+            color: "#0000000",
+          },
+        },
+      ],
       descriptions: [
           "- Regelmäßiges Training im Fitnessstudio, um fit zu bleiben und Energie abzubauen", 
           "- Hilft dabei, im stressigen Alltag abzuschalten und den Kopf freizubekommen",
@@ -309,8 +325,17 @@ const hobbies = {
       ],
     },
     {
-      title: "Lesen von Fachbüchern",
+      title: "Lesen von Büchern",
       fileName: "ReadingBooks",
+      softwareSkills: [
+        {
+          skillName: "Fachbücher",
+          fontAwesomeClassname: "fa-book",
+          style: {
+            color: "#FFD700",
+          },
+        },
+      ],
       descriptions: [
           "- Lesen von Fachbüchern, um mein Wissen zu erweitern und mich weiterzubilden",
           "- Es hilft mir, mich in neue Themen einzuarbeiten und mein Wissen zu vertiefen",
