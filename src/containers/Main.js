@@ -4,6 +4,7 @@ import Home from "../pages/home/HomeComponent";
 import Splash from "../pages/splash/Splash";
 import Education from "../pages/education/EducationComponent";
 import Experience from "../pages/experience/Experience";
+import Private from "../pages/private/Private";
 //import Opensource from "../pages/opensource/Opensource";
 import Projects from "../pages/projects/Projects";
 import { settings } from "../portfolio.js";
@@ -61,8 +62,8 @@ export default class Main extends Component {
             render={(props) => <Projects {...props} theme={this.props.theme} />}
           />
           <Route
-            path="/privateLinks"
-            element={<StaticHtml />}
+            path="/private"
+            render={(props) => <Private {...props} theme={this.props.theme} />}
           />
           <Route
             path="*"
@@ -72,9 +73,4 @@ export default class Main extends Component {
       </BrowserRouter>
     );
   }
-}
-
-function StaticHtml() {
-  window.location.href = ''; // This will load the HTML file from the public folder
-  return null;
 }
