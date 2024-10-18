@@ -296,13 +296,13 @@ class LogoLoader extends React.Component {
 
 		.letter{
 			opacity: 0;
-			-webkit-animation: fadein 2s linear forwards 2.5s;
-			-o-animation: fadein 2s linear forwards 2.5s;
-			-moz-animation: fadein 2s linear forwards 2.5s;
-			animation: fadein 2s linear forwards 2.5s;
+			-webkit-animation: Slidein 2s linear forwards 2.5s;
+			-o-animation: Slidein 2s linear forwards 2.5s;
+			-moz-animation: Slidein 2s linear forwards 2.5s;
+			animation: Slidein 2s linear forwards 2.5s;
 		}
 
-		@-webkit-keyframes fadein{
+		@-webkit-keyframes Slidein{
 			from{
 				opacity: 0;
 			}

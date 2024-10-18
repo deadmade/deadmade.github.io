@@ -1,7 +1,7 @@
 import React from "react";
 import ProjectLanguages from "../../components/projectLanguages/ProjectLanguages";
 import "./GithubRepoCard.css";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 
 export default function GithubRepoCard({ repo, theme }) {
   function openRepoinNewTab(url) {
@@ -11,7 +11,7 @@ export default function GithubRepoCard({ repo, theme }) {
 
   return (
     <div className="repo-card-div" style={{ backgroundColor: theme.highlight }}>
-      <Fade bottom duration={2000} distance="40px">
+      <Slide bottom duration={2000} distance="40px">
         <div key={repo.id} onClick={() => openRepoinNewTab(repo.url)}>
           <div className="repo-name-div">
             <svg
@@ -73,7 +73,7 @@ export default function GithubRepoCard({ repo, theme }) {
           </div>
         </div> */}
         </div>
-      </Fade>
+      </Slide>
     </div>
   );
 }

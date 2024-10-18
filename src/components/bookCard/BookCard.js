@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./BookCard.css";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 
 class BookCard extends Component {
   render() {
     const book = this.props.book;
     const theme = this.props.theme;
     return (
-      <Fade direction="up" duration={2000} triggerOnce>
+      <Slide direction="up" duration={2000} triggerOnce>
         <div className="cert-card">
           <div className="content">
             <a href={book.book_link} target="_blank" rel="noopener noreferrer">
@@ -22,7 +22,7 @@ class BookCard extends Component {
                   alt={book.alt_name}
                 />
               </div>
-              <div className="content-details fadeIn-top">
+              <div className="content-details SlideIn-top">
                 <h3 className="content-title" style={{ color: theme.body }}>
                   Amazon Link
                 </h3>
@@ -41,7 +41,7 @@ class BookCard extends Component {
             </h3>
           </div>
         </div>
-      </Fade>
+      </Slide>
     );
   }
 }

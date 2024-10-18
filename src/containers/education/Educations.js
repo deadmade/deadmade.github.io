@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./Educations.css";
 import DegreeCard from "../../components/degreeCard/DegreeCard.js";
 import { degrees } from "../../portfolio";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 
 class Educations extends Component {
   render() {
@@ -10,11 +10,11 @@ class Educations extends Component {
     return (
       <div className="main" id="educations">
         <div className="educations-header-div">
-          <Fade direction="up" duration={2000} triggerOnce>
+          <Slide direction="up" duration={2000} triggerOnce>
             <h1 className="educations-header" style={{ color: theme.text }}>
               Erhaltene Abschlüsse
             </h1>
-          </Fade>
+          </Slide>
         </div>
         <div className="educations-body-div">
           {degrees.degrees.map((degree) => {

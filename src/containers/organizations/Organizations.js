@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Organizations.css";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 import OrganizationList from "../../components/organizationList/OrganizationList";
 import OrganizationsData from "../../shared/opensource/organizations.json";
 
@@ -10,11 +10,11 @@ class Organizations extends Component {
     return (
       <div id="organizations">
         <div className="organizations-header-div">
-          <Fade direction="up" duration={2000} triggerOnce>
+          <Slide direction="up" duration={2000} triggerOnce>
             <h1 className="organizations-header" style={{ color: theme.text }}>
               Contributed Organizations
             </h1>
-          </Fade>
+          </Slide>
         </div>
         <OrganizationList logos={OrganizationsData["data"]} />
       </div>

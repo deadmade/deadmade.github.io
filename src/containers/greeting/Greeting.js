@@ -3,13 +3,13 @@ import "./Greeting.css";
 import SocialMedia from "../../components/socialMedia/SocialMedia";
 //import Button from "../../components/button/Button";
 import { greeting } from "../../portfolio";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 import FeelingProud from "./FeelingProud";
 
 export default function Greeting(props) {
   const theme = props.theme;
   return (
-    <Fade bottom duration={2000} distance="40px">
+    <Slide bottom duration={2000} distance="40px">
       <div className="greet-main" id="greeting">
         <div className="greeting-main">
           <div className="greeting-text-div">
@@ -53,6 +53,6 @@ export default function Greeting(props) {
           </div>
         </div>
       </div>
-    </Fade>
+    </Slide>
   );
 }

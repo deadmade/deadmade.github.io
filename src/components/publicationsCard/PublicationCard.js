@@ -1,6 +1,6 @@
 import React from "react";
 import "./PublicationCard.css";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 
 export default function PublicationCard({ pub, theme }) {
   function openPubinNewTab(url) {
@@ -13,7 +13,7 @@ export default function PublicationCard({ pub, theme }) {
       className="publication-card-div"
       style={{ backgroundColor: theme.highlight }}
     >
-      <Fade bottom duration={2000} distance="40px">
+      <Slide bottom duration={2000} distance="40px">
         <div key={pub.id} onClick={() => openPubinNewTab(pub.url)}>
           <div className="publication-name-div">
             <p className="publication-name" style={{ color: theme.text }}>
@@ -58,7 +58,7 @@ export default function PublicationCard({ pub, theme }) {
           </div>
         </div> */}
         </div>
-      </Fade>
+      </Slide>
     </div>
   );
 }

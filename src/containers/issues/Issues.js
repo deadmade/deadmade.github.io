@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Issues.css";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 import IssueCard from "../../components/issueCard/IssueCard";
 import issuesData from "../../shared/opensource/issues.json";
 
@@ -10,11 +10,11 @@ class Issues extends Component {
     return (
       <div>
         <div className="issues-header-div">
-          <Fade direction="up" duration={2000} triggerOnce>
+          <Slide direction="up" duration={2000} triggerOnce>
             <h1 className="issues-header" style={{ color: theme.text }}>
               Issues
             </h1>
-          </Fade>
+          </Slide>
         </div>
         <div className="issues-body-div">
           {issuesData["data"].map((issue) => {

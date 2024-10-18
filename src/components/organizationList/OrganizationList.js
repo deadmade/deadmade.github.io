@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./OrganizationList.css";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 
 class OrganizationList extends Component {
   render() {
@@ -21,13 +21,13 @@ class OrganizationList extends Component {
                 }
               >
                 <li className="organizations-inline" name={logo["login"]}>
-                  <Fade bottom duration={2000} distance="40px">
+                  <Slide bottom duration={2000} distance="40px">
                     <img
                       className="organizations-img"
                       src={logo["avatarUrl"]}
                       alt={logo["login"]}
                     />
-                  </Fade>
+                  </Slide>
                 </li>
               </OverlayTrigger>
             );

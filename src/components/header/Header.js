@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Header.css";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 import { NavLink, Link } from "react-router-dom";
 import { greeting, settings } from "../../portfolio.js";
 import SeoHeader from "../seoHeader/SeoHeader";
@@ -20,7 +20,7 @@ class Header extends Component {
     const theme = this.props.theme;
     const link = settings.isSplash ? "/splash" : "home";
     return (
-      <Fade top duration={1000} distance="20px">
+      <Slide top duration={1000} distance="20px">
         <SeoHeader />
         <div>
           <header className="header">
@@ -111,7 +111,7 @@ class Header extends Component {
             </ul>
           </header>
         </div>
-      </Fade>
+      </Slide>
     );
   }
 }

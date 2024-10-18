@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./PullRequestCard.css";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 
 class PullRequestCard extends Component {
   render() {
@@ -65,7 +65,7 @@ class PullRequestCard extends Component {
     }
 
     return (
-      <Fade bottom duration={2000} distance="40px">
+      <Slide bottom duration={2000} distance="40px">
         <div
           className="pull-request-card"
           style={{
@@ -141,7 +141,7 @@ class PullRequestCard extends Component {
             </div>
           </div>
         </div>
-      </Fade>
+      </Slide>
     );
   }
 }

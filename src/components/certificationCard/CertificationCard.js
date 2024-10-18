@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./CertificationCard.css";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 
 class CertificationCard extends Component {
   render() {
     const certificate = this.props.certificate;
     const theme = this.props.theme;
     return (
-      <Fade direction="up" duration={2000} triggerOnce>
+      <Slide direction="up" duration={2000} triggerOnce>
         <div className="cert-card">
           <div className="content">
             <a
@@ -26,7 +26,7 @@ class CertificationCard extends Component {
                   alt={certificate.alt_name}
                 />
               </div>
-              <div className="content-details fadeIn-top">
+              <div className="content-details SlideIn-top">
                 <h3 className="content-title" style={{ color: theme.body }}>
                   Certificate
                 </h3>
@@ -45,7 +45,7 @@ class CertificationCard extends Component {
             </h3>
           </div>
         </div>
-      </Fade>
+      </Slide>
     );
   }
 }

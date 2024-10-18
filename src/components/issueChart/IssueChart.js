@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { Fade } from "react-awesome-reveal";
+import { Slide } from "react-awesome-reveal";
 import "./IssueChart.css";
 import IssueData from "../../shared/opensource/issues.json";
 
@@ -19,9 +19,9 @@ class IssueChart extends Component {
 
     return (
       <div className="issue-chart">
-        <Fade direction="up" duration={2000} triggerOnce>
+        <Slide direction="up" duration={2000} triggerOnce>
           <h2 className="issue-chart-header">Issue Distribution</h2>
-        </Fade>
+        </Slide>
         <Doughnut
           data={data}
           options={{
