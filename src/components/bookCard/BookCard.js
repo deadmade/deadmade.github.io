@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./BookCard.css";
-import { Fade } from "react-reveal";
+import { Fade } from "react-awesome-reveal";
 
 class BookCard extends Component {
   render() {
     const book = this.props.book;
     const theme = this.props.theme;
     return (
-      <Fade bottom duration={2000} distance="20px">
+      <Fade direction="up" duration={8000} triggerOnce>
         <div className="cert-card">
           <div className="content">
             <a href={book.book_link} target="_blank" rel="noopener noreferrer">
