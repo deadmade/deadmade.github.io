@@ -31,7 +31,7 @@
     "rimraf": "^6.0.1",
     "styled-components": "^6.1.13",
     "styletron-engine-atomic": "^1.4.6",
-    "styletron-react": "^5.2.7",
+    "styletron-react": "^6.1.1",
     "undici": "^6.19.8"
   },
   "devDependencies": {
