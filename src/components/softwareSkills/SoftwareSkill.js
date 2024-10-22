@@ -15,14 +15,14 @@ class SoftwareSkill extends React.Component {
               </li>
             );
           })} */}
-            {this.props.logos.map((logo) => {
+            {this.props.logos && this.props.logos.map((logo) => {
               return (
                 <OverlayTrigger
                   key={logo.skillName}
                   placement={"top"}
                   overlay={
-                    <Tooltip id={`tooltip-top`}>
-                      <strong>{logo.skillName}</strong>
+                    <Tooltip id={`tooltip-top-${logo.skillName}`}>
+                       
                     </Tooltip>
                   }
                 >
