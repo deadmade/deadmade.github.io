@@ -1,0 +1,45 @@
+name: AutomationGitFetch
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # This runs at midnight UTC every Sunday
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Specify the Node.js version you need
+
+      - name: Run git_data_fetcher.mjs
+        run: |
+          node git_data_fetcher.mjsd
+
+      - name: Create a new branch
+        id: create_branch
+        run: |
+          BRANCH_NAME="weekly-update-$(date +'%Y-%m-%d')"
+          git checkout -b $BRANCH_NAME
+          git add your-file.txt # Adjust this to add the files modified by your script
+          git commit -m "Update file with current date on $BRANCH_NAME" || echo "No changes to commit"
+
+          echo "::set-output name=branch::$BRANCH_NAME"
+
+      - name: Push changes
+        run: |
+          git push origin ${{ steps.create_branch.outputs.branch }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: "Weekly Update: $(date +'%Y-%m-%d')"
+          body: "This pull request includes updates made on $(date +'%Y-%m-%d')."
+          head: ${{ steps.create_branch.outputs.branch }}
+          base: main
+          token: ${{ secrets.GITHUB_TOKEN }}
