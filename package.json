@@ -49,7 +49,7 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "3.3.3",
-    "workbox-background-sync": "^7.1.0",
+    "workbox-background-sync": "^7.3.0",
     "workbox-cacheable-response": "^7.3.0"
   },
   "browserslist": {
