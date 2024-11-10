@@ -5,6 +5,7 @@ import Splash from "../pages/splash/Splash";
 import Education from "../pages/education/EducationComponent";
 import Experience from "../pages/experience/Experience";
 import Private from "../pages/private/Private";
+import Contact from "../pages/contact/ContactComponent";
 // import Opensource from "../pages/opensource/Opensource";
 import Projects from "../pages/projects/Projects";
 import { settings } from "../portfolio.js";
@@ -56,6 +57,10 @@ export default class Main extends Component {
           <Route
             path="/private"
             element={<Private theme={this.props.theme} />}
+          />
+          <Route
+            path = "/contact"
+            element = {<Contact theme={this.props.theme} />}
           />
           <Route
             path="*"

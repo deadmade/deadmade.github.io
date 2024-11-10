@@ -223,6 +223,15 @@ const books = {
         "https://www.amazon.de/Cyber-Sicherheit-Architekturen-Eigenschaften-Cyber-Sicherheitssystemen-Digitalisierung/dp/3658253975",
       color_code: "#8C151599",
     },
+    {
+      title: "C# in Depth",
+      subtitle: "by Jon Skeet",
+      logo_path: "CSharpInDepth.jpg",
+      alt_name: "C# in Depth - Jon Skeet",
+      book_link:
+        "https://www.amazon.de/C-Depth-Jon-Skeet-dp-1617294535/dp/1617294535",
+      color_code: "#8C151599",
+    }
   ],
 };
 
@@ -287,9 +296,9 @@ const publications = {
 const contactPageData = {
   contactSection: {
     title: "Contact Me",
-    profile_image_path: "animated_ashutosh.png",
+    profile_image_path: "ich.jpeg",
     description:
-      "I am available on almost every social media. You can message me, I will reply within 24 hours. I can help you with ML, AI, React, Android, Cloud and Opensource Development.",
+      "",
   },
   blogSection: {},
   addressSection: {},
