@@ -23,7 +23,6 @@
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^7.0.2",
-    "react-scripts": "^5.0.1",
     "react-swift-reveal": "^1.1.0",
     "styled-components": "^6.1.13",
     "styletron-engine-atomic": "^1.4.6",
@@ -31,11 +30,7 @@
     "undici": "^7.2.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-class-properties": "^7.25.4",
-    "@babel/plugin-transform-nullish-coalescing-operator": "^7.26.6",
-    "@babel/plugin-transform-numeric-separator": "^7.24.7",
-    "@babel/plugin-transform-optional-chaining": "^7.24.8",
-    "@babel/plugin-transform-private-methods": "^7.25.4",
+    "react-scripts": "^5.0.1",
     "@eslint/config-array": "^0.19.1",
     "@eslint/object-schema": "^2.1.5",
     "@rollup/plugin-terser": "^0.4.4",

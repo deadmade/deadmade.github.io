@@ -9,7 +9,7 @@ class ExperienceAccordion extends Component {
     const headerStyle = {
       backgroundColor: theme.body,
       border: "1px solid",
-      borderRadius: "5px",
+      borderRadius: "7  px",
       borderColor: theme.headerColor,
       marginBottom: "3px",
       fontFamily: "Google Sans Regular",
@@ -31,13 +31,6 @@ class ExperienceAccordion extends Component {
               <Accordion.Item eventKey={section["title"]} key={sectionIndex}>
                 <Accordion.Header
                   className="accordion-header"
-                  style={headerStyle}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = headerHoverStyle.color)
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = headerStyle.color)
-                  }
                 >
                   {section["title"]}
                 </Accordion.Header>
