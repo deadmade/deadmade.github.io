@@ -39,7 +39,7 @@ class SkillSection extends Component {
                 <div className="skills-image-div">
                   {/* <img
                     alt="Ashutosh is Analysing Data"
-                    src={require(`../../assets/images/${skill.imagePath}`)}
+                    src={require(`../../assets/images/${skill.image}`)}
                   ></img> */}
                   <GetSkillSvg fileName={skill.fileName} theme={theme} />
                 </div>

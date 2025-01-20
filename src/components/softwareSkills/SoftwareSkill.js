@@ -18,13 +18,13 @@ class SoftwareSkill extends React.Component {
             {this.props.logos &&
               this.props.logos.map((logo) => {
                 return (
-                  <OverlayTrigger
-                    key={logo.skillName}
-                    placement={"top"}
-                    overlay={
-                      <Tooltip id={`tooltip-top-${logo.skillName}`}></Tooltip>
-                    }
-                  >
+                  //<OverlayTrigger
+                  //  key={logo.skillName}
+                  //  placement={"top"}
+                    //overlay={
+                    //  <Tooltip id={`tooltip-top-${logo.skillName}`}></Tooltip>
+                    //}
+                  //>
                     <li className="software-skill-inline" name={logo.skillName}>
                       {logo.fontAwesomeClassname && (
                         <span
@@ -43,7 +43,7 @@ class SoftwareSkill extends React.Component {
                         />
                       )}
                     </li>
-                  </OverlayTrigger>
+                  //</OverlayTrigger>
                 );
               })}
           </ul>
