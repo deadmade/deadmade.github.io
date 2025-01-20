@@ -1,74 +1,81 @@
 .hobbies-main-div {
-  display: flex;
-  overflow: hidden;
+    display: flex;
+    overflow: hidden;
 }
 
 .hobbies-header {
-  font-size: 60px;
-  line-height: normal;
-  font-family: "Google Sans Regular";
-  text-align: center;
+    font-size: 60px;
+    line-height: normal;
+    font-family: "Google Sans Regular";
+    text-align: center;
 }
 
 .hobbies-text {
-  font-size: 20px;
+    font-size: 20px;
 }
 
 .hobbies-text-div {
-  margin-left: 50px;
-  font-family: "Google Sans Regular";
+    margin-left: 50px;
+    font-family: "Google Sans Regular";
 }
 
 .hobbies-main-div > * {
-  flex: 1;
-  margin-bottom: 30px;
+    flex: 1;
+    margin-bottom: 30px;
 }
 
 .hobbies-image-div > * {
-  max-width: 100%;
-  height: auto;
-  margin-top: 100px;
+    max-width: 100%;
+    height: auto;
+    margin-top: 100px;
 }
 
 .hobbies-heading {
-  font-size: 56px;
-  font-weight: 400;
-  font-family: "Google Sans Regular";
-  line-height: normal;
+    font-size: 56px;
+    font-weight: 400;
+    font-family: "Google Sans Regular";
+    line-height: normal;
 }
 
 /* Media Query */
 @media (max-width: 1380px) {
-  .hobbies-heading {
-    font-size: 40px;
-  }
-  .hobbies-header {
-    font-size: 50px;
-  }
+    .hobbies-heading {
+        font-size: 40px;
+    }
+
+    .hobbies-header {
+        font-size: 50px;
+    }
 }
 
 @media (max-width: 768px) {
-  .hobbies-heading {
-    font-size: 30px;
-    text-align: center;
-  }
-  .hobbies-header {
-    font-size: 30px;
-  }
-  .hobbies-main-div {
-    flex-direction: column;
-  }
-  .hobbies-text-div {
-    margin-left: 0px;
-    margin: 20px;
-  }
-  .hobbies-text {
-    font-size: 16px;
-  }
-  .hobbies-image-div {
-    order: 2;
-  }
-  .hobbies-image-div > * {
-    margin-top: 0px;
-  }
+    .hobbies-heading {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .hobbies-header {
+        font-size: 30px;
+    }
+
+    .hobbies-main-div {
+        flex-direction: column;
+    }
+
+    .hobbies-text-div {
+        margin-left: 0px;
+        margin: 20px;
+    }
+
+    .hobbies-text {
+        font-size: 16px;
+    }
+
+    .hobbies-image-div {
+        order: 2;
+    }
+
+    .hobbies-image-div > * {
+        margin-top: 0px;
+    }
 }

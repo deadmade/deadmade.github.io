@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../pages/home/HomeComponent";
 import Splash from "../pages/splash/Splash";
 import Education from "../pages/education/EducationComponent";
@@ -26,10 +26,7 @@ export default class Main extends Component {
               )
             }
           />
-          <Route
-            path="/home"
-            element={<Home theme={this.props.theme} />}
-          />
+          <Route path="/home" element={<Home theme={this.props.theme} />} />
           <Route
             path="/experience"
             element={<Experience theme={this.props.theme} />}
@@ -59,13 +56,10 @@ export default class Main extends Component {
             element={<Private theme={this.props.theme} />}
           />
           <Route
-            path = "/contact"
-            element = {<Contact theme={this.props.theme} />}
+            path="/contact"
+            element={<Contact theme={this.props.theme} />}
           />
-          <Route
-            path="*"
-            element={<Error404 theme={this.props.theme} />}
-          />
+          <Route path="*" element={<Error404 theme={this.props.theme} />} />
         </Routes>
       </BrowserRouter>
     );

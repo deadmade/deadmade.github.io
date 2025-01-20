@@ -1,27 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import ExperienceCard from "../../components/experienceCard/ExperienceCard.js";
-import Accordion from 'react-bootstrap/Accordion';
-import './ExperienceAccordion.css';
+import Accordion from "react-bootstrap/Accordion";
+import "./ExperienceAccordion.css";
 
 class ExperienceAccordion extends Component {
   render() {
     const theme = this.props.theme;
     const headerStyle = {
       backgroundColor: theme.body,
-      border: '1px solid',
-      borderRadius: '5px',
+      border: "1px solid",
+      borderRadius: "5px",
       borderColor: theme.headerColor,
-      marginBottom: '3px',
-      fontFamily: 'Google Sans Regular',
+      marginBottom: "3px",
+      fontFamily: "Google Sans Regular",
       color: theme.text,
-      cursor: 'pointer'
+      cursor: "pointer",
     };
 
     const headerHoverStyle = {
-      color: theme.secondaryText
+      color: theme.secondaryText,
     };
 
-//TODO Change Style
+    //TODO Change Style
 
     return (
       <div className="experience-accord">
@@ -32,8 +32,12 @@ class ExperienceAccordion extends Component {
                 <Accordion.Header
                   className="accordion-header"
                   style={headerStyle}
-                  onMouseEnter={(e) => e.currentTarget.style.color = headerHoverStyle.color}
-                  onMouseLeave={(e) => e.currentTarget.style.color = headerStyle.color}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = headerHoverStyle.color)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = headerStyle.color)
+                  }
                 >
                   {section["title"]}
                 </Accordion.Header>

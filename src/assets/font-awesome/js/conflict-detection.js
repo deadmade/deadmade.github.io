@@ -6,8 +6,8 @@
   typeof exports === "object" && typeof module !== "undefined"
     ? factory(exports)
     : typeof define === "function" && define.amd
-    ? define(["exports"], factory)
-    : factory((global["fontawesome-free-conflict-detection"] = {}));
+      ? define(["exports"], factory)
+      : factory((global["fontawesome-free-conflict-detection"] = {}));
 })(this, function (exports) {
   "use strict";
 
@@ -54,7 +54,7 @@
         ownKeys = ownKeys.concat(
           Object.getOwnPropertySymbols(source).filter(function (sym) {
             return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-          })
+          }),
         );
       }
 
@@ -101,9 +101,8 @@
   var loaded = false;
 
   if (IS_DOM) {
-    loaded = (DOCUMENT.documentElement.doScroll
-      ? /^loaded|^c/
-      : /^loaded|^i|^c/
+    loaded = (
+      DOCUMENT.documentElement.doScroll ? /^loaded|^c/ : /^loaded|^i|^c/
     ).test(DOCUMENT.readyState);
     if (!loaded) DOCUMENT.addEventListener("DOMContentLoaded", listener);
   }
@@ -129,7 +128,7 @@
     if (conflictsCount > 0) {
       console.info(
         "%cConflict".concat(conflictsCount > 1 ? "s" : "", " found:"),
-        "color: darkred; font-size: large"
+        "color: darkred; font-size: large",
       );
       var data = {};
 
@@ -155,7 +154,7 @@
         "%cNo conflict"
           .concat(noConflictsCount > 1 ? "s" : "", " found with ")
           .concat(noConflictsCount == 1 ? "this" : "these", ":"),
-        "color: green; font-size: large"
+        "color: green; font-size: large",
       );
       var _data = {};
 
@@ -180,9 +179,9 @@
       console.info(
         "%cLeftovers--we timed out before collecting test results for ".concat(
           timeOutCount == 1 ? "this" : "these",
-          ":"
+          ":",
         ),
-        "color: blue; font-size: large"
+        "color: blue; font-size: large",
       );
       var _data2 = {};
 
@@ -206,10 +205,10 @@
     typeof window !== "undefined"
       ? window
       : typeof global !== "undefined"
-      ? global
-      : typeof self !== "undefined"
-      ? self
-      : {};
+        ? global
+        : typeof self !== "undefined"
+          ? self
+          : {};
 
   function createCommonjsModule(fn, module) {
     return (
@@ -233,6 +232,7 @@
         var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
         return (msw << 16) | (lsw & 0xffff);
       }
+
       /**
        * Bitwise rotate a 32-bit number to the left.
        *
@@ -244,6 +244,7 @@
       function bitRotateLeft(num, cnt) {
         return (num << cnt) | (num >>> (32 - cnt));
       }
+
       /**
        * Basic operation the algorithm uses.
        *
@@ -259,9 +260,10 @@
       function md5cmn(q, a, b, x, s, t) {
         return safeAdd(
           bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s),
-          b
+          b,
         );
       }
+
       /**
        * Basic operation the algorithm uses.
        *
@@ -278,6 +280,7 @@
       function md5ff(a, b, c, d, x, s, t) {
         return md5cmn((b & c) | (~b & d), a, b, x, s, t);
       }
+
       /**
        * Basic operation the algorithm uses.
        *
@@ -294,6 +297,7 @@
       function md5gg(a, b, c, d, x, s, t) {
         return md5cmn((b & d) | (c & ~d), a, b, x, s, t);
       }
+
       /**
        * Basic operation the algorithm uses.
        *
@@ -310,6 +314,7 @@
       function md5hh(a, b, c, d, x, s, t) {
         return md5cmn(b ^ c ^ d, a, b, x, s, t);
       }
+
       /**
        * Basic operation the algorithm uses.
        *
@@ -326,6 +331,7 @@
       function md5ii(a, b, c, d, x, s, t) {
         return md5cmn(c ^ (b | ~d), a, b, x, s, t);
       }
+
       /**
        * Calculate the MD5 of an array of little-endian words, and a bit length.
        *
@@ -425,6 +431,7 @@
 
         return [a, b, c, d];
       }
+
       /**
        * Convert an array of little-endian words to a string
        *
@@ -443,6 +450,7 @@
 
         return output;
       }
+
       /**
        * Convert a raw string to an array of little-endian words
        * Characters >255 have their high-byte silently ignored.
@@ -468,6 +476,7 @@
 
         return output;
       }
+
       /**
        * Calculate the MD5 of a raw string
        *
@@ -478,6 +487,7 @@
       function rstrMD5(s) {
         return binl2rstr(binlMD5(rstr2binl(s), s.length * 8));
       }
+
       /**
        * Calculates the HMAC-MD5 of a key and some data (raw strings)
        *
@@ -506,6 +516,7 @@
         hash = binlMD5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
         return binl2rstr(binlMD5(opad.concat(hash), 512 + 128));
       }
+
       /**
        * Convert a raw string to a hex string
        *
@@ -526,6 +537,7 @@
 
         return output;
       }
+
       /**
        * Encode a string as UTF-8
        *
@@ -536,6 +548,7 @@
       function str2rstrUTF8(input) {
         return unescape(encodeURIComponent(input));
       }
+
       /**
        * Encodes input string as raw MD5 string
        *
@@ -546,6 +559,7 @@
       function rawMD5(s) {
         return rstrMD5(str2rstrUTF8(s));
       }
+
       /**
        * Encodes input string as Hex encoded string
        *
@@ -556,6 +570,7 @@
       function hexMD5(s) {
         return rstr2hex(rawMD5(s));
       }
+
       /**
        * Calculates the raw HMAC-MD5 for the given key and data
        *
@@ -567,6 +582,7 @@
       function rawHMACMD5(k, d) {
         return rstrHMACMD5(str2rstrUTF8(k), str2rstrUTF8(d));
       }
+
       /**
        * Calculates the Hex encoded HMAC-MD5 for the given key and data
        *
@@ -578,6 +594,7 @@
       function hexHMACMD5(k, d) {
         return rstr2hex(rawHMACMD5(k, d));
       }
+
       /**
        * Calculates MD5 value for a given string.
        * If a key is provided, calculates the HMAC-MD5 value.
@@ -689,7 +706,7 @@
     var linkTags = Array.from(DOCUMENT.getElementsByTagName("link")).filter(
       function (t) {
         return !t.hasAttribute(detectionIgnoreAttr);
-      }
+      },
     );
     var styleTags = Array.from(DOCUMENT.getElementsByTagName("style")).filter(
       function (t) {
@@ -704,16 +721,16 @@
           t.innerText.match(
             new RegExp(
               "svg:not\\(:root\\)\\.".concat(
-                WINDOW.FontAwesomeConfig.replacementClass
-              )
-            )
+                WINDOW.FontAwesomeConfig.replacementClass,
+              ),
+            ),
           )
         ) {
           return false;
         }
 
         return true;
-      }
+      },
     );
 
     function runDiag(scriptOrLinkTag, md5) {
@@ -722,7 +739,7 @@
 
       diagFrame.setAttribute(
         "style",
-        "visibility: hidden; position: absolute; height: 0; width: 0;"
+        "visibility: hidden; position: absolute; height: 0; width: 0;",
       );
       var testIconId = "fa-test-icon-" + md5;
       var iTag = DOCUMENT.createElement("i");
@@ -741,7 +758,7 @@
         nodeUnderTestId,
         testIconId,
         md5,
-        parentOrigin
+        parentOrigin,
       ) {
         parent.FontAwesomeDetection.__pollUntil({
           fn: function fn() {
@@ -770,7 +787,7 @@
                 tagName: node.tagName,
                 md5: md5,
               },
-              parentOrigin
+              parentOrigin,
             );
           })
           .catch(function (e) {
@@ -786,7 +803,7 @@
                   tagName: node.tagName,
                   md5: md5,
                 },
-                parentOrigin
+                parentOrigin,
               );
             } else {
               console.error(e);
@@ -872,7 +889,7 @@
       var diagScriptFun = function diagScriptFun(
         nodeUnderTestId,
         md5,
-        parentOrigin
+        parentOrigin,
       ) {
         parent.FontAwesomeDetection.__pollUntil({
           fn: function fn() {
@@ -890,7 +907,7 @@
                 tagName: scriptNode.tagName,
                 md5: md5,
               },
-              parentOrigin
+              parentOrigin,
             );
           })
           .catch(function (e) {
@@ -905,7 +922,7 @@
                   tagName: scriptNode.tagName,
                   md5: md5,
                 },
-                parentOrigin
+                parentOrigin,
               );
             } else {
               console.error(e);
@@ -991,41 +1008,41 @@
     if (testCount === 0) {
       console.info("%cAll Good!", "color: green; font-size: large");
       console.info(
-        "We didn't find anything that needs testing for conflicts. Ergo, no conflicts."
+        "We didn't find anything that needs testing for conflicts. Ergo, no conflicts.",
       );
     } else {
       console.info("Testing ".concat(testCount, " possible conflicts."));
       console.info(
         "We'll wait about ".concat(
           Math.round(WINDOW.FontAwesomeDetection.timeout / 10) / 100,
-          " seconds while testing these and\n"
+          " seconds while testing these and\n",
         ) +
           "then up to another ".concat(
             Math.round(
-              WINDOW.FontAwesomeDetection.resultsCollectionMaxWait / 10
+              WINDOW.FontAwesomeDetection.resultsCollectionMaxWait / 10,
             ) / 100,
-            " to allow the browser time\n"
+            " to allow the browser time\n",
           ) +
-          "to accumulate the results. But we'll probably be outta here way before then.\n\n"
+          "to accumulate the results. But we'll probably be outta here way before then.\n\n",
       );
       console.info(
-        "You can adjust those durations by assigning values to these attributes on the <script> element that loads this detection:"
+        "You can adjust those durations by assigning values to these attributes on the <script> element that loads this detection:",
       );
       console.info(
         "\t%c".concat(
           timeoutAttr,
-          "%c: milliseconds to wait for each test before deciding whether it's a conflict."
+          "%c: milliseconds to wait for each test before deciding whether it's a conflict.",
         ),
         "font-weight: bold;",
-        "font-size: normal;"
+        "font-size: normal;",
       );
       console.info(
         "\t%c".concat(
           resultsCollectionMaxWaitAttr,
-          "%c: milliseconds to wait for the browser to accumulate test results before giving up."
+          "%c: milliseconds to wait for the browser to accumulate test results before giving up.",
         ),
         "font-weight: bold;",
-        "font-size: normal;"
+        "font-size: normal;",
       );
       pollUntil({
         // Give this overall timer a little extra cushion
@@ -1055,7 +1072,7 @@
         .catch(function (e) {
           if (e === "timeout") {
             console.info(
-              "TIME OUT! We waited until we got tired. Here's what we found:"
+              "TIME OUT! We waited until we got tired. Here's what we found:",
             );
             setDoneResults({
               nodesTested: nodesTested,

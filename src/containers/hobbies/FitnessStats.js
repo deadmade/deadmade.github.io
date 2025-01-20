@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class FitnessStats extends Component {
   render() {
-        return (
+    return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         data-name="Layer 1"

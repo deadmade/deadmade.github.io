@@ -17,13 +17,19 @@ export default class DevThinking extends Component {
           transform="translate(-90.2579 -231.65939)"
           fill="#ffb9b9"
         />
-        <polygon points="30.041 422.968 25.468 405.984 88.8 380.265 95.549 405.331 30.041 422.968" fill="#ffb8b8" />
+        <polygon
+          points="30.041 422.968 25.468 405.984 88.8 380.265 95.549 405.331 30.041 422.968"
+          fill="#ffb8b8"
+        />
         <path
           d="M105.002,663.39128,90.2579,608.62916l.69264-.18651a22.07516,22.07516,0,0,1,27.054,15.57522l.00037.00135L127.01,657.46609Z"
           transform="translate(-90.2579 -231.65939)"
           fill={theme.dark}
         />
-        <polygon points="117.278 420.254 103.054 409.91 136.185 350.121 157.179 365.388 117.278 420.254" fill="#ffb8b8" />
+        <polygon
+          points="117.278 420.254 103.054 409.91 136.185 350.121 157.179 365.388 117.278 420.254"
+          fill="#ffb8b8"
+        />
         <path
           d="M201.1368,668.34061,155.27068,634.9853l.42187-.58015a22.07517,22.07517,0,0,1,30.8348-4.87041l.00114.00082L214.54188,649.908Z"
           transform="translate(-90.2579 -231.65939)"
@@ -111,20 +117,65 @@ export default class DevThinking extends Component {
           transform="translate(-90.2579 -231.65939)"
           fill={theme.text}
         />
-        <rect x="329.89003" y="31.10145" width="627.39127" height="353.91303" fill={theme.compImgHighlight} />
+        <rect
+          x="329.89003"
+          y="31.10145"
+          width="627.39127"
+          height="353.91303"
+          fill={theme.compImgHighlight}
+        />
         <circle cx="643.04942" cy="15.01449" r="6.43477" fill="#fff" />
-        <polygon points="777.858 385.015 329.89 385.015 329.89 31.102 777.858 385.015" fill={theme.imageHighlight} style={{ isolation: "isolate" }} />
-        <circle cx="428.05798" cy="298.22423" r="60.3068" fill={theme.jacketColor} />
+        <polygon
+          points="777.858 385.015 329.89 385.015 329.89 31.102 777.858 385.015"
+          fill={theme.imageHighlight}
+          style={{ isolation: "isolate" }}
+        />
+        <circle
+          cx="428.05798"
+          cy="298.22423"
+          r="60.3068"
+          fill={theme.jacketColor}
+        />
         <path
           d="M531.74082,575.21a75.01577,75.01577,0,1,1,75.01581-75.01575A75.01578,75.01578,0,0,1,531.74082,575.21Zm0-149.051A74.03519,74.03519,0,1,0,605.776,500.19428a74.03518,74.03518,0,0,0-74.03522-74.03521Z"
           transform="translate(-90.2579 -231.65939)"
           fill={theme.text}
         />
-        <rect x="753.43694" y="214.96957" width="58.60522" height="12.24586" fill={theme.text} />
-        <rect x="697.99083" y="148.62679" width="169.49743" height="5.24823" fill={theme.text} />
-        <rect x="697.99083" y="169.24617" width="169.49743" height="5.24823" fill={theme.text} />
-        <rect x="697.99083" y="189.86555" width="169.49743" height="5.24823" fill={theme.text} />
-        <rect x="888.40147" y="52.28163" width="24.49176" height="24.49173" fill={theme.jacketColor} />
+        <rect
+          x="753.43694"
+          y="214.96957"
+          width="58.60522"
+          height="12.24586"
+          fill={theme.text}
+        />
+        <rect
+          x="697.99083"
+          y="148.62679"
+          width="169.49743"
+          height="5.24823"
+          fill={theme.text}
+        />
+        <rect
+          x="697.99083"
+          y="169.24617"
+          width="169.49743"
+          height="5.24823"
+          fill={theme.text}
+        />
+        <rect
+          x="697.99083"
+          y="189.86555"
+          width="169.49743"
+          height="5.24823"
+          fill={theme.text}
+        />
+        <rect
+          x="888.40147"
+          y="52.28163"
+          width="24.49176"
+          height="24.49173"
+          fill={theme.jacketColor}
+        />
         <path
           d="M1014.52225,319.8039h-29.74v-29.74h29.74Zm-28.4469-1.293h27.15381V291.357H986.07529Z"
           transform="translate(-90.2579 -231.65939)"
