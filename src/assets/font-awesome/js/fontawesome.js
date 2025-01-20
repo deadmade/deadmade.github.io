@@ -70,7 +70,7 @@
         ownKeys = ownKeys.concat(
           Object.getOwnPropertySymbols(source).filter(function (sym) {
             return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-          })
+          }),
         );
       }
 
@@ -224,12 +224,13 @@
     brands: "fab",
   };
   var LAYERS_TEXT_CLASSNAME = "fa-layers-text";
-  var FONT_FAMILY_PATTERN = /Font Awesome 5 (Solid|Regular|Light|Duotone|Brands|Free|Pro)/;
+  var FONT_FAMILY_PATTERN =
+    /Font Awesome 5 (Solid|Regular|Light|Duotone|Brands|Free|Pro)/;
   var FONT_WEIGHT_TO_PREFIX = {
-    "900": "fas",
-    "400": "far",
+    900: "fas",
+    400: "far",
     normal: "far",
-    "300": "fal",
+    300: "fal",
   };
   var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
@@ -279,12 +280,12 @@
     .concat(
       oneToTen.map(function (n) {
         return "".concat(n, "x");
-      })
+      }),
     )
     .concat(
       oneToTwenty.map(function (n) {
         return "w-".concat(n);
-      })
+      }),
     );
 
   var initial = WINDOW.FontAwesomeConfig || {};
@@ -376,9 +377,8 @@
   var loaded = false;
 
   if (IS_DOM) {
-    loaded = (DOCUMENT.documentElement.doScroll
-      ? /^loaded|^c/
-      : /^loaded|^i|^c/
+    loaded = (
+      DOCUMENT.documentElement.doScroll ? /^loaded|^c/ : /^loaded|^i|^c/
     ).test(DOCUMENT.readyState);
     if (!loaded) DOCUMENT.addEventListener("DOMContentLoaded", listener);
   }
@@ -473,7 +473,7 @@
     try {
       if (promise === value) {
         throw new TypeError(
-          "A promises callback cannot return that same promise."
+          "A promises callback cannot return that same promise.",
         );
       }
 
@@ -503,7 +503,7 @@
                 resolved = true;
                 reject(promise, reason);
               }
-            }
+            },
           );
           return true;
         }
@@ -562,6 +562,7 @@
   function notifyRejectionHandled(promise) {
     global.process.emit("rejectionHandled", promise);
   }
+
   /**
    * @class
    */
@@ -569,13 +570,13 @@
   function P(resolver) {
     if (typeof resolver !== "function") {
       throw new TypeError(
-        "Promise resolver " + resolver + " is not a function"
+        "Promise resolver " + resolver + " is not a function",
       );
     }
 
     if (this instanceof P === false) {
       throw new TypeError(
-        "Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function."
+        "Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.",
       );
     }
 
@@ -715,6 +716,7 @@
       }
     }
   }
+
   function insertCss(css) {
     if (!css || !IS_DOM) {
       return;
@@ -738,7 +740,9 @@
     DOCUMENT.head.insertBefore(style, beforeChild);
     return css;
   }
+
   var idPool = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
   function nextUniqueId() {
     var size = 12;
     var id = "";
@@ -749,6 +753,7 @@
 
     return id;
   }
+
   function toArray(obj) {
     var array = [];
 
@@ -758,6 +763,7 @@
 
     return array;
   }
+
   function classArray(node) {
     if (node.classList) {
       return toArray(node.classList);
@@ -767,6 +773,7 @@
       });
     }
   }
+
   function getIconName(familyPrefix, cls) {
     var parts = cls.split("-");
     var prefix = parts[0];
@@ -778,6 +785,7 @@
       return null;
     }
   }
+
   function htmlEscape(str) {
     return ""
       .concat(str)
@@ -787,6 +795,7 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
   }
+
   function joinAttributes(attributes) {
     return Object.keys(attributes || {})
       .reduce(function (acc, attributeName) {
@@ -799,11 +808,13 @@
       }, "")
       .trim();
   }
+
   function joinStyles(styles) {
     return Object.keys(styles || {}).reduce(function (acc, styleName) {
       return acc + "".concat(styleName, ": ").concat(styles[styleName], ";");
     }, "");
   }
+
   function transformIsMeaningful(transform) {
     return (
       transform.size !== meaninglessTransform.size ||
@@ -814,6 +825,7 @@
       transform.flipY
     );
   }
+
   function transformForSvg(_ref) {
     var transform = _ref.transform,
       containerWidth = _ref.containerWidth,
@@ -843,6 +855,7 @@
       path: path,
     };
   }
+
   function transformForCss(_ref2) {
     var transform = _ref2.transform,
       _ref2$width = _ref2.width,
@@ -937,8 +950,8 @@
               tag: mainPath.tag,
               attributes: _objectSpread({}, mainPath.attributes, trans.path),
             },
-            maskInnerGroupChildrenMixin
-          )
+            maskInnerGroupChildrenMixin,
+          ),
         ),
       ],
     };
@@ -979,7 +992,7 @@
           "clip-path": "url(#".concat(clipId, ")"),
           mask: "url(#".concat(maskId, ")"),
         },
-        ALL_SPACE
+        ALL_SPACE,
       ),
     });
     return {
@@ -1053,7 +1066,7 @@
           "transform-origin": ""
             .concat(offset.x + transform.x / 16, "em ")
             .concat(offset.y + transform.y / 16, "em"),
-        })
+        }),
       );
     }
 
@@ -1179,6 +1192,7 @@
       return asIcon(args);
     }
   }
+
   function makeLayersTextAbstract(params) {
     var content = params.content,
       width = params.width,
@@ -1199,7 +1213,7 @@
         : {},
       {
         class: extra.classes.join(" "),
-      }
+      },
     );
 
     if (watchable) {
@@ -1243,6 +1257,7 @@
 
     return val;
   }
+
   function makeLayersCounterAbstract(params) {
     var content = params.content,
       title = params.title,
@@ -1258,7 +1273,7 @@
         : {},
       {
         class: extra.classes.join(" "),
-      }
+      },
     );
 
     var styleString = joinStyles(extra.styles);
@@ -1313,7 +1328,7 @@
     p.measure(
       "".concat(preamble, " ").concat(name),
       "".concat(preamble, " ").concat(name, " begins"),
-      "".concat(preamble, " ").concat(name, " ends")
+      "".concat(preamble, " ").concat(name, " ends"),
     );
   };
 
@@ -1349,7 +1364,7 @@
     subject,
     fn,
     initialValue,
-    thisContext
+    thisContext,
   ) {
     var keys = Object.keys(subject),
       length = keys.length,
@@ -1410,7 +1425,7 @@
       namespace.styles[prefix] = _objectSpread(
         {},
         namespace.styles[prefix] || {},
-        normalized
+        normalized,
       );
     }
     /**
@@ -1438,7 +1453,7 @@
           o[prefix] = reduce(style, reducer, {});
           return o;
         },
-        {}
+        {},
       );
     };
 
@@ -1475,16 +1490,19 @@
         };
         return acc;
       },
-      {}
+      {},
     );
   };
   build();
+
   function byUnicode(prefix, unicode) {
     return (_byUnicode[prefix] || {})[unicode];
   }
+
   function byLigature(prefix, ligature) {
     return (_byLigature[prefix] || {})[ligature];
   }
+
   function byOldName(name) {
     return (
       _byOldName[name] || {
@@ -1502,6 +1520,7 @@
       rest: [],
     };
   };
+
   function getCanonicalIcon(values) {
     return values.reduce(function (acc, cls) {
       var iconName = getIconName(config.familyPrefix, cls);
@@ -1527,6 +1546,7 @@
       return acc;
     }, emptyCanonicalIcon());
   }
+
   function iconFromMapping(mapping, prefix, iconName) {
     if (mapping && mapping[prefix] && mapping[prefix][iconName]) {
       return {
@@ -1619,7 +1639,7 @@
         {
           toNode: [],
           toSvg: [],
-        }
+        },
       );
       abstract[0].attributes.class = splitClasses.toSvg.join(" ");
       var newInnerHTML = abstract
@@ -1658,14 +1678,19 @@
       });
     }
   }
+
   var disabled = false;
+
   function disableObservation() {
     disabled = true;
   }
+
   function enableObservation() {
     disabled = false;
   }
+
   var mo = null;
+
   function observe(options) {
     if (!MUTATION_OBSERVER) {
       return;
@@ -1711,7 +1736,7 @@
         ) {
           if (mutationRecord.attributeName === "class") {
             var _getCanonicalIcon = getCanonicalIcon(
-                classArray(mutationRecord.target)
+                classArray(mutationRecord.target),
               ),
               prefix = _getCanonicalIcon.prefix,
               iconName = _getCanonicalIcon.iconName;
@@ -1734,6 +1759,7 @@
       subtree: true,
     });
   }
+
   function disconnect() {
     if (!mo) return;
     mo.disconnect();
@@ -1851,6 +1877,7 @@
         }, transform);
     }
   };
+
   function transformParser(node) {
     return parseTransformString(node.getAttribute("data-fa-transform"));
   }
@@ -1893,7 +1920,7 @@
       return getCanonicalIcon(
         mask.split(" ").map(function (i) {
           return i.trim();
-        })
+        }),
       );
     }
   }
@@ -1913,6 +1940,7 @@
       },
     };
   }
+
   function parseMeta(node) {
     var _classParser = classParser(node),
       iconName = _classParser.iconName,
@@ -1944,6 +1972,7 @@
     this.message = error || "Icon unavailable";
     this.stack = new Error().stack;
   }
+
   MissingIcon.prototype = Object.create(Error.prototype);
   MissingIcon.prototype.constructor = MissingIcon;
 
@@ -1958,8 +1987,7 @@
   var RING = {
     tag: "path",
     attributes: _objectSpread({}, FILL, {
-      d:
-        "M156.5,447.7l-12.6,29.5c-18.7-9.5-35.9-21.2-51.5-34.9l22.7-22.7C127.6,430.5,141.5,440,156.5,447.7z M40.6,272H8.5 c1.4,21.2,5.4,41.7,11.7,61.1L50,321.2C45.1,305.5,41.8,289,40.6,272z M40.6,240c1.4-18.8,5.2-37,11.1-54.1l-29.5-12.6 C14.7,194.3,10,216.7,8.5,240H40.6z M64.3,156.5c7.8-14.9,17.2-28.8,28.1-41.5L69.7,92.3c-13.7,15.6-25.5,32.8-34.9,51.5 L64.3,156.5z M397,419.6c-13.9,12-29.4,22.3-46.1,30.4l11.9,29.8c20.7-9.9,39.8-22.6,56.9-37.6L397,419.6z M115,92.4 c13.9-12,29.4-22.3,46.1-30.4l-11.9-29.8c-20.7,9.9-39.8,22.6-56.8,37.6L115,92.4z M447.7,355.5c-7.8,14.9-17.2,28.8-28.1,41.5 l22.7,22.7c13.7-15.6,25.5-32.9,34.9-51.5L447.7,355.5z M471.4,272c-1.4,18.8-5.2,37-11.1,54.1l29.5,12.6 c7.5-21.1,12.2-43.5,13.6-66.8H471.4z M321.2,462c-15.7,5-32.2,8.2-49.2,9.4v32.1c21.2-1.4,41.7-5.4,61.1-11.7L321.2,462z M240,471.4c-18.8-1.4-37-5.2-54.1-11.1l-12.6,29.5c21.1,7.5,43.5,12.2,66.8,13.6V471.4z M462,190.8c5,15.7,8.2,32.2,9.4,49.2h32.1 c-1.4-21.2-5.4-41.7-11.7-61.1L462,190.8z M92.4,397c-12-13.9-22.3-29.4-30.4-46.1l-29.8,11.9c9.9,20.7,22.6,39.8,37.6,56.9 L92.4,397z M272,40.6c18.8,1.4,36.9,5.2,54.1,11.1l12.6-29.5C317.7,14.7,295.3,10,272,8.5V40.6z M190.8,50 c15.7-5,32.2-8.2,49.2-9.4V8.5c-21.2,1.4-41.7,5.4-61.1,11.7L190.8,50z M442.3,92.3L419.6,115c12,13.9,22.3,29.4,30.5,46.1 l29.8-11.9C470,128.5,457.3,109.4,442.3,92.3z M397,92.4l22.7-22.7c-15.6-13.7-32.8-25.5-51.5-34.9l-12.6,29.5 C370.4,72.1,384.4,81.5,397,92.4z",
+      d: "M156.5,447.7l-12.6,29.5c-18.7-9.5-35.9-21.2-51.5-34.9l22.7-22.7C127.6,430.5,141.5,440,156.5,447.7z M40.6,272H8.5 c1.4,21.2,5.4,41.7,11.7,61.1L50,321.2C45.1,305.5,41.8,289,40.6,272z M40.6,240c1.4-18.8,5.2-37,11.1-54.1l-29.5-12.6 C14.7,194.3,10,216.7,8.5,240H40.6z M64.3,156.5c7.8-14.9,17.2-28.8,28.1-41.5L69.7,92.3c-13.7,15.6-25.5,32.8-34.9,51.5 L64.3,156.5z M397,419.6c-13.9,12-29.4,22.3-46.1,30.4l11.9,29.8c20.7-9.9,39.8-22.6,56.9-37.6L397,419.6z M115,92.4 c13.9-12,29.4-22.3,46.1-30.4l-11.9-29.8c-20.7,9.9-39.8,22.6-56.8,37.6L115,92.4z M447.7,355.5c-7.8,14.9-17.2,28.8-28.1,41.5 l22.7,22.7c13.7-15.6,25.5-32.9,34.9-51.5L447.7,355.5z M471.4,272c-1.4,18.8-5.2,37-11.1,54.1l29.5,12.6 c7.5-21.1,12.2-43.5,13.6-66.8H471.4z M321.2,462c-15.7,5-32.2,8.2-49.2,9.4v32.1c21.2-1.4,41.7-5.4,61.1-11.7L321.2,462z M240,471.4c-18.8-1.4-37-5.2-54.1-11.1l-12.6,29.5c21.1,7.5,43.5,12.2,66.8,13.6V471.4z M462,190.8c5,15.7,8.2,32.2,9.4,49.2h32.1 c-1.4-21.2-5.4-41.7-11.7-61.1L462,190.8z M92.4,397c-12-13.9-22.3-29.4-30.4-46.1l-29.8,11.9c9.9,20.7,22.6,39.8,37.6,56.9 L92.4,397z M272,40.6c18.8,1.4,36.9,5.2,54.1,11.1l12.6-29.5C317.7,14.7,295.3,10,272,8.5V40.6z M190.8,50 c15.7-5,32.2-8.2,49.2-9.4V8.5c-21.2,1.4-41.7,5.4-61.1,11.7L190.8,50z M442.3,92.3L419.6,115c12,13.9,22.3,29.4,30.5,46.1 l29.8-11.9C470,128.5,457.3,109.4,442.3,92.3z M397,92.4l22.7-22.7c-15.6-13.7-32.8-25.5-51.5-34.9l-12.6,29.5 C370.4,72.1,384.4,81.5,397,92.4z",
     }),
   };
 
@@ -1994,8 +2022,7 @@
     tag: "path",
     attributes: _objectSpread({}, FILL, {
       opacity: "1",
-      d:
-        "M263.7,312h-16c-6.6,0-12-5.4-12-12c0-71,77.4-63.9,77.4-107.8c0-20-17.8-40.2-57.4-40.2c-29.1,0-44.3,9.6-59.2,28.7 c-3.9,5-11.1,6-16.2,2.4l-13.1-9.2c-5.6-3.9-6.9-11.8-2.6-17.2c21.2-27.2,46.4-44.7,91.2-44.7c52.3,0,97.4,29.8,97.4,80.2 c0,67.6-77.4,63.5-77.4,107.8C275.7,306.6,270.3,312,263.7,312z",
+      d: "M263.7,312h-16c-6.6,0-12-5.4-12-12c0-71,77.4-63.9,77.4-107.8c0-20-17.8-40.2-57.4-40.2c-29.1,0-44.3,9.6-59.2,28.7 c-3.9,5-11.1,6-16.2,2.4l-13.1-9.2c-5.6-3.9-6.9-11.8-2.6-17.2c21.2-27.2,46.4-44.7,91.2-44.7c52.3,0,97.4,29.8,97.4,80.2 c0,67.6-77.4,63.5-77.4,107.8C275.7,306.6,270.3,312,263.7,312z",
     }),
     children: [
       {
@@ -2010,8 +2037,7 @@
     tag: "path",
     attributes: _objectSpread({}, FILL, {
       opacity: "0",
-      d:
-        "M232.5,134.5l7,168c0.3,6.4,5.6,11.5,12,11.5h9c6.4,0,11.7-5.1,12-11.5l7-168c0.3-6.8-5.2-12.5-12-12.5h-23 C237.7,122,232.2,127.7,232.5,134.5z",
+      d: "M232.5,134.5l7,168c0.3,6.4,5.6,11.5,12,11.5h9c6.4,0,11.7-5.1,12-11.5l7-168c0.3-6.8-5.2-12.5-12-12.5h-23 C237.7,122,232.2,127.7,232.5,134.5z",
     }),
     children: [
       {
@@ -2028,6 +2054,7 @@
   };
 
   var styles$2 = namespace.styles;
+
   function asFoundIcon(icon) {
     var width = icon[0];
     var height = icon[1];
@@ -2086,6 +2113,7 @@
       icon: element,
     };
   }
+
   function findIcon(iconName, prefix) {
     return new picked(function (resolve, reject) {
       var val = {
@@ -2119,8 +2147,8 @@
           new MissingIcon(
             "Icon is missing for prefix "
               .concat(prefix, " with icon name ")
-              .concat(iconName)
-          )
+              .concat(iconName),
+          ),
         );
       } else {
         resolve(val);
@@ -2217,13 +2245,13 @@
 
     var hclAdd = function hclAdd(suffix) {
       return htmlClassList.add(
-        "".concat(HTML_CLASS_I2SVG_BASE_CLASS, "-").concat(suffix)
+        "".concat(HTML_CLASS_I2SVG_BASE_CLASS, "-").concat(suffix),
       );
     };
 
     var hclRemove = function hclRemove(suffix) {
       return htmlClassList.remove(
-        "".concat(HTML_CLASS_I2SVG_BASE_CLASS, "-").concat(suffix)
+        "".concat(HTML_CLASS_I2SVG_BASE_CLASS, "-").concat(suffix),
       );
     };
 
@@ -2236,7 +2264,7 @@
       .concat(
         prefixes.map(function (p) {
           return ".".concat(p, ":not([").concat(DATA_FA_I2SVG, "])");
-        })
+        }),
       )
       .join(", ");
 
@@ -2296,6 +2324,7 @@
         });
     });
   }
+
   function onNode(node) {
     var callback =
       arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -2344,7 +2373,7 @@
           ? STYLE_TO_PREFIX[fontFamily[1].toLowerCase()]
           : FONT_WEIGHT_TO_PREFIX[fontWeight];
         var hexValue = toHex(
-          content.length === 3 ? content.substr(1, 1) : content
+          content.length === 3 ? content.substr(1, 1) : content,
         );
         var iconName = byUnicode(prefix, hexValue);
         var iconIdentifier = iconName; // Only convert the pseudo element in this :before/:after position into an icon if we haven't
@@ -2380,7 +2409,7 @@
                   iconName: iconIdentifier,
                   extra: extra,
                   watchable: true,
-                })
+                }),
               );
               var element = DOCUMENT.createElement("svg");
 
@@ -2419,7 +2448,7 @@
     return (
       node.parentNode !== document.head &&
       !~TAGNAMES_TO_SKIP_FOR_PSEUDOELEMENTS.indexOf(
-        node.tagName.toUpperCase()
+        node.tagName.toUpperCase(),
       ) &&
       !node.getAttribute(DATA_FA_PSEUDO_ELEMENT) &&
       (!node.parentNode || node.parentNode.tagName !== "svg")
@@ -2502,7 +2531,7 @@
               _this.definitions[key] = _objectSpread(
                 {},
                 _this.definitions[key] || {},
-                additions[key]
+                additions[key],
               );
               defineIcons(key, additions[key]);
               build();
@@ -2598,7 +2627,7 @@
         iconDefinition,
         _objectSpread({}, params, {
           mask: mask,
-        })
+        }),
       );
     };
   }
@@ -2696,7 +2725,7 @@
         {
           type: "icon",
         },
-        iconDefinition
+        iconDefinition,
       ),
       function () {
         ensureCss();
@@ -2735,7 +2764,7 @@
             classes: classes,
           },
         });
-      }
+      },
     );
   });
   var text = function text(content) {
@@ -2769,11 +2798,11 @@
             attributes: attributes,
             styles: styles,
             classes: ["".concat(config.familyPrefix, "-layers-text")].concat(
-              _toConsumableArray(classes)
+              _toConsumableArray(classes),
             ),
           },
         });
-      }
+      },
     );
   };
   var counter = function counter(content) {
@@ -2801,11 +2830,11 @@
             attributes: attributes,
             styles: styles,
             classes: ["".concat(config.familyPrefix, "-layers-counter")].concat(
-              _toConsumableArray(classes)
+              _toConsumableArray(classes),
             ),
           },
         });
-      }
+      },
     );
   };
   var layer = function layer(assembler) {
@@ -2838,7 +2867,7 @@
             children: children,
           },
         ];
-      }
+      },
     );
   };
   var api = {
@@ -2892,7 +2921,7 @@
         namespace.styles[prefix] = _objectSpread(
           {},
           namespace.styles[prefix] || {},
-          icons
+          icons,
         );
         build();
         autoReplace();
@@ -2902,7 +2931,7 @@
 
         (_namespace$shims = namespace.shims).push.apply(
           _namespace$shims,
-          _toConsumableArray(shims)
+          _toConsumableArray(shims),
         );
 
         build();

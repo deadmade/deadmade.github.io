@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import "./Hobbies.css";
 import { hobbies } from "../../portfolio";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 import SoftwareSkill from "../../components/softwareSkills/SoftwareSkill";
 import DesignImg from "./DesignImg";
 import FitnessStats from "./FitnessStats";
 import ReadingBooks from "./Reading";
-
 
 function GetSkillSvg(props) {
   if (props.fileName === "FitnessStats")
@@ -24,7 +23,7 @@ class HobbySection extends Component {
         {hobbies.data.map((hobby, i) => {
           return (
             <div key={i} className="hobbies-main-div">
-                <Fade left duration={2000}>
+              <Fade left duration={2000}>
                 <div className="skills-image-div">
                   <GetSkillSvg fileName={hobby.fileName} theme={theme} />
                 </div>

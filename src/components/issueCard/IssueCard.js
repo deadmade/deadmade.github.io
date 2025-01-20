@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./IssueCard.css";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 
 class IssueCard extends Component {
   render() {

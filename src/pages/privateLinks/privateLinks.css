@@ -118,10 +118,10 @@ body {
 
 @keyframes animate {
     0% {
-      background-position: -500%;
+        background-position: -500%;
     }
     100% {
-      background-position: 500%;
+        background-position: 500%;
     }
 }
 
@@ -173,8 +173,8 @@ body {
 }
 
 .popup-quote {
-    font-family : Baskerville, Georgia, serif;
-    font-style : italic;
+    font-family: Baskerville, Georgia, serif;
+    font-style: italic;
     position: flex;
     color: var(--accentColor);
     padding: 20px;

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./Header.css";
-import { Fade } from "react-reveal";
-import { NavLink, Link } from "react-router-dom";
+import { Fade } from "react-swift-reveal";
+import { Link, NavLink } from "react-router-dom";
 import { greeting, settings } from "../../portfolio.js";
 import SeoHeader from "../seoHeader/SeoHeader";
 
@@ -127,4 +127,5 @@ class Header extends Component {
     );
   }
 }
+
 export default Header;

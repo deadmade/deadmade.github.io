@@ -1,12 +1,12 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import {
+  certifications,
+  contactPageData,
+  experience,
   greeting,
   seo,
   socialMediaLinks,
-  experience,
-  contactPageData,
-  certifications,
 } from "../../portfolio.js";
 
 function SeoHeader() {
@@ -14,7 +14,7 @@ function SeoHeader() {
   socialMediaLinks
     .filter(
       (media) =>
-        !(media.link.startsWith("tel") || media.link.startsWith("mailto"))
+        !(media.link.startsWith("tel") || media.link.startsWith("mailto")),
     )
     .forEach((media) => {
       sameAs.push(media.link);

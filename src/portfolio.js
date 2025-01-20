@@ -112,7 +112,12 @@ const skills = {
     {
       title: "Entwicklertools",
       fileName: "DevProductivity",
-      skills: ["⚡ Vim Motions", "⚡ JetBrains IDEs", "⚡ Git Version Control", "⚡ Visual Studio"],
+      skills: [
+        "⚡ Vim Motions",
+        "⚡ JetBrains IDEs",
+        "⚡ Git Version Control",
+        "⚡ Visual Studio",
+      ],
       softwareSkills: [
         {
           skillName: "Vim Motions",
@@ -141,7 +146,7 @@ const skills = {
           style: {
             color: "#5C2D91",
           },
-        }
+        },
       ],
     },
   ],
@@ -231,7 +236,7 @@ const books = {
       book_link:
         "https://www.amazon.de/C-Depth-Jon-Skeet-dp-1617294535/dp/1617294535",
       color_code: "#8C151599",
-    }
+    },
   ],
 };
 
@@ -297,8 +302,7 @@ const contactPageData = {
   contactSection: {
     title: "Contact Me",
     profile_image_path: "ich.jpeg",
-    description:
-      "",
+    description: "",
   },
   blogSection: {},
   addressSection: {},
@@ -327,10 +331,10 @@ const hobbies = {
         },
       ],
       descriptions: [
-          "- Regelmäßiges Training im Fitnessstudio, um fit zu bleiben und Energie abzubauen", 
-          "- Hilft dabei, im stressigen Alltag abzuschalten und den Kopf freizubekommen",
-          "- Es gibt mir die Möglichkeit, mich auf andere Dinge zu konzentrieren und den Alltag hinter sich zu lassen",
-          "- Schafft einen wichtigen körperlichen Ausgleich zum langen Sitzen im Büro",
+        "- Regelmäßiges Training im Fitnessstudio, um fit zu bleiben und Energie abzubauen",
+        "- Hilft dabei, im stressigen Alltag abzuschalten und den Kopf freizubekommen",
+        "- Es gibt mir die Möglichkeit, mich auf andere Dinge zu konzentrieren und den Alltag hinter sich zu lassen",
+        "- Schafft einen wichtigen körperlichen Ausgleich zum langen Sitzen im Büro",
       ],
     },
     {
@@ -346,9 +350,9 @@ const hobbies = {
         },
       ],
       descriptions: [
-          "- Lesen von Fachbüchern, um mein Wissen zu erweitern und mich weiterzubilden",
-          "- Es hilft mir, mich in neue Themen einzuarbeiten und mein Wissen zu vertiefen",
-          "- Gibt mir die Möglichkeit, mich mit anderen Meinungen und Ansichten auseinanderzusetzen",
+        "- Lesen von Fachbüchern, um mein Wissen zu erweitern und mich weiterzubilden",
+        "- Es hilft mir, mich in neue Themen einzuarbeiten und mein Wissen zu vertiefen",
+        "- Gibt mir die Möglichkeit, mich mit anderen Meinungen und Ansichten auseinanderzusetzen",
       ],
     },
   ],
@@ -357,7 +361,7 @@ const hobbies = {
 export {
   settings,
   seo,
-  greeting,    
+  greeting,
   socialMediaLinks,
   skills,
   competitiveSites,

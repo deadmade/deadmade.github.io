@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./OrganizationList.css";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 
 class OrganizationList extends Component {
   render() {

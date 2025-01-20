@@ -153,7 +153,9 @@ const fetchData = (query, fileName, processData) => {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `GitHub API error: ${response.status} ${response.statusText}`,
+        );
       }
       return response.text();
     })
@@ -161,19 +163,30 @@ const fetchData = (query, fileName, processData) => {
       const data = JSON.parse(txt);
       const processedData = processData(data);
       console.log(`Fetching the ${fileName} Data.\n`);
-      fs.writeFile(`./src/shared/opensource/${fileName}.json`, JSON.stringify(processedData), function (err) {
-        if (err) {
-          console.log(err);
-        }
-      });
+      fs.writeFile(
+        `./src/shared/opensource/${fileName}.json`,
+        JSON.stringify(processedData),
+        function (err) {
+          if (err) {
+            console.log(err);
+          }
+        },
+      );
     })
-    .catch((error) => console.log(`Error occurred during fetching ${fileName} data`, JSON.stringify(error)));
+    .catch((error) =>
+      console.log(
+        `Error occurred during fetching ${fileName} data`,
+        JSON.stringify(error),
+      ),
+    );
 };
 
 // Fetch pull requests
 fetchData(query_pr, "pull_requests", (data) => {
   const cropped = { data: data["data"]["user"]["pullRequests"]["nodes"] };
-  let open = 0, closed = 0, merged = 0;
+  let open = 0,
+    closed = 0,
+    merged = 0;
   cropped.data.forEach((pr) => {
     if (pr.state === "OPEN") open++;
     else if (pr.state === "MERGED") merged++;
@@ -189,7 +202,8 @@ fetchData(query_pr, "pull_requests", (data) => {
 // Fetch issues
 fetchData(query_issue, "issues", (data) => {
   const cropped = { data: data["data"]["user"]["issues"]["nodes"] };
-  let open = 0, closed = 0;
+  let open = 0,
+    closed = 0;
   cropped.data.forEach((issue) => {
     if (!issue.closed) open++;
     else closed++;
@@ -205,7 +219,10 @@ fetchData(query_org, "organizations", (data) => {
   const orgs = data["data"]["user"]["repositoriesContributedTo"]["nodes"];
   const newOrgs = { data: [] };
   orgs.forEach((org) => {
-    if (org.owner.__typename === "Organization" && !newOrgs.data.some((o) => JSON.stringify(o) === JSON.stringify(org.owner))) {
+    if (
+      org.owner.__typename === "Organization" &&
+      !newOrgs.data.some((o) => JSON.stringify(o) === JSON.stringify(org.owner))
+    ) {
       newOrgs.data.push(org.owner);
     }
   });

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Books.css";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 import { books } from "../../portfolio";
 import BookCard from "../../components/bookCard/BookCard";
 
