@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./BookCard.css";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 
 class BookCard extends Component {
   render() {

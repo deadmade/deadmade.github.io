@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./ExperienceCard.css";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 
 class ExperienceCard extends Component {
   render() {

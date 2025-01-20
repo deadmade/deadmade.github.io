@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./Hobbies.css";
 import { hobbies } from "../../portfolio";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 import SoftwareSkill from "../../components/softwareSkills/SoftwareSkill";
 import DesignImg from "./DesignImg";
 import FitnessStats from "./FitnessStats";

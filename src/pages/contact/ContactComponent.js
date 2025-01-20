@@ -6,7 +6,7 @@ import SocialMedia from "../../components/socialMedia/SocialMedia";
 import Button from "../../components/button/Button";
 import BlogsImg from "./BlogsImg";
 import AddressImg from "./AddressImg";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 import "./ContactComponent.css";
 import { greeting, contactPageData } from "../../portfolio.js";
 

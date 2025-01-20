@@ -1,7 +1,7 @@
 import React from "react";
 import "./Hobbies.css";
 import HobbySection from "./HobbySection";
-import { Fade } from "react-reveal";
+import { Fade } from "react-swift-reveal";
 
 export default function Hobbies(props) {
   const theme = props.theme;
