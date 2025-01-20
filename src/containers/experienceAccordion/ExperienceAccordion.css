@@ -11,3 +11,17 @@
     margin: 20px;
   }
 }
+
+.accordion-header {
+  background-color: var(--theme-body);
+  border: 1px solid;
+  border-radius: 5px;
+  border-color: var(--theme-headerColor);
+  margin-bottom: 3px;
+  font-family: "Google Sans Regular";
+  color: var(--theme-text);
+}
+
+.accordion-header:hover {
+  color: var(--theme-secondaryText);
+}
