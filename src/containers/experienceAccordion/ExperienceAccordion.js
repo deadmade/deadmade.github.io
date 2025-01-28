@@ -6,22 +6,6 @@ import "./ExperienceAccordion.css";
 class ExperienceAccordion extends Component {
   render() {
     const theme = this.props.theme;
-    const headerStyle = {
-      backgroundColor: theme.body,
-      border: "1px solid",
-      borderRadius: "7  px",
-      borderColor: theme.headerColor,
-      marginBottom: "3px",
-      fontFamily: "Google Sans Regular",
-      color: theme.text,
-      cursor: "pointer",
-    };
-
-    const headerHoverStyle = {
-      color: theme.secondaryText,
-    };
-
-    //TODO Change Style
 
     return (
       <div className="experience-accord">
@@ -29,9 +13,7 @@ class ExperienceAccordion extends Component {
           {this.props.sections.map((section, sectionIndex) => {
             return (
               <Accordion.Item eventKey={section["title"]} key={sectionIndex}>
-                <Accordion.Header
-                  className="accordion-header"
-                >
+                <Accordion.Header className="accordion-header">
                   {section["title"]}
                 </Accordion.Header>
                 <Accordion.Body style={{ backgroundColor: theme.body }}>

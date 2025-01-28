@@ -10,7 +10,11 @@ class SoftwareSkill extends React.Component {
             {this.props.logos &&
               this.props.logos.map((logo) => {
                 return (
-                  <li key={logo.skillName} className="software-skill-inline" name={logo.skillName}>
+                  <li
+                    key={logo.skillName}
+                    className="software-skill-inline"
+                    name={logo.skillName}
+                  >
                     {logo.fontAwesomeClassname && (
                       <span
                         className="iconify"
