@@ -37,7 +37,7 @@
     "ajv": "^8.17.1",
     "dotenv": "^16.4.7",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.10",
+    "lint-staged": "^15.4.3",
     "prettier": "3.4.2",
     "workbox-background-sync": "^7.3.0",
     "workbox-cacheable-response": "^7.3.0"
