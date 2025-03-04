@@ -1,5 +1,4 @@
 import React from "react";
-import { Helmet } from "react-helmet";
 import {
   certifications,
   contactPageData,
@@ -61,14 +60,14 @@ function SeoHeader() {
     hasCredential: credentials,
   };
   return (
-    <Helmet>
+    <div>
       <title>{seo.title}</title>
       <meta name="description" content={seo.description} />
       <meta property="og:title" content={seo?.og?.title} />
       <meta property="og:type" content={seo?.og?.type} />
       <meta property="og:url" content={seo?.og?.url} />
       <script type="application/ld+json">{JSON.stringify(data)}</script>
-    </Helmet>
+    </div>
   );
 }
 
