@@ -12,7 +12,7 @@ const seo = {
   title: "Manuel Schüleins Portfolio",
   description: description,
   og: {
-    title: "Maneul Schülein Portfolio",
+    title: "Manuel Schülein Portfolio",
     type: "website",
     url: "https://deadmade.github.io",
   },
@@ -44,7 +44,7 @@ const socialMediaLinks = [
   },
   {
     name: "Email",
-    link: "mailto:manuel.schuelein@proton.me",
+    link: "mailto:info@manuelschuelein.de",
     fontAwesomeIcon: "fas fa-envelope", // Reference https://fontawesome.com/icons/google?style=brands
     backgroundColor: "#8B4DFF", // Reference https://simpleicons.org/?q=gmail
   },
