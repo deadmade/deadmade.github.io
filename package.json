@@ -24,7 +24,7 @@
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.5.3",
     "react-swift-reveal": "^1.1.0",
-    "styled-components": "^6.1.13",
+    "styled-components": "^6.1.19",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": "^6.1.1",
     "undici": "^7.4.0"
