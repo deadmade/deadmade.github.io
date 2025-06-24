@@ -37,7 +37,7 @@
     "dotenv": "^16.4.7",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
-    "prettier": "3.5.3",
+    "prettier": "3.6.0",
     "react-scripts": "^5.0.1",
     "workbox-background-sync": "^7.3.0",
     "workbox-cacheable-response": "^7.3.0"
