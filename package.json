@@ -30,14 +30,14 @@
     "undici": "^7.4.0"
   },
   "devDependencies": {
-    "@eslint/config-array": "^0.20.0",
+    "@eslint/config-array": "^0.21.0",
     "@eslint/object-schema": "^2.1.5",
     "@rollup/plugin-terser": "^0.4.4",
     "ajv": "^8.17.1",
     "dotenv": "^16.4.7",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
-    "prettier": "3.5.3",
+    "prettier": "3.6.2",
     "react-scripts": "^5.0.1",
     "workbox-background-sync": "^7.3.0",
     "workbox-cacheable-response": "^7.3.0"
