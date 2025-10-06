@@ -21,7 +21,7 @@
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.8",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "^19.1.0",
+    "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.1",
     "react-swift-reveal": "^1.2.4",
     "styled-components": "^6.1.19",
