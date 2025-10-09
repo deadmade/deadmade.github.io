@@ -283,7 +283,7 @@ const experience = {
 const projectsHeader = {
   title: "Projekte",
   description:
-    "Meine Projekte, die ich in meiner Freizeit bzw für mein Studium entwickelt habe.",
+    "Meine Projekte, die ich in meiner Freizeit bzw. für mein Studium entwickelt habe.",
   avatar_image_path: "projects_image.svg",
 };
 
