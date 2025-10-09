@@ -1,14 +1,1 @@
-{
-  "data": [
-    {
-      "login": "INF2023AI-Python",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/158366130?v=4",
-      "__typename": "Organization"
-    },
-    {
-      "login": "SlottySlots",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/175857240?v=4",
-      "__typename": "Organization"
-    }
-  ]
-}
+{"data":[{"login":"DatenKrakenOrg","avatarUrl":"https://avatars.githubusercontent.com/u/219909099?v=4","__typename":"Organization"}]}
