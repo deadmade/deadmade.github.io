@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@eslint/config-array": "^0.21.0",
-    "@eslint/object-schema": "^2.1.5",
+    "@eslint/object-schema": "^2.1.7",
     "@rollup/plugin-terser": "^0.4.4",
     "ajv": "^8.17.1",
     "dotenv": "^17.2.2",
