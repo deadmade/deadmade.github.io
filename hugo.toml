@@ -1,0 +1,109 @@
+baseURL = "https://deadmade.github.io/"
+languageCode = "de-DE"
+title = "Manuel Schülein"
+theme = "hugo-coder"
+copyright = "Manuel Schülein"
+
+# DefaultContentLanguage
+DefaultContentLanguage = "de"
+hasCJKLanguage = false
+
+# Pagination
+[pagination]
+pagerSize = 10
+
+[markup.highlight]
+style = "monokai"
+
+# Footer
+  [params.footer]
+    since = 2025
+
+  # Image Processing
+  [params.imageProcessing]
+    [params.imageProcessing.cover]
+      enabled = true
+    [params.imageProcessing.content]
+      enabled = true
+
+[params]
+  author = "Manuel Schülein"
+  info = "Dualer Student Allgemeine Informatik"
+  description = "Manuel Schüleins Portfolio Website"
+  keywords = "blog,developer,personal"
+  avatarurl = "images/avatar.jpg"
+
+  faviconSVG = "/static/icons/favicon.svg"
+  favicon_32 = "/static/icons/favicon-32x32.png"
+  favicon_16 = "/static/icons/favicon-16x16.png"
+
+  since = 2025
+
+  enableTwemoji = true
+
+  colorScheme = "auto"
+  hidecolorschemetoggle = false
+
+  # customCSS = ["css/custom.css"]
+    customSCSS = ["scss/custom.scss"]
+    customJS = ["js/timeline.js"]
+
+# Menu
+[menu]
+  [[menu.main]]
+    identifier = "experience"
+    name = "Berufserfahrung"
+    url = "/experience"
+    weight = 1
+  [[menu.main]]
+    identifier = "education"
+    name = "Bildung"
+    url = "/education"
+    weight = 2
+  [[menu.main]]
+    identifier = "projects"
+    name = "Projekte"
+    url = "/projects"
+    weight = 3
+  [[menu.main]]
+    identifier = "hobbies"
+    name = "Freizeit"
+    url = "/freetime"
+    weight = 4
+  [[menu.main]]
+    identifier = "blog"
+    name = "Blog"
+    url = "/blog"
+    weight = 6
+
+  # Social Menu
+  [[params.social]]
+    name = "GitHub"
+    icon = "fa-brands fa-github fa-2x"
+    url = "https://github.com/deadmade"
+    weight = 1
+  [[params.social]]
+    name = "LinkedIn"
+      icon = "fa-brands fa-linkedin fa-2x"
+    url = "https://www.linkedin.com/in/manuel-schülein-408421247"
+    weight = 2
+  [[params.social]]
+    name = "Email"
+      icon = "fa-regular fa-envelope fa-2x"
+    url = "mailto:info@manuelschuelein.de"
+    weight = 3
+  [[params.social]]
+    name = "Discord"
+      icon = "fa-brands fa-discord fa-2x"
+    url = "https://discord.com/users/819908750814347275"
+    weight = 4
+
+# Markup Configuration
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    endLevel = 4
+    ordered = true
+    startLevel = 2

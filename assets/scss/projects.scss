@@ -1,0 +1,243 @@
+/**
+ * Projects Page Styles
+ * Grid-based layout for GitHub pinned repositories
+ */
+
+.projects-intro {
+  margin-bottom: 3rem;
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-secondary, #666);
+  }
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.project-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #e1e4e8);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-color, #2196F3);
+  }
+}
+
+.project-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.project-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+
+  a {
+    color: var(--accent-color, #2196F3);
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--accent-color-hover, #1976D2);
+      text-decoration: underline;
+    }
+  }
+}
+
+.project-language {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #666);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.language-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--lang-color, #ccc);
+}
+
+.project-description {
+  color: var(--text-secondary, #666);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+
+  &.project-description-empty {
+    font-style: italic;
+    opacity: 0.6;
+  }
+}
+
+.project-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  min-height: 28px;
+}
+
+.topic-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--tag-bg, #f1f8ff);
+  color: var(--tag-color, #0366d6);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: lowercase;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--tag-hover-bg, #0366d6);
+    color: var(--tag-hover-color, #fff);
+  }
+}
+
+.project-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color, #e1e4e8);
+  margin-top: auto;
+}
+
+.project-stats {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #666);
+
+  .stat-icon {
+    fill: currentColor;
+    opacity: 0.6;
+  }
+}
+
+.project-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.project-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--button-bg, #f6f8fa);
+  color: var(--text-primary, #333);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  svg {
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: var(--accent-color, #2196F3);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+}
+
+.projects-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary, #666);
+
+  p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .project-card {
+    --card-bg: #1a1a1a;
+    --border-color: #333;
+    --text-primary: #e1e1e1;
+    --text-secondary: #aaa;
+    --accent-color: #58a6ff;
+    --accent-color-hover: #79b8ff;
+    --tag-bg: #1f6feb1a;
+    --tag-color: #58a6ff;
+    --tag-hover-bg: #1f6feb;
+    --tag-hover-color: #fff;
+    --button-bg: #21262d;
+
+    &:hover {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .project-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-language {
+    margin-top: 0.25rem;
+  }
+
+  .project-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .project-links {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
