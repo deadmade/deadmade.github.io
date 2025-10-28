@@ -45,14 +45,14 @@ style = "monokai"
   hidecolorschemetoggle = false
 
   # customCSS = ["css/custom.css"]
-  # customSCSS = ["scss/custom.scss"]
-  # customJS = ["js/custom.js"]
+    customSCSS = ["scss/custom.scss"]
+    customJS = ["js/timeline.js"]
 
 # Menu
 [menu]
   [[menu.main]]
     identifier = "experience"
-    name = "Erfahrung"
+    name = "Berufserfahrung"
     url = "/experience"
     weight = 1
   [[menu.main]]
@@ -70,6 +70,11 @@ style = "monokai"
     name = "Freizeit"
     url = "/freetime"
     weight = 4
+  [[menu.main]]
+    identifier = "blog"
+    name = "Blog"
+    url = "/blog"
+    weight = 6
 
   # Social Menu
   [[params.social]]
@@ -93,32 +98,12 @@ style = "monokai"
     url = "https://discord.com/users/819908750814347275"
     weight = 4
 
-#
-## Related Content
-#[related]
-#  includeNewer = true
-#  threshold = 60
-#  toLower = false
-#  [[related.indices]]
-#    name = "tags"
-#    weight = 100
-#  [[related.indices]]
-#    name = "categories"
-#    weight = 200
-#
-## Markup
-#[markup]
-#  [markup.goldmark]
-#    [markup.goldmark.renderer]
-#      unsafe = true
-#  [markup.tableOfContents]
-#    endLevel = 4
-#    ordered = true
-#    startLevel = 2
-#  [markup.highlight]
-#    noClasses = false
-#    codeFences = true
-#    guessSyntax = true
-#    lineNos = true
-#    lineNumbersInTable = true
-#    tabWidth = 4
+# Markup Configuration
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    endLevel = 4
+    ordered = true
+    startLevel = 2

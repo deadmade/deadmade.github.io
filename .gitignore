@@ -4,6 +4,9 @@
 /assets/jsconfig.json
 hugo_stats.json
 
+# Auto-generated data files
+data/projects.json
+
 # TailwindCSS / Node
 node_modules/
 package-lock.json

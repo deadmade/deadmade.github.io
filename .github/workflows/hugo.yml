@@ -63,6 +63,12 @@ jobs:
           }
           EOF
 
+      - name: Fetch GitHub Projects
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: deadmade
+        run: node scripts/fetch-projects.js
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
