@@ -23,5 +23,3 @@ description: "Was ich in meiner Freizeit gerne mache"
 - Gibt mir die Möglichkeit, mich mit anderen Meinungen und Ansichten auseinanderzusetzen
 
 **Fokus:** Fachbücher, Informatik, Cyber-Sicherheit
-
-Mehr zu meiner Leseliste finden Sie [hier](/reading).

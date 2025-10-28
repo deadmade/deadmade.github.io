@@ -47,22 +47,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install TailwindCSS and dependencies
-        run: |
-          npm init -y
-          npm install -D tailwindcss@latest postcss@latest autoprefixer@latest @tailwindcss/typography
-
-      - name: Create PostCSS config
-        run: |
-          cat > postcss.config.js << 'EOF'
-          module.exports = {
-            plugins: {
-              tailwindcss: {},
-              autoprefixer: {},
-            },
-          }
-          EOF
-
       - name: Fetch GitHub Projects
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
