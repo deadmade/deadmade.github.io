@@ -31,7 +31,7 @@ style = "monokai"
   info = "Dualer Student Allgemeine Informatik"
   description = "Manuel Schüleins Portfolio Website"
   keywords = "blog,developer,personal"
-  avatarurl = "images/avatar.jpg"
+  #avatarurl = "images/avatar.jpg"
 
   faviconSVG = "/static/icons/favicon.svg"
   favicon_32 = "/static/icons/favicon-32x32.png"
