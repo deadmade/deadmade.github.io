@@ -3,8 +3,6 @@ title: "Hobbies"
 description: "Was ich in meiner Freizeit gerne mache"
 ---
 
-## Meine Hobbies
-
 ### Regelmäßiges Training im GYM
 
 - Regelmäßiges Training im Fitnessstudio, um fit zu bleiben und Energie abzubauen
@@ -22,4 +20,4 @@ description: "Was ich in meiner Freizeit gerne mache"
 - Es hilft mir, mich in neue Themen einzuarbeiten und mein Wissen zu vertiefen
 - Gibt mir die Möglichkeit, mich mit anderen Meinungen und Ansichten auseinanderzusetzen
 
-**Fokus:** Fachbücher, Informatik, Cyber-Sicherheit
+**Fokus:** Fachbücher Informatik,
