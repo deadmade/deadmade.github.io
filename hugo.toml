@@ -2,7 +2,7 @@ baseURL = "https://deadmade.github.io/"
 languageCode = "de-DE"
 title = "Manuel Schülein"
 theme = "hugo-coder"
-copyright = "Manuel Schülein"
+enableEmoji = true
 
 # DefaultContentLanguage
 DefaultContentLanguage = "de"
@@ -33,7 +33,7 @@ style = "monokai"
   keywords = "blog,developer,personal"
   #avatarurl = "images/avatar.jpg"
 
-  faviconSVG = "/static/icons/favicon.svg"
+  faviconSVG = "/static/icons/favicon.ico"
   favicon_32 = "/static/icons/favicon-32x32.png"
   favicon_16 = "/static/icons/favicon-16x16.png"
 
