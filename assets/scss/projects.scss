@@ -37,7 +37,7 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-color: var(--accent-color, #2196F3);
+    border-color: var(--accent-color, #1565c0);
   }
 }
 
@@ -56,12 +56,12 @@
   flex: 1;
 
   a {
-    color: var(--accent-color, #2196F3);
+    color: var(--accent-color, #1565c0);
     text-decoration: none;
     transition: color 0.2s ease;
 
     &:hover {
-      color: var(--accent-color-hover, #1976D2);
+      color: var(--accent-color-hover, #0d47a1);
       text-decoration: underline;
     }
   }
@@ -110,7 +110,7 @@
   display: inline-block;
   padding: 0.25rem 0.75rem;
   background: var(--tag-bg, #f1f8ff);
-  color: var(--tag-color, #0366d6);
+  color: var(--tag-color, #1565c0);
   border-radius: 12px;
   font-size: 1.7rem;
   font-weight: 500;
@@ -205,10 +205,10 @@
     --border-color: #333;
     --text-primary: #e1e1e1;
     --text-secondary: #aaa;
-    --accent-color: #58a6ff;
-    --accent-color-hover: #79b8ff;
+    --accent-color: #42a5f5;
+    --accent-color-hover: #64b5f6;
     --tag-bg: #1f6feb1a;
-    --tag-color: #58a6ff;
+    --tag-color: #42a5f5;
     --tag-hover-bg: #1f6feb;
     --tag-hover-color: #fff;
     --button-bg: #21262d;

@@ -1,0 +1,47 @@
+/**
+ * IBM Plex Mono Font Configuration
+ * Overrides theme default font-family
+ */
+
+// Font stack with fallbacks
+$ibm-plex-mono: 'IBM Plex Mono',
+                SFMono-Regular,
+                Consolas,
+                'Liberation Mono',
+                Menlo,
+                monospace;
+
+// Apply to all text elements
+body {
+  font-family: $ibm-plex-mono !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $ibm-plex-mono !important;
+}
+
+nav, footer {
+  font-family: $ibm-plex-mono !important;
+}
+
+// NAVIGATION FIX: More specific selectors to override theme
+.navigation a,
+.navigation span,
+.navigation-title,
+.navigation-link {
+  font-family: $ibm-plex-mono !important;
+}
+
+code, pre {
+  font-family: $ibm-plex-mono !important;
+}
+
+// Enable programming ligatures
+body, h1, h2, h3, h4, h5, h6, code, pre,
+.navigation a, .navigation span {
+  font-variant-ligatures: normal;
+  font-feature-settings: "liga" 1, "calt" 1;
+  -webkit-font-feature-settings: "liga" 1, "calt" 1;
+  -moz-font-feature-settings: "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+}

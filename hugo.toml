@@ -33,9 +33,13 @@ style = "monokai"
   keywords = "blog,developer,personal"
   #avatarurl = "images/avatar.jpg"
 
-  faviconSVG = "/static/icons/favicon.ico"
-  favicon_32 = "/static/icons/favicon-32x32.png"
-  favicon_16 = "/static/icons/favicon-16x16.png"
+  faviconSVG = "/icons/favicon.svg"
+  favicon_32 = "/icons/favicon-32x32.png"
+  favicon_16 = "/icons/favicon-16x16.png"
+  touchicon = "/icons/apple-touch-icon.png"
+  mask_icon = "/icons/safari-pinned-tab.svg"
+  mask_icon_color = "#1565c0"
+  manifest = "/icons/site.webmanifest"
 
   since = 2025
 

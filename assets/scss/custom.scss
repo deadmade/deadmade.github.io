@@ -1,6 +1,9 @@
 // Custom Styles für deadmade.github.io
 // Hauptdatei für alle Custom SCSS
 
+// IBM Plex Mono Font Configuration (load first)
+@import "fonts";
+
 // Projects Page Komponenten importieren
 @import "projects";
 
