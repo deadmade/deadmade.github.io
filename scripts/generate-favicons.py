@@ -43,7 +43,7 @@ def create_favicon(size, initials, bg_color, text_color, output_path):
     # Try to use a system font, fallback to default if not available
     try:
         # Try common monospace fonts
-        font_size = size // 2
+        font_size = int(size * 0.7)  # 70% of favicon size (40% increase)
         font = ImageFont.truetype("consola.ttf", font_size)  # Windows
     except:
         try:
@@ -84,7 +84,7 @@ def create_svg_favicon(initials, bg_color, text_color, output_path):
     svg_content = f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <circle cx="50" cy="50" r="45" fill="{bg_color}"/>
-  <text x="50" y="50" font-family="monospace" font-size="40" font-weight="bold"
+  <text x="50" y="50" font-family="monospace" font-size="56" font-weight="bold"
         fill="{text_color}" text-anchor="middle" dominant-baseline="central">{initials}</text>
 </svg>'''
 
@@ -97,7 +97,7 @@ def create_safari_pinned_tab(initials, output_path):
     svg_content = f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <circle cx="50" cy="50" r="45" fill="#000"/>
-  <text x="50" y="50" font-family="monospace" font-size="40" font-weight="bold"
+  <text x="50" y="50" font-family="monospace" font-size="56" font-weight="bold"
         fill="#fff" text-anchor="middle" dominant-baseline="central">{initials}</text>
 </svg>'''
 
