@@ -1,0 +1,21 @@
+{{ define "title" }}
+  {{ .Title }} · {{ .Site.Title }}
+{{ end }}
+
+{{ define "content" }}
+  <section class="container resume-container">
+    <article class="resume-content">
+      <h1 class="title">{{ .Title }}</h1>
+
+      <div class="resume-viewer">
+        <!-- PDF Embed -->
+        <iframe
+          src="/pdfs/resume.pdf"
+          class="resume-pdf-iframe"
+          title="Manuel Schülein Lebenslauf"
+          frameborder="0">
+        </iframe>
+      </div>
+    </article>
+  </section>
+{{ end }}

@@ -1,0 +1,182 @@
+/**
+ * Resume Page Styles
+ * PDF viewer for embedded GitHub resume
+ */
+
+// Variables
+$resume-accent: #1565c0;
+$resume-accent-dark: #42a5f5;
+$mobile-breakpoint: 768px;
+
+// Resume Container
+.resume-container {
+  max-width: 100%;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 200px);
+
+  @media (max-width: $mobile-breakpoint) {
+    padding: 1rem 0.5rem;
+  }
+}
+
+// Resume Content
+.resume-content {
+  width: 100%;
+
+  .title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    color: var(--fg-color);
+
+    @media (max-width: $mobile-breakpoint) {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+// Resume Viewer Container
+.resume-viewer {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// PDF Iframe
+.resume-pdf-iframe {
+  width: 100%;
+  height: calc(100vh - 250px);
+  min-height: 800px;
+  border: 1px solid var(--fg-color);
+  border-opacity: 0.2;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+
+  @media (max-width: $mobile-breakpoint) {
+    height: calc(100vh - 200px);
+    min-height: 600px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Fallback Image (hidden by default, shown only if PDF fails)
+.resume-fallback {
+  display: none;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  // Show fallback if iframe fails (browser-specific)
+  @supports not (aspect-ratio: 1) {
+    display: block;
+  }
+}
+
+.resume-fallback-image {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--fg-color);
+  border-opacity: 0.2;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  @media (prefers-color-scheme: dark) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Download Button
+.resume-download {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.resume-download-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: $resume-accent;
+  color: white !important;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(21, 101, 192, 0.3);
+
+  @media (max-width: $mobile-breakpoint) {
+    font-size: 1rem;
+    padding: 0.875rem 1.5rem;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: darken($resume-accent, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: $resume-accent-dark;
+    box-shadow: 0 2px 8px rgba(66, 165, 245, 0.3);
+
+    &:hover {
+      background: lighten($resume-accent-dark, 10%);
+      box-shadow: 0 4px 12px rgba(66, 165, 245, 0.4);
+    }
+  }
+}
+
+// Loading State (optional enhancement)
+.resume-viewer::before {
+  content: "Lebenslauf wird geladen...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--fg-color);
+  opacity: 0.5;
+  font-size: 1.2rem;
+  z-index: -1;
+  pointer-events: none;
+}
+
+// Print Styles
+@media print {
+  .resume-container {
+    padding: 0;
+  }
+
+  .resume-download {
+    display: none;
+  }
+
+  .title {
+    page-break-after: avoid;
+  }
+
+  .resume-pdf-iframe {
+    border: none;
+    box-shadow: none;
+    min-height: 100vh;
+  }
+}
