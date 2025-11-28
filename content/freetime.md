@@ -3,21 +3,33 @@ title: "Hobbies"
 description: "Was ich in meiner Freizeit gerne mache"
 ---
 
-### Regelmäßiges Training im GYM
+### Sport & Ausgleich
 
-- Regelmäßiges Training im Fitnessstudio, um fit zu bleiben und Energie abzubauen
-- Hilft dabei, im stressigen Alltag abzuschalten und den Kopf freizubekommen
-- Es gibt mir die Möglichkeit, mich auf andere Dinge zu konzentrieren und den Alltag hinter sich zu lassen
-- Schafft einen wichtigen körperlichen Ausgleich zum langen Sitzen im Büro
+Um das viele Sitzen im Büro auszugleichen, ist Sport für mich essenziell. Er hilft mir nicht nur, körperlich fit zu bleiben, sondern funktioniert auch als "Reset-Knopf" für den Kopf.
 
-**Aktivitäten:** Fitness Studio, Fahrrad Fahren
+- **Mental:** Der perfekte Weg, um nach einem stressigen Tag abzuschalten und den Alltag hinter mir zu lassen.
+- **Physisch:** Wichtiger Ausgleich zur Bildschirmarbeit.
+
+**Aktivitäten:** Fitnessstudio
 
 ---
 
-### Lesen von Büchern
+### Bücher & Weiterbildung
 
-- Lesen von Fachbüchern, um mein Wissen zu erweitern und mich weiterzubilden
-- Es hilft mir, mich in neue Themen einzuarbeiten und mein Wissen zu vertiefen
-- Gibt mir die Möglichkeit, mich mit anderen Meinungen und Ansichten auseinanderzusetzen
+Ich lese vor allem, um meinen Horizont zu erweitern und technologisch am Ball zu bleiben. Fachbücher helfen mir, tief in neue Themen einzutauchen und verschiedene Lösungsansätze zu verstehen.
 
-**Fokus:** Fachbücher Informatik,
+- **Motivation:** Gezielte Weiterbildung und Vertiefung von Wissen.
+- **Perspektive:** Auseinandersetzung mit neuen Meinungen und Best Practices.
+
+**Fokus:** Fachliteratur (Informatik & Tech), Sachbücher
+
+---
+
+### Gaming
+
+Wenn ich nicht code oder trainiere, tauche ich gerne in virtuelle Welten ein. Gaming ist für mich die ideale Mischung aus Entspannung und interaktiver Herausforderung.
+
+- **Abschalten:** Einfach mal Spaß haben ohne Leistungsdruck.
+- **Community:** Zeit mit Freunden verbringen (falls du Multiplayer spielst) oder einfach eine gute Story genießen.
+
+**Genre:** Strategie Spiele (HOI4, Viki3) und Story Games wie Assasins Creed
