@@ -1,5 +1,5 @@
 ---
-title: "Now"
+title: "Aktuelles"
 description: "Updates aus meinem Leben"
 ---
 

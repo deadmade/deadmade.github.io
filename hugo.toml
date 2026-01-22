@@ -54,7 +54,7 @@ style = "monokai"
 [menu]
   [[menu.main]]
     identifier = "now"
-    name = "Now"
+    name = "Aktuelles"
     url = "/now"
     weight = 0
   [[menu.main]]
