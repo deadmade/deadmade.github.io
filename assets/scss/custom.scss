@@ -1,11 +1,2 @@
-// Custom Styles für deadmade.github.io
-// Hauptdatei für alle Custom SCSS
-
-// IBM Plex Mono Font Configuration (load first)
+// Custom styles entry point (configured as customSCSS in hugo.toml)
 @import "fonts";
-
-// Projects Page Komponenten importieren
-@import "projects";
-
-// Resume Page Komponenten importieren
-@import "resume";

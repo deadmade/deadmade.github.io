@@ -25,7 +25,6 @@
 
           packages = with pkgs; [
             hugo
-            nodejs
             pythonEnv
             git
           ];
@@ -35,11 +34,6 @@
               name = "serve";
               help = "Start Hugo development server";
               command = "hugo server -D";
-            }
-            {
-              name = "fetch-projects";
-              help = "Fetch pinned GitHub projects";
-              command = "node scripts/fetch-projects.js";
             }
             {
               name = "gen-favicons";

@@ -4,185 +4,55 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is Manuel Schülein's personal portfolio website built with Hugo and deployed to GitHub Pages. The site is a static website using the hugo-coder theme with custom extensions for timelines and dynamic project loading.
+Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It is currently a single homepage (avatar/info + social links) using the hugo-coder theme. Resume and projects pages were removed; there is no main menu.
 
 ## Technology Stack
 
-- **Hugo Extended** v0.152.2+ - Static Site Generator
-- **hugo-coder theme** - Base theme (located in `themes/hugo-coder/`)
-- **Dart Sass** - For SCSS compilation
-- **Node.js** - For build scripts only (GitHub project fetching)
-- **GitHub Actions** - CI/CD for automated deployment
+- **Hugo Extended** v0.166.0+ (SCSS compiled with Hugo's built-in LibSass via the theme's `toCSS`; no Dart Sass needed)
+- **hugo-coder theme** - git submodule in `themes/hugo-coder/` (clone with `--recurse-submodules`, or run `git submodule update --init`)
+- **GitHub Actions** - CI/CD
+- **Nix flake** (`flake.nix`, `.envrc`) - dev shell with hugo + python (Pillow for `scripts/generate-favicons.py`)
 
 ## Development Commands
 
-### Local Development
 ```bash
-# Start development server with drafts
-hugo server -D
-
-# Start development server without drafts
-hugo server
-
-# Server runs at http://localhost:1313
-```
-
-### Building
-```bash
-# Build for production
-hugo --minify
-
-# Build with specific base URL
-hugo --minify --baseURL "https://deadmade.github.io/"
-
-# Output will be in public/ directory
-```
-
-### Content Management
-```bash
-# Create new blog post
-hugo new blog/post-name.md
-
-# Create new content page
-hugo new content-name.md
-```
-
-### GitHub Project Sync
-```bash
-# Fetch GitHub pinned repositories (requires GITHUB_TOKEN)
-GITHUB_TOKEN=your_token GITHUB_USERNAME=deadmade node scripts/fetch-projects.js
-
-# Output: data/projects.json
+hugo server -D                                        # dev server at http://localhost:1313
+hugo --minify --baseURL "https://deadmade.github.io/"  # production build into public/
+hugo new blog/post-name.md                            # new blog post
+python3 scripts/generate-favicons.py                  # regenerate static/icons/
 ```
 
 ## Project Structure
 
-### Content Organization
 ```
-content/
-├── _index.md         # Homepage (empty, uses theme default)
-├── blog/             # Blog posts (currently hidden in menu)
-├── projects/         # Projects page (uses data/projects.json)
-└── resume.md         # Professional resume (embedded PDF from GitHub)
+content/_index.md          # Homepage (empty, theme renders it from hugo.toml params)
+assets/scss/custom.scss    # customSCSS entry point, imports _fonts.scss
+assets/scss/_fonts.scss    # @font-face for self-hosted IBM Plex Mono + font overrides
+static/fonts/              # IBM Plex Mono woff2 (400/600/700, latin subset, from @fontsource) + OFL license
+static/images/avatar.jpg   # homepage avatar (theme placeholder; replace with a photo, set via params.avatarurl)
+static/icons/              # favicons + site.webmanifest (must stay UTF-8)
+static/robots.txt
 ```
 
-### Custom Components
+## Configuration (hugo.toml)
 
-**Resume Page**
-- Layout: `layouts/resume/single.html` (custom layout with PDF embed)
-- Content: `content/resume.md` (minimal frontmatter only)
-- PDF source: Local file (`static/pdfs/resume.pdf` → served at `/pdfs/resume.pdf`)
-- Styled with `assets/scss/resume.scss`
-- Features: Full-height PDF viewer, download button
-- Updates when `static/pdfs/resume.pdf` is replaced and committed
+- Locale: German (`locale = "de-DE"`; `languageCode` is deprecated since Hugo 0.158); content is German
+- Social links: GitHub, LinkedIn, Email, Discord (`[[params.social]]`)
+- Footer year range comes from `params.since`
+- No `[menu]` section; add `[[menu.main]]` entries if pages are added again
+- `customSCSS = ["scss/custom.scss"]`
 
-**Projects System**
-- Layout: `layouts/projects/list.html`
-- Data source: `data/projects.json` (auto-generated via GitHub API)
-- Script: `scripts/fetch-projects.js` (Node.js, fetches pinned repos)
-- Styled with `assets/scss/projects.scss`
+## Fonts
 
-### Custom Styling
+IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern for a German site). To add a weight, download `ibm-plex-mono-latin-<weight>-normal.woff2` from `cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5/files/` into `static/fonts/` and add the weight to the `@each` list in `_fonts.scss`.
 
-Main SCSS entry point: `assets/scss/custom.scss`
-- Imports `projects.scss` and `resume.scss`
-- Configured in `hugo.toml` as `customSCSS = ["scss/custom.scss"]`
+## Theme gotchas
 
-Key design features:
-- Resume page: Full-height PDF viewer with accent color blue (`#1565c0` / `#42a5f5` dark)
-- Responsive design with mobile breakpoints at 768px
-- Dark mode support via prefers-color-scheme
-- Print-optimized styles for resume page
-
-### Configuration
-
-**hugo.toml** - Main configuration file
-- Language: German (de-DE)
-- Theme: hugo-coder
-- Base URL: https://deadmade.github.io/
-- Main menu: all entries (Lebenslauf, Projekte, Blog) currently commented out
-- Social links: GitHub, LinkedIn, Email, Discord
-- Custom SCSS: custom.scss
-
-## GitHub Actions Workflow
-
-File: `.github/workflows/hugo.yml`
-
-**Build Process:**
-1. Checkout with submodules (for theme)
-2. Setup Go, Node.js, Dart Sass, and Hugo
-3. Run `node scripts/fetch-projects.js` to sync GitHub projects
-4. Build with `hugo --gc --minify`
-5. Deploy to GitHub Pages
-
-**Environment Variables:**
-- `GITHUB_TOKEN` - Required for fetching pinned repositories
-- `GITHUB_USERNAME` - Set to "deadmade"
-
-## Important Implementation Details
-
-### Resume Page
-- Content file: `content/resume.md` (minimal frontmatter only)
-- Layout: `layouts/resume/single.html` (custom PDF embed layout)
-- PDF file: `static/pdfs/resume.pdf` (served at `/pdfs/resume.pdf`)
-- No external dependencies or authentication tokens
-- Update by replacing the PDF file in the repository
-
-### Projects Page
-- Projects are **not** manually maintained
-- Auto-fetched from GitHub pinned repositories during build
-- Edit `scripts/fetch-projects.js` to change fetching behavior
-- Data stored in `data/projects.json` (gitignored, generated during build)
-
-### Blog Section
-- Blog infrastructure exists but is currently commented out in menu
-- To enable: uncomment blog menu item in `hugo.toml` (`identifier = "blog"`)
-
-### Static Assets
-- Favicons: `/static/icons/` directory
-- Company logos: `/images/logos/companies/`
-- Theme assets: in `themes/hugo-coder/`
-
-## Common Development Patterns
-
-### Updating the Resume
-1. Update your resume in your LaTeX repository
-2. Compile LaTeX to PDF
-3. Replace `static/pdfs/resume.pdf` in this repository with the new PDF
-4. Commit and push changes
-5. GitHub Actions will build and deploy the updated site
-
-### Customizing Styles
-1. Add styles to `assets/scss/custom.scss` or create new SCSS partial
-2. Import new partials in `custom.scss`
-3. Hugo will recompile on save
-
-### Modifying the Theme
-- **Do not** edit files in `themes/hugo-coder/` directly
-- Override theme templates by creating same path in root `layouts/` directory
-- Example: Override theme's projects list at `layouts/projects/list.html`
+- **Do not** edit files in `themes/hugo-coder/`; override by creating the same path under `layouts/`.
+- To update the theme: `git submodule update --remote themes/hugo-coder`, rebuild, commit. Dependabot (`.github/dependabot.yml`, `gitsubmodule`) also opens weekly update PRs.
+- The theme loads custom SCSS with `media="screen"`, so `@media print` rules in custom SCSS never apply.
+- The theme has a light/dark toggle that sets `body.colorscheme-dark` / `colorscheme-light` / `colorscheme-auto`. Dark-mode custom styles must key off these classes (see the theme's `_*_dark.scss`), not just `@media (prefers-color-scheme: dark)`.
 
 ## Deployment
 
-**Automatic:**
-- Push to `main` branch triggers GitHub Actions
-- Workflow builds and deploys to GitHub Pages automatically
-
-**Manual (if needed):**
-```bash
-hugo --minify --baseURL "https://deadmade.github.io/"
-# Then manually deploy public/ folder
-```
-
-## Language & Localization
-
-- Default language: German (de-DE)
-- Content is primarily in German
-- Theme supports i18n (translations in `themes/hugo-coder/i18n/de.toml`)
-
-## Notes
-
-- Site uses Git submodules for theme management
-- Blog posts support tags and categories (infrastructure ready)
-- Dark mode automatically follows system preferences
-- Site is fully responsive with mobile-first approach
+`.github/workflows/hugo.yml`: push to `main` → checkout (with submodules) → install Hugo → `hugo --gc --minify` → deploy to GitHub Pages.
