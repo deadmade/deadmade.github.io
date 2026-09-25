@@ -63,8 +63,7 @@ content/
 ├── _index.md         # Homepage (empty, uses theme default)
 ├── blog/             # Blog posts (currently hidden in menu)
 ├── projects/         # Projects page (uses data/projects.json)
-├── resume.md         # Professional resume (embedded PDF from GitHub)
-└── freetime.md       # Hobbies and free time activities
+└── resume.md         # Professional resume (embedded PDF from GitHub)
 ```
 
 ### Custom Components
@@ -101,7 +100,7 @@ Key design features:
 - Language: German (de-DE)
 - Theme: hugo-coder
 - Base URL: https://deadmade.github.io/
-- Menu items: Lebenslauf, Projekte, Freizeit
+- Main menu: all entries (Lebenslauf, Projekte, Blog) currently commented out
 - Social links: GitHub, LinkedIn, Email, Discord
 - Custom SCSS: custom.scss
 
@@ -137,7 +136,7 @@ File: `.github/workflows/hugo.yml`
 
 ### Blog Section
 - Blog infrastructure exists but is currently commented out in menu
-- To enable: uncomment blog menu item in `hugo.toml` (lines 73-77)
+- To enable: uncomment blog menu item in `hugo.toml` (`identifier = "blog"`)
 
 ### Static Assets
 - Favicons: `/static/icons/` directory
