@@ -1,7 +1,7 @@
 ---
 flow: feature
-phase: finish
-now: Waiting for you: pick how the branch ends.
+phase: done
+now: Done: kept on job-application-portfolio (nine local commits on top of main; nothing pushed or merged).
 ---
 
 # Job application portfolio: flow
