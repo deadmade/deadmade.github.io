@@ -1,0 +1,61 @@
+        <figure class="fig">
+          <svg class="dwg h" viewBox="0 12 730 276" role="img" aria-labelledby="f3t">
+            <title id="f3t">{{ .summary }}</title>
+            <text class="q" x="6" y="62">indoor</text>
+            <rect class="bx" x="6" y="70" width="120" height="48"/><text class="c" x="66" y="91">Arduino</text><text class="c" x="66" y="109">devices</text>
+            <text class="q c" x="66" y="136">north · south</text><text class="q c" x="66" y="152">SD-card buffer</text>
+            <path class="ln" d="M126 94H158"/><polygon class="ah" points="158,89.5 166,94 158,98.5"/><text class="q c" x="146" y="86">MQTT</text>
+            <rect class="bx" x="166" y="70" width="100" height="48"/><text class="c" x="216" y="91">MQTT</text><text class="c" x="216" y="109">broker</text>
+            <text class="q c" x="216" y="136">external</text>
+            <path class="ln" d="M266 94H298"/><polygon class="ah" points="298,89.5 306,94 298,98.5"/>
+
+            <text class="q" x="6" y="182">outdoor</text>
+            <rect class="bx" x="6" y="190" width="120" height="48"/><text class="c" x="66" y="211">weather</text><text class="c" x="66" y="229">API</text>
+            <text class="q c" x="66" y="256">Open-Meteo</text><text class="q c" x="66" y="272">Bright Sky</text>
+            <path class="ln" d="M126 214H298"/><polygon class="ah" points="298,209.5 306,214 298,218.5"/><text class="q c" x="212" y="206">HTTP pull</text>
+
+            <text class="q" x="296" y="34">Docker (compose, Traefik)</text>
+            <rect class="grp" x="296" y="40" width="430" height="234"/>
+            <rect class="bx" x="306" y="70" width="120" height="48"/><text class="c" x="366" y="91">MQTT receiver</text><text class="c" x="366" y="109">worker ×2</text>
+            <rect class="bx" x="306" y="190" width="120" height="48"/><text class="c" x="366" y="211">weather</text><text class="c" x="366" y="229">worker ×2</text>
+            <path class="ln" d="M426 94H452"/><polygon class="ah" points="452,89.5 460,94 452,98.5"/>
+            <path class="ln" d="M426 214H452"/><polygon class="ah" points="452,209.5 460,214 452,218.5"/>
+            <rect class="bx" x="460" y="70" width="100" height="168"/><text class="c" x="510" y="150">InfluxDB</text><text class="q c" x="510" y="170">time series</text>
+
+            <path class="ln" d="M560 154H598"/><polygon class="ah" points="598,149.5 606,154 598,158.5"/><text class="q c" x="583" y="146">reads</text>
+            <rect class="bx" x="606" y="62" width="110" height="44"/><text class="c" x="661" y="81">React</text><text class="q c" x="661" y="97">nginx ×2</text>
+            <path class="ln" d="M661 106V124"/><polygon class="ah" points="656.5,124 661,132 665.5,124"/><text class="q" x="669" y="122">calls</text>
+            <rect class="bx" x="606" y="132" width="110" height="44"/><text class="c" x="661" y="151">REST API</text><text class="c" x="661" y="168">×2</text>
+            <path class="ln" d="M661 176V202"/><polygon class="ah" points="656.5,202 661,210 665.5,202"/>
+            <rect class="bx" x="606" y="210" width="110" height="44"/><text class="c" x="661" y="236">PostgreSQL</text>
+          </svg>
+          <svg class="dwg v" viewBox="0 0 340 516" role="img" aria-labelledby="f3v">
+            <title id="f3v">{{ .summary }}</title>
+            <text class="q c" x="84" y="14">indoor</text><text class="q c" x="256" y="14">outdoor</text>
+            <rect class="bx" x="14" y="24" width="140" height="72"/><text class="c" x="84" y="45">Arduino devices</text><text class="q c" x="84" y="63">north · south</text><text class="q c" x="84" y="79">SD-card buffer</text>
+            <rect class="bx" x="186" y="24" width="140" height="72"/><text class="c" x="256" y="45">weather API</text><text class="q c" x="256" y="63">Open-Meteo</text><text class="q c" x="256" y="79">Bright Sky</text>
+            <path class="ln" d="M84 96V130"/><polygon class="ah" points="79.5,130 84,138 88.5,130"/><text class="q" x="92" y="122">MQTT</text>
+            <rect class="bx" x="14" y="138" width="140" height="44"/><text class="c" x="84" y="158">MQTT broker</text><text class="q c" x="84" y="174">external</text>
+            <path class="ln" d="M84 182V220"/><polygon class="ah" points="79.5,220 84,228 88.5,220"/>
+            <path class="ln" d="M256 96V220"/><polygon class="ah" points="251.5,220 256,228 260.5,220"/><text class="q" x="264" y="170">HTTP pull</text>
+
+            <text class="q c" x="170" y="200">Docker (compose)</text>
+            <rect class="grp" x="4" y="206" width="332" height="306"/>
+            <rect class="bx" x="14" y="228" width="140" height="48"/><text class="c" x="84" y="249">MQTT receiver</text><text class="c" x="84" y="267">worker ×2</text>
+            <rect class="bx" x="186" y="228" width="140" height="48"/><text class="c" x="256" y="249">weather</text><text class="c" x="256" y="267">worker ×2</text>
+            <path class="ln" d="M84 276V296"/><polygon class="ah" points="79.5,296 84,304 88.5,296"/>
+            <path class="ln" d="M256 276V296"/><polygon class="ah" points="251.5,296 256,304 260.5,296"/>
+            <rect class="bx" x="14" y="304" width="312" height="40"/><text class="c" x="170" y="329">InfluxDB</text>
+            <path class="ln" d="M84 344V380"/><polygon class="ah" points="79.5,380 84,388 88.5,380"/><text class="q" x="92" y="366">reads</text>
+            <rect class="bx" x="14" y="388" width="140" height="44"/><text class="c" x="84" y="407">REST API</text><text class="c" x="84" y="424">×2</text>
+            <rect class="bx" x="186" y="388" width="140" height="44"/><text class="c" x="256" y="407">React</text><text class="q c" x="256" y="423">nginx ×2</text>
+            <path class="ln" d="M186 410H162"/><polygon class="ah" points="162,405.5 154,410 162,414.5"/>
+            <path class="ln" d="M84 432V452"/><polygon class="ah" points="79.5,452 84,460 88.5,452"/>
+            <rect class="bx" x="14" y="460" width="140" height="40"/><text class="c" x="84" y="485">PostgreSQL</text>
+          </svg>
+        <figcaption class="legend">
+          <span><svg viewBox="0 0 22 14" aria-hidden="true"><rect class="bx" x="1" y="1" width="20" height="12"/></svg>named component</span>
+          <span><svg viewBox="0 0 22 14" aria-hidden="true"><rect class="grp" x="1" y="1" width="20" height="12"/></svg>where it runs</span>
+          <span class="nts">not to scale</span>
+        </figcaption>
+        </figure>
