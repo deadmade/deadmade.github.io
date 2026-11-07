@@ -1,0 +1,254 @@
+/* THROWAWAY STUDY 06c (sheet), based on study 05. Not production. Palette A = Night City ground + pink; B = same ground + the picture's red. */
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-style:normal;font-display:swap;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:600;font-style:normal;font-display:swap;src:url(fonts/ibm-plex-mono-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:700;font-style:normal;font-display:swap;src:url(fonts/ibm-plex-mono-latin-700-normal.woff2) format('woff2')}
+
+:root{--bg:#1A1626;--fg:#E6DCF7;--muted:#BDB4DE;--quiet:#9A90C2;--line:#4B4370;--accent:#F08BB4;--pad:clamp(20px,5vw,80px)}
+:root[data-palette="b"]{--accent:#FF544A}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);font:400 15px/1.65 'IBM Plex Mono',ui-monospace,SFMono-Regular,Consolas,monospace;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
+a:hover{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+h1,h2,h3,p,ul,ol,dl,dd{margin:0}
+
+/* the one shape: the hood's triangles. Up = marks, right = links */
+.tri{display:inline-block;width:.78em;height:.68em;background:var(--accent);clip-path:polygon(50% 0,100% 100%,0 100%);margin-right:.55em;flex:none}
+.tri.r{width:.68em;height:.78em;clip-path:polygon(0 0,100% 50%,0 100%)}
+
+/* top bar: wordmark left, navigation right (subpages only) */
+.bar{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:22px var(--pad) 0;font-size:13px}
+.mark{display:inline-flex;align-items:baseline;text-decoration:none;font-weight:700;letter-spacing:.02em}
+.bar nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 28px;color:var(--muted)}
+.bar nav a{text-decoration:none}
+.bar nav a[aria-current]{color:var(--fg);font-weight:600}
+
+/* ---------- home ---------- */
+.hero{position:relative;min-height:min(32vw,460px)}
+.side{position:absolute;top:8px;right:0;width:min(32vw,460px)}
+.pfp{position:relative;aspect-ratio:1;margin:0}
+.pfp-img{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,100% 100%,16% 100%,0 64%)}
+.pfp-img img{display:block;width:100%;height:100%;object-fit:cover}
+.pfp svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.intro{position:relative;z-index:2;padding:clamp(60px,11vh,120px) var(--pad) 0}
+.home h1{font-weight:700;font-size:min(12.4vw,215px);line-height:.88;letter-spacing:-.045em}
+.home h1 span{display:block}
+.role{margin-top:30px;font-size:clamp(18px,2vw,28px);font-weight:600;letter-spacing:-.01em}
+.cursor{color:var(--accent)}
+.lede{max-width:38ch;margin-top:14px;color:var(--muted)}
+
+/* where to go next: this is the navigation of the home page */
+.go{list-style:none;padding:0;margin-top:34px;display:grid;gap:12px;max-width:48ch}
+.go a{display:grid;grid-template-columns:104px 1fr;gap:16px;align-items:baseline;text-decoration:none}
+.go .lbl{display:inline-flex;align-items:center;font-size:20px;font-weight:600}
+.go .desc{color:var(--quiet);font-size:13px}
+.go a:hover .desc{color:var(--muted)}
+
+/* The home page is meant to fit one screen without a scrollbar: the name shrinks with the window height.
+   52svh - 232px is what is left (216px before the third link, "now", was added to the home page) after the fixed parts (about 349px: bar, gap under it, role, intro, links, footer)
+   and the spacing that grows with the window (about 8.5svh), divided by the 1.76 line height of the two-line name.
+   shortcut: below about 500px of window height it still scrolls; on phones the picture plus text cannot fit, so it scrolls there too. */
+.home{min-height:100vh;min-height:100svh}
+.home .intro{padding-top:28px}
+.home h1{font-size:max(72px,min(12.4vw,215px,calc(52svh - 232px)))}
+.home .role{margin-top:clamp(12px,2.5svh,30px)}
+.home .go{margin-top:clamp(14px,3svh,34px)}
+.home footer.plain{padding-top:clamp(16px,3svh,48px);padding-bottom:22px}
+
+/* ---------- subpages: drawing sheets ---------- */
+.page{flex:1;padding:clamp(44px,7vh,90px) var(--pad) 0}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px clamp(24px,4vw,64px)}
+.page h1{font-weight:700;font-size:min(11vw,170px);line-height:.88;letter-spacing:-.045em}
+.page .sub{max-width:46ch;margin-bottom:.3em;color:var(--muted);font-size:clamp(15px,1.3vw,18px)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+
+/* the sheet: a hairline frame whose lines overshoot at the corners, as drawn with a ruler;
+   a centring tick top middle and the orientation mark (the hood's triangle) bottom middle */
+.sheet{position:relative;margin-top:clamp(40px,5vw,72px);padding:0 clamp(16px,2.4vw,34px)}
+.sheet::before,.sheet::after{content:"";position:absolute;pointer-events:none}
+.sheet::before{inset:0 -10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sheet::after{inset:-10px 0;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.ct{position:absolute;left:50%;top:-6px;width:1px;height:12px;background:var(--quiet)}
+.om{position:absolute;left:50%;bottom:0;width:14px;height:11px;margin-left:-7px;background:var(--quiet);clip-path:polygon(50% 0,100% 100%,0 100%)}
+
+/* sheet header: project name as the drawing title */
+.sh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 24px;padding:clamp(18px,2.2vw,28px) 0 clamp(14px,1.8vw,20px);border-bottom:1px solid var(--line)}
+.sh h2{display:flex;align-items:center;font-weight:700;letter-spacing:-.035em;line-height:1;font-size:clamp(28px,3vw,44px)}
+.lead .sh h2{font-size:clamp(42px,6.4vw,100px)}
+.sh h2 .tri{width:.36em;height:.31em;margin-right:.28em}
+.sh .tag{font-size:13px;color:var(--quiet)}
+.lead .sh .tag{color:var(--muted)}
+
+/* drawings: inline SVG, hairlines stay 1px at any size */
+.fig{margin:0;padding:clamp(22px,3vw,40px) 0 22px;display:flex;flex-direction:column}
+/* when the row is taller than the drawing, the drawing sits in the middle and the legend stays at the bottom */
+.fig > .dwg{margin-block:auto}
+.dwg{display:block;width:100%;height:auto;overflow:visible;font-family:inherit}
+.dwg.v{display:none;max-width:400px}
+.dwg text{fill:var(--fg);font-size:13px}
+.dwg .c{text-anchor:middle}.dwg .e{text-anchor:end}
+.dwg .b{font-weight:600}
+.dwg .m{fill:var(--muted)}
+.dwg .q{fill:var(--quiet);font-size:12px}
+.dwg .y{fill:var(--muted);font-size:12px}
+.dwg .sm{font-size:12px}
+.dwg .ln,.legend .ln{fill:none;stroke:var(--quiet);stroke-width:1;vector-effect:non-scaling-stroke}
+.dwg .ln.fine{stroke:var(--line)}
+.dwg .la{fill:none;stroke:var(--accent);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dwg .bx,.legend .bx{fill:var(--bg);stroke:var(--muted);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dwg .grp,.legend .grp{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:5 4;vector-effect:non-scaling-stroke}
+.dwg .st,.legend .st{fill:var(--bg);stroke:var(--fg);stroke-width:1;vector-effect:non-scaling-stroke}
+.dwg .acc,.legend .acc{fill:var(--accent)}
+.dwg .ah{fill:var(--quiet)}
+/* the drawings fill their column; the cap only matters on screens wider than about 2000px */
+.lead .dwg.h,.vb .dwg.h{max-width:1400px}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 24px;margin-top:clamp(18px,2.4vw,30px);font-size:12px;color:var(--quiet)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend svg{height:14px;width:auto;overflow:visible}
+.legend text{fill:var(--muted);font-size:9px;text-anchor:middle}
+
+/* title block: the facts as annotations beside the drawing */
+.tb{display:grid;align-content:start;grid-template-rows:1fr auto auto}
+.tb .cell{padding:16px 0;border-bottom:1px solid var(--line)}
+.tb .cell:last-child{border-bottom:0}
+.k{display:block;margin-bottom:6px;font-size:11px;letter-spacing:.1em;color:var(--quiet)}
+.tb p{max-width:60ch;color:var(--muted);font-size:14px}
+.lead .tb p{color:var(--fg);font-size:15px}
+.stack{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:2px 0;font-weight:600}
+/* the separator dot sits before each item; the list is shifted left inside a clipping cell, so a dot at the start of a line is cut off
+   and a wrapped list never starts or ends with one */
+.tb .cell.stk{overflow:hidden}
+.stack{margin-left:-1.4em}
+.stack li{position:relative;padding-left:1.4em}
+.stack li::before{content:"·";position:absolute;left:.4em;color:var(--quiet);font-weight:400}
+.src{display:inline-flex;align-items:center;font-weight:600;font-size:14px;overflow-wrap:anywhere}
+.legend .nts{margin-left:auto;letter-spacing:.06em}
+
+.lead .body{display:grid;grid-template-columns:minmax(0,1fr) clamp(330px,19vw,360px);column-gap:clamp(24px,3vw,44px)}
+.lead .fig{border-right:1px solid var(--line);padding-right:clamp(16px,2.4vw,34px)}
+.lead .tb{padding:6px 0 18px}
+
+/* sheet 2: two views of equal rank, divided by a hairline */
+.pair{display:grid}
+.view + .view{border-top:1px solid var(--line);margin-top:8px}
+.vb{display:grid;grid-template-columns:minmax(0,1fr) clamp(280px,18vw,340px);column-gap:clamp(24px,3vw,44px)}
+.vb .tb{padding:14px 0 18px}
+
+/* the two team projects are stacked, not side by side: with the detail they carry, each drawing needs the width */
+/* beside the drawing the text grows a little with the window, so both columns keep about the same height */
+@media(min-width:1200px){
+  .tb p{font-size:clamp(14px,1vw,20px)}
+  .lead .tb p{font-size:clamp(15px,1.05vw,21px)}
+  .stack{font-size:clamp(15px,.95vw,20px)}
+  .src{font-size:clamp(14px,.9vw,19px)}
+}
+
+/* path: dimension chain, title block, revision block, parts list */
+.chain .fig{padding-top:clamp(28px,3.4vw,48px)}
+.chain .dwg.h{max-width:1180px}
+.tblock{display:flex;flex-wrap:wrap;justify-content:flex-end;margin:0 calc(-1 * clamp(16px,2.4vw,34px));border-top:1px solid var(--line);font-size:13px}
+.tblock div{padding:10px clamp(14px,2vw,24px) 12px;border-left:1px solid var(--line)}
+.tblock div:first-child{border-left:0}
+.tblock dt{font-size:11px;letter-spacing:.1em;color:var(--quiet)}
+.tblock dd{font-weight:600}
+
+.split{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);column-gap:0}
+.split > section{padding:clamp(22px,2.6vw,34px) 0 clamp(26px,3vw,40px)}
+.revs-wrap{padding-right:clamp(20px,3vw,48px) !important;border-right:1px solid var(--line)}
+.parts-wrap{padding-left:clamp(20px,3vw,48px) !important}
+.lab{display:flex;align-items:center;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.08em}
+.rh{display:grid;grid-template-columns:28px 13ch 1fr;gap:16px;padding:6px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.1em;color:var(--quiet)}
+.rh.two{grid-template-columns:1fr auto}
+.revs{list-style:none;padding:0}
+.revs li{display:grid;grid-template-columns:28px 13ch 1fr;gap:16px;align-items:baseline;padding:18px 0 20px;border-bottom:1px solid var(--line)}
+.revs time{font-weight:600;font-size:15px;color:var(--muted)}
+.revs b{display:block;font-weight:700;font-size:clamp(17px,1.6vw,22px);line-height:1.25}
+.revs span{display:block;margin-top:4px;color:var(--muted);font-size:14px}
+.revs .notes{color:var(--quiet);font-size:13px}
+.revs .cur time{color:var(--fg)}
+/* the revision delta, drawn as a hollow hood triangle; the current one is filled */
+.dl{position:relative;display:block;width:18px;height:15px;align-self:start;margin-top:5px;background:var(--quiet);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.dl::after{content:"";position:absolute;left:3px;right:3px;top:5px;bottom:1.5px;background:var(--bg);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.cur .dl{background:var(--accent)}
+.cur .dl::after{display:none}
+
+.parts{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
+.parts .pri{grid-column:1 / -1}
+.parts li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:15px}
+.parts .pri{color:var(--fg);font-weight:700;font-size:clamp(18px,1.7vw,24px);padding:9px 0}
+.parts em{font-style:normal;font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--quiet)}
+.lang-lab{margin-top:clamp(28px,3vw,40px)}
+.langs{font-size:clamp(18px,1.8vw,24px);font-weight:600;letter-spacing:-.02em}
+
+@media(max-width:1299px){
+  .lead .body{grid-template-columns:1fr}
+  .lead .fig{border-right:0;padding-right:0;border-bottom:1px solid var(--line)}
+  .lead .tb{grid-template-columns:1fr 1fr;column-gap:24px;padding-top:0}
+  .lead .tb .wide{grid-column:1 / -1}
+  .lead .tb .cell:nth-last-child(-n+2){border-bottom:0}
+}
+@media(max-width:899px){
+  .chain .dwg.h{display:none}
+  .chain .dwg.v{display:block}
+  .split{grid-template-columns:1fr}
+  .revs-wrap{padding-right:0 !important;border-right:0}
+  .parts-wrap{padding-left:0 !important;border-top:1px solid var(--line)}
+}
+@media(min-width:700px) and (max-width:899px){
+  .chain{display:grid;grid-template-columns:minmax(0,420px) 1fr;column-gap:24px}
+  .tblock{flex-direction:column;justify-content:flex-end;margin:0 calc(-1 * clamp(16px,2.4vw,34px)) 0 0;border-top:0;border-left:1px solid var(--line)}
+  .tblock div{border-left:0;border-top:1px solid var(--line)}
+}
+@media(max-width:859px){
+  .head{row-gap:clamp(24px,5vw,36px)}
+}
+/* below 760px the drawings switch to their upright versions: the wide ones would drop under 10px text */
+@media(max-width:759px){
+  .lead .dwg.h,.view .dwg.h{display:none}
+  .lead .dwg.v,.view .dwg.v{display:block}
+}
+@media(max-width:1199px){
+  .vb{grid-template-columns:1fr}
+  .vb .tb{border-top:1px solid var(--line);grid-template-columns:minmax(0,1fr) auto;column-gap:24px}
+  .vb .tb .wide{grid-column:1 / -1}
+  .vb .tb .cell:nth-last-child(-n+2){border-bottom:0}
+}
+@media(max-width:700px){
+  .dwg.h{display:none}
+  .dwg.v{display:block}
+  .lead .tb,.vb .tb{grid-template-columns:1fr}
+  .tb .cell:nth-last-child(2){border-bottom:1px solid var(--line) !important}
+  .rh{display:none}
+  .revs li{grid-template-columns:24px 1fr;gap:4px 12px}
+  .revs li > div{grid-column:2}
+  .tblock{justify-content:flex-start}
+}
+
+/* ---------- foot ---------- */
+footer{margin-top:auto;padding:clamp(60px,8vw,110px) var(--pad) 0;overflow:hidden}
+.foot{display:flex;justify-content:space-between;gap:20px;padding-bottom:18px;font-size:12px;color:var(--quiet)}
+footer.plain{padding-top:clamp(50px,6vw,90px);padding-bottom:26px}
+footer.plain .foot{padding-bottom:0}
+
+.chip{position:fixed;right:12px;bottom:12px;z-index:10;padding:6px 10px;font:600 11px/1.3 'IBM Plex Mono',monospace;color:var(--fg);background:#0b0912e6;border:1px solid var(--line);cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+
+@media(max-width:860px){
+  .page h1{font-size:22vw}
+  .chip{right:8px;bottom:8px}
+}
+
+/* phones: the picture moves above the name and the page scrolls */
+@media(max-width:700px){
+  .hero{min-height:0}
+  .side{position:relative;top:auto;width:min(78vw,460px);margin:16px 0 0 auto}
+  .home .intro{padding-top:28px}
+  .home h1{font-size:18vw}
+  .home .role{margin-top:30px}
+  .home .go{margin-top:34px}
+  .home footer.plain{padding-top:50px}
+  .go a{grid-template-columns:96px 1fr}
+}
