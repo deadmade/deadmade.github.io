@@ -9,9 +9,9 @@ import os
 
 # Configuration
 OUTPUT_DIR = "static/icons"
-ACCENT_COLOR = "#1565c0"  # Site accent color
+ACCENT_COLOR = "#F08BB4"  # Site accent color (assets/css/tokens.css); a new accent also means a rerun of this script
 BACKGROUND_COLOR = "#ffffff"
-TEXT_COLOR = "#ffffff"
+TEXT_COLOR = "#1A1626"
 INITIALS = "M"
 
 # Sizes to generate
@@ -39,21 +39,8 @@ def create_favicon(size, initials, bg_color, text_color, output_path):
     circle_bbox = [margin, margin, size - margin, size - margin]
     draw.ellipse(circle_bbox, fill=hex_to_rgb(bg_color))
 
-    # Draw initials text
-    # Try to use a system font, fallback to default if not available
-    try:
-        # Try common monospace fonts
-        font_size = int(size * 0.7)  # 70% of favicon size (40% increase)
-        font = ImageFont.truetype("consola.ttf", font_size)  # Windows
-    except:
-        try:
-            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", size // 2)  # Linux
-        except:
-            try:
-                font = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", size // 2)  # macOS
-            except:
-                # Fallback to default font
-                font = ImageFont.load_default()
+    # Draw initials text with the site's own font (path relative to the repo root, like OUTPUT_DIR)
+    font = ImageFont.truetype("static/fonts/ibm-plex-mono-latin-700-normal.woff2", int(size * 0.7))
 
     # Get text bounding box for centering
     bbox = draw.textbbox((0, 0), initials, font=font)
@@ -92,19 +79,6 @@ def create_svg_favicon(initials, bg_color, text_color, output_path):
         f.write(svg_content)
     print(f"[OK] Created {output_path}")
 
-def create_safari_pinned_tab(initials, output_path):
-    """Create monochrome SVG for Safari pinned tabs"""
-    svg_content = f'''<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="45" fill="#000"/>
-  <text x="50" y="50" font-family="monospace" font-size="56" font-weight="bold"
-        fill="#fff" text-anchor="middle" dominant-baseline="central">{initials}</text>
-</svg>'''
-
-    with open(output_path, 'w') as f:
-        f.write(svg_content)
-    print(f"[OK] Created {output_path}")
-
 def create_webmanifest(output_path):
     """Create site.webmanifest for PWA support"""
     manifest_content = '''{
@@ -122,29 +96,13 @@ def create_webmanifest(output_path):
             "type": "image/png"
         }
     ],
-    "theme_color": "#1565c0",
-    "background_color": "#fafafa",
+    "theme_color": "#1A1626",
+    "background_color": "#1A1626",
     "display": "standalone"
 }'''
 
     with open(output_path, 'w') as f:
         f.write(manifest_content)
-    print(f"[OK] Created {output_path}")
-
-def create_browserconfig(output_path):
-    """Create browserconfig.xml for Windows tiles"""
-    config_content = '''<?xml version="1.0" encoding="utf-8"?>
-<browserconfig>
-    <msapplication>
-        <tile>
-            <square150x150logo src="/icons/android-chrome-192x192.png"/>
-            <TileColor>#1565c0</TileColor>
-        </tile>
-    </msapplication>
-</browserconfig>'''
-
-    with open(output_path, 'w') as f:
-        f.write(config_content)
     print(f"[OK] Created {output_path}")
 
 def main():
@@ -172,17 +130,9 @@ def main():
     svg_path = os.path.join(OUTPUT_DIR, "favicon.svg")
     create_svg_favicon(INITIALS, ACCENT_COLOR, TEXT_COLOR, svg_path)
 
-    # Generate Safari pinned tab SVG
-    safari_svg_path = os.path.join(OUTPUT_DIR, "safari-pinned-tab.svg")
-    create_safari_pinned_tab(INITIALS, safari_svg_path)
-
     # Generate webmanifest
     manifest_path = os.path.join(OUTPUT_DIR, "site.webmanifest")
     create_webmanifest(manifest_path)
-
-    # Generate browserconfig
-    browserconfig_path = os.path.join(OUTPUT_DIR, "browserconfig.xml")
-    create_browserconfig(browserconfig_path)
 
     print(f"\n[SUCCESS] All favicons generated successfully in {OUTPUT_DIR}/\n")
 
