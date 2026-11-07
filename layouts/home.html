@@ -1,0 +1,26 @@
+{{ define "bodyclass" }} class="home"{{ end }}
+
+{{ define "main" }}
+<main class="hero">
+  <div class="side">
+    <figure class="pfp">
+      <div class="pfp-img"><img src="{{ site.Params.avatarurl }}" width="460" height="460" alt="{{ site.Params.avataralt }}"></div>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="64" x2="16" y2="100" stroke="var(--accent)" stroke-width="3" vector-effect="non-scaling-stroke"/></svg>
+    </figure>
+  </div>
+
+  <div class="intro">
+    <h1>{{ range split site.Title " " }}<span>{{ . }}</span>{{ end }}</h1>
+    <p class="role">{{ site.Params.role }}<span class="cursor">_</span></p>
+    <p class="lede">{{ .Params.lede }}</p>
+
+    <ul class="go">
+      {{- range site.Menus.main }}
+      {{- if .Params.description }}
+      <li><a href="{{ .URL }}"><span class="lbl"><i class="tri r"></i>{{ .Name }}</span><span class="desc">{{ .Params.description }}</span></a></li>
+      {{- end }}
+      {{- end }}
+    </ul>
+  </div>
+</main>
+{{ end }}
