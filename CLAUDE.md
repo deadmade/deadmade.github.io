@@ -4,55 +4,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It is currently a single homepage (avatar/info + social links) using the hugo-coder theme. Resume and projects pages were removed; there is no main menu.
+Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It has four pages: home (`/`), work (`/work/`), path (`/path/`) and now (`/now/`), plus a 404 page. The layouts and the CSS are the repository's own; there is no theme. The text is English, and the page text lives in `content/` (front matter), not in the layouts.
 
 ## Technology Stack
 
-- **Hugo Extended** v0.166.0+ (SCSS compiled with Hugo's built-in LibSass via the theme's `toCSS`; no Dart Sass needed)
-- **hugo-coder theme** - git submodule in `themes/hugo-coder/` (clone with `--recurse-submodules`, or run `git submodule update --init`)
+- **Hugo Extended** v0.166.0+ (CI pins 0.166.0); plain CSS, no Sass
 - **GitHub Actions** - CI/CD
-- **Nix flake** (`flake.nix`, `.envrc`) - dev shell with hugo + python (Pillow for `scripts/generate-favicons.py`)
+- **Python** - `scripts/check-site.py` (stdlib only) and `scripts/generate-favicons.py` (Pillow)
+- **Nix flake** (`flake.nix`, `.envrc`) - dev shell with hugo + python (Pillow)
 
 ## Development Commands
 
 ```bash
 hugo server -D                                        # dev server at http://localhost:1313
-hugo --minify --baseURL "https://deadmade.github.io/"  # production build into public/
-hugo new blog/post-name.md                            # new blog post
-python3 scripts/generate-favicons.py                  # regenerate static/icons/
+hugo --gc --minify --baseURL "https://deadmade.github.io/" -d <dir>   # the CI build, into a directory of your choice
+python3 scripts/check-site.py                         # builds like CI and checks pages, metadata, links, bar, sitemap
+python3 scripts/generate-favicons.py                  # regenerate static/icons/ (draws with static/fonts/)
 ```
 
 ## Project Structure
 
 ```
-content/_index.md          # Homepage (empty, theme renders it from hugo.toml params)
-assets/scss/custom.scss    # customSCSS entry point, imports _fonts.scss
-assets/scss/_fonts.scss    # @font-face for self-hosted IBM Plex Mono + font overrides
+hugo.toml                  # site config, [params], [[menu.main]]
+content/_index.md          # home: title, description, lede (the introduction)
+content/work.md            # work page: intro and three projects (name, tag, drawing, summary, what, stack, source)
+content/path.md            # path page: steps, toolkit, languages, hobbies
+content/now.md             # now page: rows and the updated date
+layouts/baseof.html        # html shell: head partial, top bar, footer
+layouts/{home,work,path,now,404}.html
+layouts/_partials/head.html            # title, description, canonical, social tags, icons, stylesheet
+layouts/_partials/drawing-*.html       # the three project drawings (SVG), shapes and labels only
+assets/css/                # tokens.css (colours), fonts.css, base.css, path.css; concatenated into one stylesheet
 static/fonts/              # IBM Plex Mono woff2 (400/600/700, latin subset, from @fontsource) + OFL license
-static/images/avatar.jpg   # homepage avatar (theme placeholder; replace with a photo, set via params.avatarurl)
-static/icons/              # favicons + site.webmanifest (must stay UTF-8)
+static/images/pfp.png      # home page picture (params.avatarurl)
+static/icons/              # favicons + site.webmanifest (generated; must stay UTF-8)
 static/robots.txt
+scripts/                   # check-site.py, generate-favicons.py
 ```
 
 ## Configuration (hugo.toml)
 
-- Locale: German (`locale = "de-DE"`; `languageCode` is deprecated since Hugo 0.158); content is German
-- Social links: GitHub, LinkedIn, Email, Discord (`[[params.social]]`)
-- Footer year range comes from `params.since`
-- No `[menu]` section; add `[[menu.main]]` entries if pages are added again
-- `customSCSS = ["scss/custom.scss"]`
+- Locale: English (`locale = "en-US"`, `DefaultContentLanguage = "en"`; `languageCode` is deprecated since Hugo 0.158)
+- `[[menu.main]]` drives the top bar and the three links on the home page (entries with a `[menu.main.params] description`); order is `weight`. work, path and now use `pageRef`; github, linkedin and mail use `url`
+- `[params]`: `role`, `handle` (the name in the bar and the footer), `description` (site default, used when a page has none), `avatarurl`, `avataralt`
+- Each page's `title` and `description` front matter become its `<title>`, meta description and sharing tags (Open Graph and Twitter card, text only, no image)
 
 ## Fonts
 
-IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern for a German site). To add a weight, download `ibm-plex-mono-latin-<weight>-normal.woff2` from `cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5/files/` into `static/fonts/` and add the weight to the `@each` list in `_fonts.scss`.
+IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site is run from Germany). To add a weight, download `ibm-plex-mono-latin-<weight>-normal.woff2` from `cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5/files/` into `static/fonts/` and add a matching `@font-face` block to `assets/css/fonts.css`.
 
-## Theme gotchas
+## Gotchas
 
-- **Do not** edit files in `themes/hugo-coder/`; override by creating the same path under `layouts/`.
-- To update the theme: `git submodule update --remote themes/hugo-coder`, rebuild, commit. Dependabot (`.github/dependabot.yml`, `gitsubmodule`) also opens weekly update PRs.
-- The theme loads custom SCSS with `media="screen"`, so `@media print` rules in custom SCSS never apply.
-- The theme has a light/dark toggle that sets `body.colorscheme-dark` / `colorscheme-light` / `colorscheme-auto`. Dark-mode custom styles must key off these classes (see the theme's `_*_dark.scss`), not just `@media (prefers-color-scheme: dark)`.
+- The CSS is plain CSS, not Sass: Hugo's built-in LibSass rejects `min()`/`max()` with mixed units (`px` with `vw`), which the styles use.
+- The accent colour is one line in `assets/css/tokens.css`. `scripts/generate-favicons.py` keeps its own `ACCENT_COLOR`, so a new accent also means editing that constant and rerunning the script.
+- `static/robots.txt` hard-codes the host in its Sitemap line; change it if a custom domain is added.
+- No JavaScript and no external requests (fonts, analytics, embeds): `scripts/check-site.py` fails on a `<script>` or on a stylesheet, image or font reference that leaves the site.
+- A `pageRef` to a page that does not exist renders `href=""` without a warning; `scripts/check-site.py` catches it.
+- Work-page text, including each drawing's `summary` (the SVG `<title>`), lives in `content/work.md`; the drawing partials hold only shapes and labels.
 
 ## Deployment
 
-`.github/workflows/hugo.yml`: push to `main` → checkout (with submodules) → install Hugo → `hugo --gc --minify` → deploy to GitHub Pages.
+`.github/workflows/hugo.yml`: push to `main` → checkout → install Hugo → `hugo --gc --minify` → deploy to GitHub Pages. There is no theme checkout and no CI check step: run `scripts/check-site.py` by hand.
