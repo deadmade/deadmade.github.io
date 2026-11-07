@@ -61,6 +61,7 @@ IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site
 - No JavaScript and no external requests (fonts, analytics, embeds): `scripts/check-site.py` fails on a `<script>` or on a stylesheet, image or font reference that leaves the site.
 - A `pageRef` to a page that does not exist renders `href=""` without a warning; `scripts/check-site.py` catches it.
 - Work-page text, including each drawing's `summary` (the SVG `<title>`), lives in `content/work.md`; the drawing partials hold only shapes and labels.
+- The work page's design is owner-approved and must not change: edit its text in `content/work.md`, and leave `layouts/work.html`, the drawing partials and their CSS alone unless the owner asks for a redesign.
 
 ## Deployment
 
