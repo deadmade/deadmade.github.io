@@ -1,0 +1,36 @@
+{{ define "bodyclass" }} class="path"{{ end }}
+
+{{ define "main" }}
+<main class="page">
+  <h1>path</h1>
+
+  <div class="p-wrap">
+    <ol class="p-steps">
+      {{- range $i, $step := .Params.steps }}
+      <li class="p-r{{ if eq $i 0 }} now{{ end }}">
+        <span class="yr"><i class="tri"></i>{{ $step.years }}</span>
+        <div><h2>{{ $step.title }}</h2>{{ range $step.details }}<p>{{ . }}</p>{{ end }}</div>
+      </li>
+      {{- end }}
+    </ol>
+
+    <section class="p-r p-sec" aria-labelledby="h-kit">
+      <h2 id="h-kit" class="lab">toolkit</h2>
+      <div>
+        <p class="main">{{ .Params.toolkit.main }}</p>
+        <ul class="also">{{ range .Params.toolkit.others }}<li>{{ . }}</li>{{ end }}</ul>
+      </div>
+    </section>
+
+    <section class="p-r p-sec" aria-labelledby="h-lang">
+      <h2 id="h-lang" class="lab">languages</h2>
+      <p class="langs">{{ .Params.languages }}</p>
+    </section>
+
+    <section class="p-r p-sec" aria-labelledby="h-hob">
+      <h2 id="h-hob" class="lab">hobbies</h2>
+      <p class="hob">{{ .Params.hobbies }}</p>
+    </section>
+  </div>
+</main>
+{{ end }}

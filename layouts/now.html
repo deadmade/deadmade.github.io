@@ -1,0 +1,25 @@
+{{ define "bodyclass" }} class="path"{{ end }}
+
+{{ define "main" }}
+<main class="page">
+  <h1>now</h1>
+
+  <div class="p-wrap p-now">
+    {{- range $i, $row := .Params.rows }}
+    <section class="p-r{{ if gt $i 0 }} p-sec{{ end }}" aria-labelledby="n-{{ $i }}">
+      <h2 id="n-{{ $i }}" class="lab">{{ $row.label }}</h2>
+      {{- if eq (len $row.text) 1 }}
+      <p>{{ index $row.text 0 }}</p>
+      {{- else }}
+      <div>{{ range $row.text }}<p>{{ . }}</p>{{ end }}</div>
+      {{- end }}
+    </section>
+    {{- end }}
+
+    <section class="p-r p-sec p-upd" aria-labelledby="n-upd">
+      <h2 id="n-upd" class="lab">updated</h2>
+      <p>{{ .Params.updated }}</p>
+    </section>
+  </div>
+</main>
+{{ end }}
