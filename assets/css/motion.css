@@ -60,11 +60,12 @@
     background:linear-gradient(transparent,color-mix(in srgb,var(--accent) 38%,transparent) 88%,var(--accent));
     animation:scan 1.1s cubic-bezier(.5,0,.3,1) 1.5s both}
 
-  /* ---- work, path, now, 404: the title, then the rows one after another ---- */
+  /* ---- work, path, now, 404: the title, then the rows ---- */
   /* fill-mode backwards, not both: once the rise is over nothing stays applied, so the work page's drawings are drawn as before */
   .page h1{animation:rise .6s var(--ease) backwards}
   .page .sub{animation:rise .6s var(--ease) .08s backwards}
-  /* delays for the first six rows; a seventh row would rise without a delay */
+  /* delays by position inside the parent, for the first six children; a seventh would rise without a delay.
+     On /path/ toolkit, languages and hobbies are children 2 to 4 of .p-wrap, so they share the delays of steps 2 to 4, as in the demo the owner tried (not kept) */
   body.path .p-r{animation:rise .55s var(--ease) both}
   body.path .p-r:nth-child(1){animation-delay:.08s}
   body.path .p-r:nth-child(2){animation-delay:.14s}
@@ -73,7 +74,7 @@
   body.path .p-r:nth-child(5){animation-delay:.32s}
   body.path .p-r:nth-child(6){animation-delay:.38s}
   /* the pink rule over the first block is plotted from left to right (the border keeps its 2px of space);
-     the 2px and the accent copy path.css, lines 12 and 38: change them together */
+     the 2px and the accent copy the border-top of body.path .p-steps and body.path .p-now in path.css: change them together */
   @keyframes plot-x{from{transform:scaleX(0)}}
   body.path .p-steps,body.path .p-now{position:relative;border-top-color:transparent}
   body.path .p-steps::before,body.path .p-now::before{content:"";position:absolute;left:0;right:0;top:-2px;height:2px;background:var(--accent);transform-origin:left;animation:plot-x .9s var(--ease) .1s both}

@@ -46,7 +46,7 @@ scripts/                   # check-site.py, generate-favicons.py
 
 - Locale: English (`locale = "en-US"`, `DefaultContentLanguage = "en"`; `languageCode` is deprecated since Hugo 0.158)
 - `[[menu.main]]` drives the top bar and the three links on the home page (entries with a `[menu.main.params] description`); order is `weight`. work, path and now use `pageRef`; github, linkedin and mail use `url`
-- `[params]`: `role`, `handle` (the name in the bar and the footer), `description` (site default, used when a page has none), `avatarurl`, `avataralt`
+- `[params]`: `role` (also the typed line on the home page: its length sets the typing steps, so keep it to one line on a phone, about 25 characters), `handle` (the name in the bar and the footer), `description` (site default, used when a page has none), `avatarurl`, `avataralt`
 - Each page's `title` and `description` front matter become its `<title>`, meta description and sharing tags (Open Graph and Twitter card, text only, no image)
 
 ## Fonts
@@ -60,7 +60,9 @@ IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site
 - `static/robots.txt` hard-codes the host in its Sitemap line; change it if a custom domain is added.
 - No JavaScript and no external requests (fonts, analytics, embeds): `scripts/check-site.py` fails on a `<script>` or on a stylesheet, image or font reference that leaves the site.
 - A `pageRef` to a page that does not exist renders `href=""` without a warning; `scripts/check-site.py` catches it.
-- All motion lives in `assets/css/motion.css`, inside its one `prefers-reduced-motion: no-preference` block, last in the concatenation; `scripts/check-site.py` fails on motion text before that block and on any text after it. Page transitions work in Chrome, Edge and Safari 18.2+ only. The work page's drawings and sheets have no motion (the owner rejected it); the work page is left out of the `content` transition name (`main:not(:has(.sheet))`) and the title rise uses fill-mode `backwards`, because a named element or a finished `both` animation changes how the drawings are rastered; the work page gets only the browser's plain page cross-fade.
+- All motion lives in `assets/css/motion.css`, inside its one `prefers-reduced-motion: no-preference` block, last in the concatenation; `scripts/check-site.py` fails on motion text (animation, transition, keyframes, view transitions, `scroll-behavior`) before that block and on any text after it. Page transitions work in Chrome, Edge and Safari 18.2+ only.
+- The work page's drawings and sheets have no motion (the owner rejected it) and must look the same at rest. Its page transition is the browser's plain cross-fade: `main:not(:has(.sheet))` leaves it out of the `content` transition name. Its title and subtitle still rise on arrival, with fill-mode `backwards`. Naming its `main`, or leaving a finished `both` fill on the title, each changed how the drawings were painted at rest (measured in Chrome 154).
+- Checking motion in the browser tool misleads in four ways (probe says "no transition" on `127.0.0.1`, no frames before a screenshot, JPEG noise, tab state): read `docs/solutions/checking-motion-in-the-browser-tool.md` first.
 - Work-page text, including each drawing's `summary` (the SVG `<title>`), lives in `content/work.md`; the drawing partials hold only shapes and labels.
 - The work page's design is owner-approved and must not change: edit its text in `content/work.md`, and leave `layouts/work.html`, the drawing partials and their CSS alone unless the owner asks for a redesign.
 
