@@ -11,7 +11,7 @@
 
   <div class="intro">
     <h1>{{ range split site.Title " " }}<span>{{ . }}</span>{{ end }}</h1>
-    <p class="role">{{ site.Params.role }}<span class="cursor">_</span></p>
+    <p class="role"><span class="typed" style="--n:{{ strings.RuneCount site.Params.role }}">{{ site.Params.role }}</span><span class="cursor">_</span></p>
     <p class="lede">{{ .Params.lede }}</p>
 
     <ul class="go">

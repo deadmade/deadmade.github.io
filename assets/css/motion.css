@@ -28,4 +28,35 @@
   .go .desc{transition:color .18s ease}
   .go .tri{transition:transform .24s var(--ease)}
   .go a:hover .tri,.go a:focus-visible .tri{transform:translateX(5px)}
+
+  /* ---- home ---- */
+  @keyframes draw{from{clip-path:inset(-4px -4px 100% -4px)}to{clip-path:inset(-4px)}}
+  @keyframes type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+  @keyframes caret{0%,49%{opacity:1}50%,99%{opacity:0}100%{opacity:1}}
+  @keyframes scan{0%{top:-36px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:100%;opacity:0}}
+  /* a short signal glitch: the letters split into pink and violet and jump a few pixels, twice, then settle */
+  @keyframes glitch{
+    0%,100%{text-shadow:none;transform:none}
+    8%{text-shadow:-5px 0 var(--accent),5px 0 var(--line);transform:translateX(3px)}
+    16%{text-shadow:4px 0 var(--accent),-4px 0 var(--line);transform:translateX(-4px) skewX(-4deg)}
+    24%{text-shadow:none;transform:none}
+    52%{text-shadow:-3px 0 var(--accent),3px 0 var(--line);transform:translateX(2px)}
+    60%{text-shadow:none;transform:none}
+  }
+  .home h1 span{animation:rise .7s var(--ease) both,glitch .6s linear 1.7s}
+  .home h1 span + span{animation-delay:.09s,1.79s}
+  /* the role is typed one letter per step (--n is its letter count), then the cursor blinks four times (ends at 4.8s) and stays */
+  .typed{display:inline-block;animation:type .85s steps(var(--n)) .35s both}
+  .cursor{opacity:0;animation:caret .9s steps(1) 1.2s 4 forwards}
+  .home .lede{animation:rise .6s var(--ease) .5s both}
+  .home .go li{animation:rise .5s var(--ease) both}
+  .home .go li:nth-child(1){animation-delay:.62s}
+  .home .go li:nth-child(2){animation-delay:.7s}
+  .home .go li:nth-child(3){animation-delay:.78s}
+  .home .pfp-img{animation:fade .9s ease .1s both}
+  .home .pfp svg{animation:draw .7s cubic-bezier(.5,0,.2,1) .8s both}
+  /* a scanner sweeps down the picture once, after the pink edge is drawn */
+  .home .pfp-img::after{content:"";position:absolute;left:0;right:0;top:-36px;height:36px;opacity:0;pointer-events:none;
+    background:linear-gradient(transparent,color-mix(in srgb,var(--accent) 38%,transparent) 88%,var(--accent));
+    animation:scan 1.1s cubic-bezier(.5,0,.3,1) 1.5s both}
 }
