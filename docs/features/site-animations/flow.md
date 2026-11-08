@@ -1,7 +1,7 @@
 ---
 flow: feature
-phase: execute
-now: Waiting for you: pick how the branch ends.
+phase: done
+now: Done: kept on job-application-portfolio.
 ---
 
 # Site animations: flow
