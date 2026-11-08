@@ -167,6 +167,20 @@ def check_sitemap(out):
 def check_seams(out):
     declared = sum(f.read_text(encoding="utf-8").count("--accent:") for f in out.rglob("*.css"))
     problems = [f"--accent: is declared {declared} times in the built CSS, expected 1"] if declared != 1 else []
+    for sheet in sorted(out.rglob("*.css")):  # all motion sits in the one no-preference block, which ends the sheet
+        css = sheet.read_text(encoding="utf-8")
+        gate = re.search(r"@media\s*\(\s*prefers-reduced-motion\s*:\s*no-preference\s*\)", css)
+        hit = re.search(r"animation|transition|@keyframes|view-transition", css[:gate.start()] if gate else css)
+        if hit:
+            problems.append(f"{hit.group(0)} in {sheet.name} before the no-preference block")
+        if gate:
+            depth, end = 0, len(css)
+            for i in range(css.index("{", gate.end()), len(css)):
+                depth += (css[i] == "{") - (css[i] == "}")
+                if depth == 0:
+                    end = i + 1
+                    break
+            problems += [f"text after the no-preference block in {sheet.name}"] * bool(css[end:].strip())
     for source in [ROOT / "hugo.toml", *sorted(f for d in ("layouts", "content") for f in (ROOT / d).rglob("*") if f.is_file())]:
         text = source.read_text(encoding="utf-8", errors="ignore")
         problems += [f"accent colour in {source.relative_to(ROOT)}"] * bool(re.search(r"F08BB4|FF544A", text, re.I))
