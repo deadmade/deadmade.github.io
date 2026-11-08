@@ -1,0 +1,31 @@
+/* Motion for the site. Every rule that moves sits inside the one no-preference query below, so the base styles stay
+   the finished, visible page: with reduced motion, or in a browser that ignores a rule, nothing is hidden.
+   scripts/check-site.py fails on motion text before this query. Nothing here touches the work page's drawings or sheets. */
+@media (prefers-reduced-motion: no-preference){
+  :root{--ease:cubic-bezier(.2,.7,.2,1)}
+  html{scroll-behavior:smooth}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}}
+  @keyframes fade{from{opacity:0}}
+
+  /* page to page (Chrome, Edge, Safari 18.2+; other browsers just load the page): the bar keeps its place and the page
+     under it is redrawn top to bottom; the work page, recognised by its sheets, gets a plain fade instead */
+  @view-transition{navigation:auto}
+  .bar{view-transition-name:bar}
+  main{view-transition-name:content}
+  /* the browser's own slide of the two named groups is off: from a scrolled page it would move the bar and the content by hundreds of pixels.
+     animation-name only: the shorthand would also zero the duration that the bar's own cross-fade inherits from its group */
+  ::view-transition-group(content),::view-transition-group(bar){animation-name:none}
+  ::view-transition-old(content){animation:vt-out .14s ease-in both}
+  ::view-transition-new(content){animation:vt-in .5s var(--ease) both}
+  html:has(.sheet)::view-transition-new(content){animation:fade .3s ease both}
+  @keyframes vt-out{to{opacity:0}}
+  @keyframes vt-in{from{opacity:0;clip-path:inset(-20px -20px 100% -20px);transform:translateY(8px)}to{opacity:1;clip-path:inset(-20px)}}
+
+  /* hover and focus: the top bar and the three home links only */
+  .bar a,.go a{transition:color .18s ease}
+  .bar nav a{background:linear-gradient(var(--accent),var(--accent)) 0 100%/0 1px no-repeat;transition:background-size .24s var(--ease),color .18s ease}
+  .bar nav a:hover,.bar nav a:focus-visible{background-size:100% 1px}
+  .go .desc{transition:color .18s ease}
+  .go .tri{transition:transform .24s var(--ease)}
+  .go a:hover .tri,.go a:focus-visible .tri{transform:translateX(5px)}
+}

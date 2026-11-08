@@ -11,6 +11,6 @@
 <link rel="icon" href="/icons/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="manifest" href="/icons/site.webmanifest">
-{{- $css := resources.Concat "css/main.css" (slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/base.css") (resources.Get "css/path.css")) | minify | fingerprint }}
+{{- $css := resources.Concat "css/main.css" (slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/base.css") (resources.Get "css/path.css") (resources.Get "css/motion.css")) | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}">
 </head>
