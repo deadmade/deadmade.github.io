@@ -167,12 +167,6 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
   .sh .tag{margin:0 0 0 -12px;padding-left:12px}
 }
 
-/* ---------- privacy: running text on one sheet ---------- */
-.privacy .page{padding-top:clamp(18px,3.5vh,36px)}
-.prose{padding-bottom:clamp(28px,3vw,44px)}
-.prose > h3{margin-top:28px;font-size:13px;font-weight:600;letter-spacing:.08em;color:var(--muted)}
-.prose p{max-width:72ch;margin-top:8px;font-size:15px}
-
 /* ---------- foot ---------- */
 footer{margin-top:auto;padding:clamp(60px,8vw,110px) var(--pad) 0;overflow:hidden}
 .foot{display:flex;justify-content:space-between;gap:20px;padding-bottom:18px;font-size:12px;color:var(--quiet)}

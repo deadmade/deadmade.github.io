@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It has five pages: home (`/`), projects (`/projects/`), path (`/path/`), now (`/now/`) and privacy (`/privacy/`, linked from the footer), plus a 404 page (`noindex`, no canonical). The layouts and the CSS are the repository's own; there is no theme. The text is English, and the page text lives in `content/` (front matter), not in the layouts.
+Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It has four pages: home (`/`), projects (`/projects/`), path (`/path/`) and now (`/now/`), plus a 404 page (`noindex`, no canonical). The layouts and the CSS are the repository's own; there is no theme. The text is English, and the page text lives in `content/` (front matter), not in the layouts.
 
 ## Technology Stack
 
@@ -31,9 +31,8 @@ content/_index.md          # home: title, description, lede (the introduction)
 content/projects.md        # projects page: three projects (name, tag, drawing, summary, what, stack, source)
 content/path.md            # path page: steps, toolkit, languages, hobbies
 content/now.md             # now page: rows (each line is inline Markdown, so it can link) and the updated date
-content/privacy.md         # privacy notice, Markdown body (GitHub Pages hosting, mail, GDPR rights)
 layouts/baseof.html        # html shell: head partial, top bar, footer
-layouts/{home,projects,path,now,privacy,404}.html
+layouts/{home,projects,path,now,404}.html
 layouts/_partials/head.html            # title, description, canonical, social tags, icons, stylesheet
 layouts/_partials/drawing-*.html       # the three project drawings (SVG), shapes and labels only
 assets/css/                # tokens.css (colours), fonts.css, base.css, path.css (body.path / body.now), motion.css (all motion, last); concatenated into one stylesheet
@@ -60,7 +59,7 @@ IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site
 
 - The CSS is plain CSS, not Sass: Hugo's built-in LibSass rejects `min()`/`max()` with mixed units (`px` with `vw`), which the styles use.
 - The accent colour is one line in `assets/css/tokens.css`. `scripts/generate-favicons.py` keeps its own `ACCENT_COLOR`, so a new accent also means editing that constant and rerunning the script; also rerun `scripts/generate-og-image.py` (it reads tokens.css itself).
-- There is no Impressum yet (the owner decided to skip it for now); the privacy page names no postal address.
+- There is no Impressum and no privacy page: the owner decided against both (November 2026).
 - `static/robots.txt` hard-codes the host in its Sitemap line; change it if a custom domain is added.
 - No JavaScript and no external requests (fonts, analytics, embeds): `scripts/check-site.py` fails on a `<script>` or on a stylesheet, image or font reference that leaves the site.
 - A `pageRef` to a page that does not exist renders `href=""` without a warning; `scripts/check-site.py` catches it.

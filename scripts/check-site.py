@@ -16,8 +16,7 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 BASE = "https://deadmade.github.io"
-PAGES = {"/": "index.html", "/projects/": "projects/index.html", "/path/": "path/index.html", "/now/": "now/index.html",
-         "/privacy/": "privacy/index.html"}
+PAGES = {"/": "index.html", "/projects/": "projects/index.html", "/path/": "path/index.html", "/now/": "now/index.html"}
 OG_IMAGE = "/images/og.png"  # params.images in hugo.toml; the file is static/images/og.png, drawn by scripts/generate-og-image.py
 BAR = ["projects", "path", "now", "github", "linkedin", "mail"]
 results = []
