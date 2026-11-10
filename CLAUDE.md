@@ -11,7 +11,7 @@ Manuel Schülein's personal website, built with Hugo and deployed to GitHub Page
 - **Hugo Extended** v0.166.0+ (CI pins 0.166.0); plain CSS, no Sass
 - **GitHub Actions** - CI/CD
 - **Python** - `scripts/check-site.py` (stdlib only), `scripts/generate-favicons.py` and `scripts/generate-og-image.py` (Pillow)
-- **Nix flake** (`flake.nix`, `.envrc`) - dev shell with hugo + python (Pillow)
+- **Nix flake** (`flake.nix`, `.envrc`) - dev shell with hugo + python (Pillow) and the commands `serve`, `check`, `gen-favicons`, `gen-og-image`
 
 ## Development Commands
 

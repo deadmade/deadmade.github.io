@@ -1,13 +1,6 @@
 # Hugo
 /public/
 /resources/_gen/
-/assets/jsconfig.json
-hugo_stats.json
-
-# TailwindCSS / Node
-node_modules/
-package-lock.json
-package.json
 
 # OS
 .DS_Store
@@ -41,3 +34,4 @@ __pycache__/
 
 # Local agent tool state
 .superpowers/
+.web/
