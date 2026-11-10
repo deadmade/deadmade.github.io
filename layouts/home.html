@@ -1,18 +1,18 @@
 {{ define "bodyclass" }} class="home"{{ end }}
 
 {{ define "main" }}
-<main class="hero">
-  <div class="side">
-    <figure class="pfp">
-      <div class="pfp-img"><img src="{{ site.Params.avatarurl }}" width="460" height="460" alt="{{ site.Params.avataralt }}"></div>
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="64" x2="16" y2="100" stroke="var(--accent)" stroke-width="3" vector-effect="non-scaling-stroke"/></svg>
-    </figure>
-  </div>
-
-  <div class="intro">
-    <h1>{{ range split site.Title " " }}<span>{{ . }}</span>{{ end }}</h1>
-    <p class="role"><span class="typed" style="--n:{{ strings.RuneCount site.Params.role }}">{{ site.Params.role }}</span><span class="cursor">_</span></p>
-    <p class="lede">{{ .Params.lede }}</p>
+<main class="cover">
+  <div class="sheet">
+    <i class="ct" aria-hidden="true"></i>
+    <div class="plate">
+      <div class="intro">
+        <h1>{{ range split site.Title " " }}<span>{{ . }}</span>{{ end }}</h1>
+        <p class="lede">{{ .Params.lede }}<span class="cursor" aria-hidden="true">_</span></p>
+      </div>
+      <figure class="pfp">
+        <div class="pfp-img"><img src="{{ site.Params.avatarurl }}" width="460" height="460" fetchpriority="high" alt="{{ site.Params.avataralt }}"></div>
+      </figure>
+    </div>
 
     <ul class="go">
       {{- range site.Menus.main }}
@@ -21,6 +21,7 @@
       {{- end }}
       {{- end }}
     </ul>
+    <i class="om" aria-hidden="true"></i>
   </div>
 </main>
 {{ end }}

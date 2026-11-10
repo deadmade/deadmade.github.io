@@ -16,8 +16,8 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 BASE = "https://deadmade.github.io"
-PAGES = {"/": "index.html", "/work/": "work/index.html", "/path/": "path/index.html", "/now/": "now/index.html"}
-BAR = ["work", "path", "now", "github", "linkedin", "mail"]
+PAGES = {"/": "index.html", "/projects/": "projects/index.html", "/path/": "path/index.html", "/now/": "now/index.html"}
+BAR = ["projects", "path", "now", "github", "linkedin", "mail"]
 results = []
 
 
@@ -131,7 +131,7 @@ def check_pages(pages):
         bar = [a["text"].strip() for a in p.nav]
         problems = [f"bar reads {bar}"] if bar != BAR else []
         problems += [f"aria-current=page on {p.current}"] if [urlparse(h or "").path for h in p.current] != [path] else []
-        if path == "/" and [urlparse(a["href"] or "").path for a in p.go] != ["/work/", "/path/", "/now/"]:
+        if path == "/" and [urlparse(a["href"] or "").path for a in p.go] != ["/projects/", "/path/", "/now/"]:
             problems.append(f"home links are {[a['href'] for a in p.go]}")
         check("nav", path, problems)
         check("a11y", path, [f"img without alt: {i.get('src')}" for i in p.imgs if not (i.get("alt") or "").strip()]

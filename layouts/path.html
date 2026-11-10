@@ -2,35 +2,33 @@
 
 {{ define "main" }}
 <main class="page">
-  <h1>path</h1>
+  <h1 class="vh">path</h1>
 
-  <div class="p-wrap">
-    <ol class="p-steps">
+  <article class="sheet lead">
+    <i class="om" aria-hidden="true"></i>
+    <header class="sh"><h2><i class="tri"></i>career</h2><span class="tag">newest first</span></header>
+    <ol class="log">
       {{- range $i, $step := .Params.steps }}
-      <li class="p-r{{ if eq $i 0 }} now{{ end }}">
-        <span class="yr"><i class="tri"></i>{{ $step.years }}</span>
-        <div><h2>{{ $step.title }}</h2>{{ range $step.details }}<p>{{ . }}</p>{{ end }}</div>
+      <li{{ if eq $i 0 }} class="now"{{ end }}>
+        <span class="when">{{ $step.years }}</span>
+        <div><h3>{{ $step.title }}</h3>{{ range $j, $d := $step.details }}<p{{ if gt $j 0 }} class="q"{{ end }}>{{ $d }}</p>{{ end }}</div>
       </li>
       {{- end }}
     </ol>
+  </article>
 
-    <section class="p-r p-sec" aria-labelledby="h-kit">
-      <h2 id="h-kit" class="lab">toolkit</h2>
-      <div>
-        <p class="main">{{ .Params.toolkit.main }}</p>
-        <ul class="also">{{ range .Params.toolkit.others }}<li>{{ . }}</li>{{ end }}</ul>
-      </div>
-    </section>
-
-    <section class="p-r p-sec" aria-labelledby="h-lang">
-      <h2 id="h-lang" class="lab">languages</h2>
-      <p class="langs">{{ .Params.languages }}</p>
-    </section>
-
-    <section class="p-r p-sec" aria-labelledby="h-hob">
-      <h2 id="h-hob" class="lab">hobbies</h2>
-      <p class="hob">{{ .Params.hobbies }}</p>
-    </section>
-  </div>
+  <article class="sheet lead kit">
+    <i class="om" aria-hidden="true"></i>
+    <header class="sh"><h2><i class="tri"></i>toolkit</h2><span class="tag">languages · off the clock</span></header>
+    <div class="cells">
+      <div class="cell stk"><span class="k">daily</span><p class="big">{{ .Params.toolkit.main }}</p>
+        <ul class="stack">{{ range .Params.toolkit.others }}<li>{{ . }}</li>{{ end }}</ul></div>
+      <div class="cell"><span class="k">languages</span><p class="mid">{{ .Params.languages }}</p></div>
+    </div>
+    <div class="off">
+      <h3 class="k">off the clock</h3>
+      <ul>{{ range .Params.hobbies }}<li><b>{{ .name }}</b><span>{{ .note }}</span></li>{{ end }}</ul>
+    </div>
+  </article>
 </main>
 {{ end }}

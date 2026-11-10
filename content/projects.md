@@ -1,8 +1,7 @@
 ---
-title: "Work — Manuel Schülein"
+title: "Projects — Manuel Schülein"
 description: "Three projects drawn as architecture diagrams: fangtype, a VS Code tool for Python type annotations, and the team builds RustLogger and IsoPrüfi."
-layout: work
-intro: "Three projects: one designed, built and tested on my own, two built in teams. Drawn as what they are made of."
+layout: projects
 projects:
   - name: "fangtype"
     tag: "built alone · Studienarbeit"

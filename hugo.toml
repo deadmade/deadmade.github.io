@@ -12,8 +12,8 @@ disableKinds = ["taxonomy", "term", "RSS"]
   avataralt = "Profile picture: a hooded figure with a wide grin and one glowing red eye"
 
 [[menu.main]]
-  name = "work"
-  pageRef = "/work"
+  name = "projects"
+  pageRef = "/projects"
   weight = 10
   [menu.main.params]
     description = "three projects, one built alone"

@@ -1,17 +1,17 @@
 ---
 title: "Now — Manuel Schülein"
-description: "What Manuel Schülein is working on, learning and prioritising at the moment."
+description: "What Manuel Schülein is working on and prioritising at the moment."
 layout: now
 rows:
   - label: "at work"
     text:
-      - "Python: I am working on an MCP server and getting into machine learning."
-  - label: "learning"
+      - "Working on the Gateway for Business Central."
+  - label: "on the side"
     text:
-      - "How machine learning pipelines are architected."
+      - "dead-agent-skills: my own skills, flows and MCP servers for Claude Code and Codex."
   - label: "priorities"
     text:
       - "Be more active and visible on LinkedIn."
       - "Exercise regularly."
-updated: "November 2025"
+updated: "November 2026"
 ---

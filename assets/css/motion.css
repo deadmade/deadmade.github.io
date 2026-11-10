@@ -1,6 +1,6 @@
 /* Motion for the site. Every rule that moves sits inside the one no-preference query below, so the base styles stay
    the finished, visible page: with reduced motion, or in a browser that ignores a rule, nothing is hidden.
-   scripts/check-site.py fails on motion text before this query. Nothing here touches the work page's drawings or sheets. */
+   scripts/check-site.py fails on motion text before this query. Nothing here touches the projects page's drawings or sheets. */
 @media (prefers-reduced-motion: no-preference){
   :root{--ease:cubic-bezier(.2,.7,.2,1)}
   html{scroll-behavior:smooth}
@@ -8,11 +8,11 @@
   @keyframes fade{from{opacity:0}}
 
   /* page to page (Chrome, Edge, Safari 18.2+; other browsers just load the page): the bar keeps its place and the page
-     under it is redrawn top to bottom; the work page, recognised by its sheets, is left unnamed: a named element is
+     under it is redrawn top to bottom; the projects page, recognised by its drawings, is left unnamed: a named element is
      drawn as its own layer, which would change how its drawings are rastered, so it gets the browser's plain cross-fade */
   @view-transition{navigation:auto}
   .bar{view-transition-name:bar}
-  main:not(:has(.sheet)){view-transition-name:content}
+  main:not(:has(.dwg)){view-transition-name:content}
   /* the browser's own slide of the two named groups is off: from a scrolled page it would move the bar and the content by hundreds of pixels.
      animation-name only: the shorthand would also zero the duration that the bar's own cross-fade inherits from its group */
   ::view-transition-group(content),::view-transition-group(bar){animation-name:none}
@@ -30,8 +30,6 @@
   .go a:hover .tri,.go a:focus-visible .tri{transform:translateX(5px)}
 
   /* ---- home ---- */
-  @keyframes draw{from{clip-path:inset(-4px -4px 100% -4px)}to{clip-path:inset(-4px)}}
-  @keyframes type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
   @keyframes caret{0%,49%{opacity:1}50%,99%{opacity:0}100%{opacity:1}}
   @keyframes scan{0%{top:-36px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:100%;opacity:0}}
   /* a short signal glitch: the letters split into pink and violet and jump a few pixels, twice, then settle */
@@ -45,8 +43,7 @@
   }
   .home h1 span{animation:rise .7s var(--ease) both,glitch .6s linear 1.7s}
   .home h1 span + span{animation-delay:.09s,1.79s}
-  /* the role is typed one letter per step (--n is its letter count), then the cursor blinks four times (ends at 4.8s) and stays */
-  .typed{display:inline-block;animation:type .85s steps(var(--n)) .35s both}
+  /* once the paragraph has risen, the cursor at its end blinks four times (ends at 4.8s) and stays */
   .cursor{opacity:0;animation:caret .9s steps(1) 1.2s 4 forwards}
   .home .lede{animation:rise .6s var(--ease) .5s both}
   .home .go li{animation:rise .5s var(--ease) both}
@@ -54,28 +51,22 @@
   .home .go li:nth-child(2){animation-delay:.7s}
   .home .go li:nth-child(3){animation-delay:.78s}
   .home .pfp-img{animation:fade .9s ease .1s both}
-  .home .pfp svg{animation:draw .7s cubic-bezier(.5,0,.2,1) .8s both}
-  /* a scanner sweeps down the picture once, after the pink edge is drawn */
+  /* a scanner sweeps down the picture once, after it has faded in */
   .home .pfp-img::after{content:"";position:absolute;left:0;right:0;top:-36px;height:36px;opacity:0;pointer-events:none;
     background:linear-gradient(transparent,color-mix(in srgb,var(--accent) 38%,transparent) 88%,var(--accent));
     animation:scan 1.1s cubic-bezier(.5,0,.3,1) 1.5s both}
 
-  /* ---- work, path, now, 404: the title, then the rows ---- */
-  /* fill-mode backwards, not both: once the rise is over nothing stays applied, so the work page's drawings are drawn as before */
+  /* ---- projects, path, now, 404: the title, then the rows ---- */
+  /* fill-mode backwards, not both: once the rise is over nothing stays applied, so the projects page's drawings are drawn as before */
   .page h1{animation:rise .6s var(--ease) backwards}
   .page .sub{animation:rise .6s var(--ease) .08s backwards}
-  /* delays by position inside the parent, for the first six children; a seventh would rise without a delay.
-     On /path/ toolkit, languages and hobbies are children 2 to 4 of .p-wrap, so they share the delays of steps 2 to 4, as in the demo the owner tried (not kept) */
-  body.path .p-r{animation:rise .55s var(--ease) both}
-  body.path .p-r:nth-child(1){animation-delay:.08s}
-  body.path .p-r:nth-child(2){animation-delay:.14s}
-  body.path .p-r:nth-child(3){animation-delay:.2s}
-  body.path .p-r:nth-child(4){animation-delay:.26s}
-  body.path .p-r:nth-child(5){animation-delay:.32s}
-  body.path .p-r:nth-child(6){animation-delay:.38s}
-  /* the pink rule over the first block is plotted from left to right (the border keeps its 2px of space);
-     the 2px and the accent copy the border-top of body.path .p-steps and body.path .p-now in path.css: change them together */
-  @keyframes plot-x{from{transform:scaleX(0)}}
-  body.path .p-steps,body.path .p-now{position:relative;border-top-color:transparent}
-  body.path .p-steps::before,body.path .p-now::before{content:"";position:absolute;left:0;right:0;top:-2px;height:2px;background:var(--accent);transform-origin:left;animation:plot-x .9s var(--ease) .1s both}
+  /* /now/: the topic sheets rise in turn (a fourth would rise without a delay) */
+  body.path .topic{animation:rise .55s var(--ease) both}
+  body.path .topic:nth-of-type(2){animation-delay:.08s}
+  body.path .topic:nth-of-type(3){animation-delay:.16s}
+  /* /path/: the career steps rise in turn, newest first */
+  body.path .log li{animation:rise .55s var(--ease) both}
+  body.path .log li:nth-child(2){animation-delay:.08s}
+  body.path .log li:nth-child(3){animation-delay:.16s}
+  body.path .log li:nth-child(4){animation-delay:.24s}
 }

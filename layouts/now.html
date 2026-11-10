@@ -2,24 +2,13 @@
 
 {{ define "main" }}
 <main class="page">
-  <h1>now</h1>
-
-  <div class="p-wrap p-now">
-    {{- range $i, $row := .Params.rows }}
-    <section class="p-r{{ if gt $i 0 }} p-sec{{ end }}" aria-labelledby="n-{{ $i }}">
-      <h2 id="n-{{ $i }}" class="lab">{{ $row.label }}</h2>
-      {{- if eq (len $row.text) 1 }}
-      <p>{{ index $row.text 0 }}</p>
-      {{- else }}
-      <div>{{ range $row.text }}<p>{{ . }}</p>{{ end }}</div>
-      {{- end }}
-    </section>
-    {{- end }}
-
-    <section class="p-r p-sec p-upd" aria-labelledby="n-upd">
-      <h2 id="n-upd" class="lab">updated</h2>
-      <p>{{ .Params.updated }}</p>
-    </section>
-  </div>
+  <h1 class="vh">now</h1>
+  {{- range $i, $row := .Params.rows }}
+  <article class="sheet lead topic">
+    <i class="om" aria-hidden="true"></i>
+    <header class="sh"><h2><i class="tri"></i>{{ $row.label }}</h2>{{ if eq $i 0 }}<span class="tag">updated {{ $.Params.updated }}</span>{{ end }}</header>
+    <p>{{ range $j, $t := $row.text }}{{ if $j }}<br>{{ end }}{{ $t }}{{ end }}</p>
+  </article>
+  {{- end }}
 </main>
 {{ end }}

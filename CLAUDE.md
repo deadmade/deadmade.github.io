@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It has four pages: home (`/`), work (`/work/`), path (`/path/`) and now (`/now/`), plus a 404 page. The layouts and the CSS are the repository's own; there is no theme. The text is English, and the page text lives in `content/` (front matter), not in the layouts.
+Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It has four pages: home (`/`), projects (`/projects/`), path (`/path/`) and now (`/now/`), plus a 404 page. The layouts and the CSS are the repository's own; there is no theme. The text is English, and the page text lives in `content/` (front matter), not in the layouts.
 
 ## Technology Stack
 
@@ -27,11 +27,11 @@ python3 scripts/generate-favicons.py                  # regenerate static/icons/
 ```
 hugo.toml                  # site config, [params], [[menu.main]]
 content/_index.md          # home: title, description, lede (the introduction)
-content/work.md            # work page: intro and three projects (name, tag, drawing, summary, what, stack, source)
+content/projects.md        # projects page: three projects (name, tag, drawing, summary, what, stack, source)
 content/path.md            # path page: steps, toolkit, languages, hobbies
 content/now.md             # now page: rows and the updated date
 layouts/baseof.html        # html shell: head partial, top bar, footer
-layouts/{home,work,path,now,404}.html
+layouts/{home,projects,path,now,404}.html
 layouts/_partials/head.html            # title, description, canonical, social tags, icons, stylesheet
 layouts/_partials/drawing-*.html       # the three project drawings (SVG), shapes and labels only
 assets/css/                # tokens.css (colours), fonts.css, base.css, path.css, motion.css (all motion, last); concatenated into one stylesheet
@@ -45,8 +45,8 @@ scripts/                   # check-site.py, generate-favicons.py
 ## Configuration (hugo.toml)
 
 - Locale: English (`locale = "en-US"`, `DefaultContentLanguage = "en"`; `languageCode` is deprecated since Hugo 0.158)
-- `[[menu.main]]` drives the top bar and the three links on the home page (entries with a `[menu.main.params] description`); order is `weight`. work, path and now use `pageRef`; github, linkedin and mail use `url`
-- `[params]`: `role` (also the typed line on the home page: its length sets the typing steps, so keep it to one line on a phone, about 25 characters), `handle` (the name in the bar and the footer), `description` (site default, used when a page has none), `avatarurl`, `avataralt`
+- `[[menu.main]]` drives the top bar and the three links on the home page (entries with a `[menu.main.params] description`); order is `weight`. projects, path and now use `pageRef`; github, linkedin and mail use `url`
+- `[params]`: `role` (the footer and the page metadata; the home page says it in its paragraph, `lede` in `content/_index.md`), `handle` (the name in the bar and the footer), `description` (site default, used when a page has none), `avatarurl`, `avataralt`
 - Each page's `title` and `description` front matter become its `<title>`, meta description and sharing tags (Open Graph and Twitter card, text only, no image)
 
 ## Fonts
@@ -61,10 +61,10 @@ IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site
 - No JavaScript and no external requests (fonts, analytics, embeds): `scripts/check-site.py` fails on a `<script>` or on a stylesheet, image or font reference that leaves the site.
 - A `pageRef` to a page that does not exist renders `href=""` without a warning; `scripts/check-site.py` catches it.
 - All motion lives in `assets/css/motion.css`, inside its one `prefers-reduced-motion: no-preference` block, last in the concatenation; `scripts/check-site.py` fails on motion text (animation, transition, keyframes, view transitions, `scroll-behavior`) before that block and on any text after it. Page transitions work in Chrome, Edge and Safari 18.2+ only.
-- The work page's drawings and sheets have no motion (the owner rejected it) and must look the same at rest. Its page transition is the browser's plain cross-fade: `main:not(:has(.sheet))` leaves it out of the `content` transition name. Its title and subtitle still rise on arrival, with fill-mode `backwards`. Naming its `main`, or leaving a finished `both` fill on the title, each changed how the drawings were painted at rest (measured in Chrome 154).
+- The projects page's drawings and sheets have no motion (the owner rejected it) and must look the same at rest. Its page transition is the browser's plain cross-fade: `main:not(:has(.dwg))` leaves it out of the `content` transition name. It has no visible headline (its `h1` is visually hidden); each project's name is lettered onto the rule above it. Naming its `main`, or leaving a finished `both` fill on the title, each changed how the drawings were painted at rest (measured in Chrome 154).
 - Checking motion in the browser tool misleads in four ways (probe says "no transition" on `127.0.0.1`, no frames before a screenshot, JPEG noise, tab state): read `docs/solutions/checking-motion-in-the-browser-tool.md` first.
-- Work-page text, including each drawing's `summary` (the SVG `<title>`), lives in `content/work.md`; the drawing partials hold only shapes and labels.
-- The work page's design is owner-approved and must not change: edit its text in `content/work.md`, and leave `layouts/work.html`, the drawing partials and their CSS alone unless the owner asks for a redesign.
+- Projects-page text, including each drawing's `summary` (the SVG `<title>`), lives in `content/projects.md`; the drawing partials hold only shapes and labels.
+- The projects page's design is owner-approved and must not change: edit its text in `content/projects.md`, and leave `layouts/projects.html`, the drawing partials and their CSS alone unless the owner asks for a redesign.
 
 ## Deployment
 
