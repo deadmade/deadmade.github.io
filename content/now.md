@@ -5,13 +5,13 @@ layout: now
 rows:
   - label: "at work"
     text:
-      - "Working on the Gateway for Business Central."
+      - "Working on a REST API gateway for Microsoft Dynamics 365 Business Central."
   - label: "on the side"
     text:
-      - "dead-agent-skills: my own skills, flows and MCP servers for Claude Code and Codex."
+      - "[dead-agent-skills](https://github.com/deadmade/dead-agent-skills): my own skills, flows and MCP servers for Claude Code and Codex."
   - label: "priorities"
     text:
-      - "Be more active and visible on LinkedIn."
-      - "Exercise regularly."
+      - "Go deeper on ASP.NET Core and API design."
+      - "Get to know Business Central inside out."
 updated: "November 2026"
 ---

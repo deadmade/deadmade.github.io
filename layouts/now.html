@@ -1,4 +1,4 @@
-{{ define "bodyclass" }} class="path"{{ end }}
+{{ define "bodyclass" }} class="now"{{ end }}
 
 {{ define "main" }}
 <main class="page">
@@ -7,7 +7,7 @@
   <article class="sheet lead topic">
     <i class="om" aria-hidden="true"></i>
     <header class="sh"><h2><i class="tri"></i>{{ $row.label }}</h2>{{ if eq $i 0 }}<span class="tag">updated {{ $.Params.updated }}</span>{{ end }}</header>
-    <p>{{ range $j, $t := $row.text }}{{ if $j }}<br>{{ end }}{{ $t }}{{ end }}</p>
+    <p>{{ range $j, $t := $row.text }}{{ if $j }}<br>{{ end }}{{ $t | markdownify }}{{ end }}</p>
   </article>
   {{- end }}
 </main>

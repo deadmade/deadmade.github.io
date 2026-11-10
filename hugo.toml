@@ -8,7 +8,8 @@ disableKinds = ["taxonomy", "term", "RSS"]
   role = "Backend developer"
   handle = "deadmade"
   description = "Manuel Schülein, backend developer from Bavaria, Germany. APIs, business systems and developer tools; C# and .NET at work."
-  avatarurl = "/images/pfp.png"
+  avatarurl = "/images/pfp.webp"
+  images = ["/images/og.png"]
   avataralt = "Profile picture: a hooded figure with a wide grin and one glowing red eye"
 
 [[menu.main]]
@@ -16,7 +17,7 @@ disableKinds = ["taxonomy", "term", "RSS"]
   pageRef = "/projects"
   weight = 10
   [menu.main.params]
-    description = "three projects, one built alone"
+    description = "three projects: one solo, two team builds"
 
 [[menu.main]]
   name = "path"

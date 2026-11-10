@@ -16,7 +16,9 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 BASE = "https://deadmade.github.io"
-PAGES = {"/": "index.html", "/projects/": "projects/index.html", "/path/": "path/index.html", "/now/": "now/index.html"}
+PAGES = {"/": "index.html", "/projects/": "projects/index.html", "/path/": "path/index.html", "/now/": "now/index.html",
+         "/privacy/": "privacy/index.html"}
+OG_IMAGE = "/images/og.png"  # params.images in hugo.toml; the file is static/images/og.png, drawn by scripts/generate-og-image.py
 BAR = ["projects", "path", "now", "github", "linkedin", "mail"]
 results = []
 
@@ -30,10 +32,10 @@ class Page(HTMLParser):
 
     def __init__(self):
         super().__init__()
-        self.lang, self.a = None, None
+        self.lang, self.a, self.robots = None, None, None
         self.titles, self.desc, self.links, self.srcs, self.imgs = [], [], [], [], []
         self.anchors, self.nav, self.go, self.current = [], [], [], []
-        self.meta = Counter()
+        self.meta, self.images = Counter(), {}
         self.in_head = self.in_title = self.in_nav = self.in_go = False
 
     def handle_starttag(self, tag, attrs):
@@ -48,6 +50,10 @@ class Page(HTMLParser):
         elif tag == "meta":
             key = a.get("name") or a.get("property")
             self.meta[key] += 1
+            if key in ("og:image", "twitter:image"):
+                self.images[key] = a.get("content")
+            if key == "robots":
+                self.robots = a.get("content") or ""
             if key == "description":
                 self.desc.append((a.get("content") or "").strip())
         elif tag == "link":
@@ -124,10 +130,12 @@ def check_pages(pages):
         problems += [f"{len(title)} <title> in <head>, or empty"] if len(title) != 1 or not title[0] else []
         problems += [f"{len(p.desc)} meta descriptions, or empty"] if len(p.desc) != 1 or not p.desc[0] else []
         problems += [f"canonical is {canonical}"] if canonical != [BASE + path] else []
-        check("head", path, problems + ["meta keywords present"] * bool(p.meta["keywords"]))
-        want = ["og:title", "og:description", "og:url", "twitter:card"]
+        check("head", path, problems + ["meta keywords present"] * bool(p.meta["keywords"])
+              + [f"robots meta {p.robots!r} present"] * (p.robots is not None))
+        want = ["og:title", "og:description", "og:url", "og:image", "twitter:card", "twitter:image"]
         check("social", path, [f"{k} appears {p.meta[k]} times" for k in want if p.meta[k] != 1]
-              + [f"{k} present" for k in ("og:image", "twitter:image") if p.meta[k]])
+              + [f"{k} is {p.images.get(k)!r}, expected {BASE}{OG_IMAGE}" for k in ("og:image", "twitter:image")
+                 if p.images.get(k) != BASE + OG_IMAGE])
         bar = [a["text"].strip() for a in p.nav]
         problems = [f"bar reads {bar}"] if bar != BAR else []
         problems += [f"aria-current=page on {p.current}"] if [urlparse(h or "").path for h in p.current] != [path] else []
@@ -146,6 +154,7 @@ def check_links(out, pages):
     for path, p in pages.items():
         raw = (out / PAGES[path]).read_text(encoding="utf-8")
         refs = [("src", s) for s in p.srcs] + [("link", x.get("href")) for x in p.links] + [("a", a["href"]) for a in p.anchors]
+        refs += [("meta", v) for v in p.images.values()]
         problems = [m for kind, ref in refs if (m := ref_problem(out, kind, ref))]
         check("links", path, problems + ["<script> present"] * ("<script" in raw.lower()) + ["names a font file"] * (".woff2" in raw))
         sheets |= {urlparse(x["href"]).path for x in p.links if x.get("rel") == "stylesheet" and (x.get("href") or "").startswith("/")}
@@ -153,6 +162,16 @@ def check_links(out, pages):
         css = (out / sheet.lstrip("/")).read_text(encoding="utf-8")
         refs = re.findall(r"url\(\s*['\"]?([^'\")\s]+)['\"]?\s*\)", css) + re.findall(r"@import\s+['\"]([^'\"]+)", css)
         check("links", sheet, [m for ref in refs if (m := ref_problem(out, "css", ref))])
+
+
+def check_404(out):
+    """The 404 page is served at any missing path: it must not be indexed, and its references must work from anywhere."""
+    p = Page()
+    p.feed((out / "404.html").read_text(encoding="utf-8"))
+    problems = [f"robots meta is {p.robots!r}, expected 'noindex'"] if p.robots != "noindex" else []
+    problems += ["canonical present"] * any(x.get("rel") == "canonical" for x in p.links)
+    refs = [("src", s) for s in p.srcs] + [("link", x.get("href")) for x in p.links] + [("a", a["href"]) for a in p.anchors]
+    check("404", "/404.html", problems + [m for kind, ref in refs if (m := ref_problem(out, kind, ref))])
 
 
 def check_sitemap(out):
@@ -205,6 +224,7 @@ def main():
                     pages[path].feed((out / name).read_text(encoding="utf-8"))
             check_pages(pages)
             check_links(out, pages)
+            check_404(out)
             check_sitemap(out)
             check_seams(out)
     finally:

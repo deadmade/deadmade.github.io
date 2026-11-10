@@ -3,7 +3,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ .Title }}</title>
 <meta name="description" content="{{ .Description | default site.Params.description }}">
+{{- if eq .Kind "404" }}
+<meta name="robots" content="noindex">
+{{- else }}
 <link rel="canonical" href="{{ .Permalink }}">
+{{- end }}
 {{ template "_internal/opengraph.html" . }}
 {{ template "_internal/twitter_cards.html" . }}
 <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">

@@ -1,13 +1,13 @@
-/* path and now pages: body.path. Every rule here starts with body.path. */
+/* path and now pages: body.path and body.now. Every rule here starts with one of them, or with body:is(.path,.now) for both. */
 
 /* little space above the content and above the footer, so the pages need as little scrolling as they can */
-body.path .page{padding-top:clamp(18px,3.5vh,36px)}
-body.path footer{padding-top:clamp(32px,4vh,56px)}
+body:is(.path,.now) .page{padding-top:clamp(18px,3.5vh,36px)}
+body:is(.path,.now) footer{padding-top:clamp(32px,4vh,56px)}
 body.path ol,body.path ul{list-style:none;padding:0}
 
-/* ---- path: two sheets, their names lettered on the top edge like the projects page ---- */
-body.path .sheet{margin-top:clamp(34px,4.5vh,52px)}
-body.path .sh{padding-bottom:clamp(8px,1.2vh,16px)}
+/* ---- both: sheets with their names lettered on the top edge like the projects page ---- */
+body:is(.path,.now) .sheet{margin-top:clamp(34px,4.5vh,52px)}
+body:is(.path,.now) .sh{padding-bottom:clamp(8px,1.2vh,16px)}
 
 /* career: one line runs through the steps, newest first; a node per step, the current one pink */
 body.path .log{margin:0;padding:14px 0 12px;--x:clamp(150px,13vw,200px)}
@@ -58,5 +58,5 @@ body.path .off li span{font-size:14px;color:var(--muted)}
 
 /* ---- now: one sheet per topic, its name lettered on the top edge like career and toolkit; the answer in large type,
    the first in the bright colour, the rest muted. The type follows the window's height too, so the page fits one screen ---- */
-body.path .topic p{max-width:34ch;padding:4px 0 clamp(26px,3.4vh,40px);font-size:clamp(24px,min(2.6vw,4.2vh),40px);font-weight:700;line-height:1.15;letter-spacing:-.03em;text-wrap:balance;color:var(--muted)}
-body.path .topic:first-of-type p{color:var(--fg)}
+body.now .topic p{max-width:34ch;padding:4px 0 clamp(26px,3.4vh,40px);font-size:clamp(24px,min(2.6vw,4.2vh),40px);font-weight:700;line-height:1.15;letter-spacing:-.03em;text-wrap:balance;color:var(--muted)}
+body.now .topic:first-of-type p{color:var(--fg)}

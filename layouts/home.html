@@ -6,7 +6,7 @@
     <i class="ct" aria-hidden="true"></i>
     <div class="plate">
       <div class="intro">
-        <h1>{{ range split site.Title " " }}<span>{{ . }}</span>{{ end }}</h1>
+        <h1>{{ range $i, $w := split site.Title " " }}{{ if $i }} {{ end }}<span>{{ $w }}</span>{{ end }}</h1>
         <p class="lede">{{ .Params.lede }}<span class="cursor" aria-hidden="true">_</span></p>
       </div>
       <figure class="pfp">

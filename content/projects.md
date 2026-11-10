@@ -36,7 +36,7 @@ projects:
     tag: "team build"
     drawing: isopruefi
     summary: "IsoPrüfi: Arduino devices on the north and south sides of the building measure the indoor temperature, buffer readings on an SD card while offline, and publish over MQTT to an external broker. In Docker, a .NET MQTT receiver worker stores the readings in InfluxDB. A second .NET worker pulls the outdoor temperature from a weather API, Open-Meteo or Bright Sky, into InfluxDB. A REST API reads InfluxDB and keeps users and settings in PostgreSQL. A React front end, served by nginx, calls the REST API. Each service runs twice behind Traefik."
-    what: "Analyze building insulation by comparing indoor temperature, measured by Arduino devices on the north and south sides of the building, with outdoor temperature from a weather API."
+    what: "A system that tests how well a building is insulated by comparing indoor and outdoor temperature. Arduino devices on the north and south sides measure inside, a weather API supplies outside, and the readings are recorded and evaluated even when parts of the system fail."
     stack:
       - "ASP.NET Core"
       - "React"

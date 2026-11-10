@@ -15,7 +15,7 @@
 {{ block "main" . }}{{ end }}
 
 <footer class="plain">
-  <div class="foot"><span>{{ site.Title }} · {{ lower site.Params.role }}</span><span>github.com/{{ site.Params.handle }}</span></div>
+  <div class="foot"><span>{{ site.Title }} · {{ lower site.Params.role }}</span><span>github.com/{{ site.Params.handle }}{{ with site.GetPage "/privacy" }} · <a href="{{ .RelPermalink }}"{{ if eq . $ }} aria-current="page"{{ end }}>privacy</a>{{ end }}</span></div>
 </footer>
 
 </body>

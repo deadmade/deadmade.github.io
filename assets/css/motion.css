@@ -3,7 +3,6 @@
    scripts/check-site.py fails on motion text before this query. Nothing here touches the projects page's drawings or sheets. */
 @media (prefers-reduced-motion: no-preference){
   :root{--ease:cubic-bezier(.2,.7,.2,1)}
-  html{scroll-behavior:smooth}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}}
   @keyframes fade{from{opacity:0}}
 
@@ -61,9 +60,9 @@
   .page h1{animation:rise .6s var(--ease) backwards}
   .page .sub{animation:rise .6s var(--ease) .08s backwards}
   /* /now/: the topic sheets rise in turn (a fourth would rise without a delay) */
-  body.path .topic{animation:rise .55s var(--ease) both}
-  body.path .topic:nth-of-type(2){animation-delay:.08s}
-  body.path .topic:nth-of-type(3){animation-delay:.16s}
+  body.now .topic{animation:rise .55s var(--ease) both}
+  body.now .topic:nth-of-type(2){animation-delay:.08s}
+  body.now .topic:nth-of-type(3){animation-delay:.16s}
   /* /path/: the career steps rise in turn, newest first */
   body.path .log li{animation:rise .55s var(--ease) both}
   body.path .log li:nth-child(2){animation-delay:.08s}

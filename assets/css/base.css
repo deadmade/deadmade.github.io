@@ -102,8 +102,6 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
 .dwg .y{fill:var(--muted);font-size:12px}
 .dwg .sm{font-size:12px}
 .dwg .ln,.legend .ln{fill:none;stroke:var(--quiet);stroke-width:1;vector-effect:non-scaling-stroke}
-.dwg .ln.fine{stroke:var(--line)}
-.dwg .la{fill:none;stroke:var(--accent);stroke-width:1.5;vector-effect:non-scaling-stroke}
 .dwg .bx,.legend .bx{fill:var(--bg);stroke:var(--muted);stroke-width:1.5;vector-effect:non-scaling-stroke}
 .dwg .grp,.legend .grp{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:5 4;vector-effect:non-scaling-stroke}
 .dwg .st,.legend .st{fill:var(--bg);stroke:var(--fg);stroke-width:1;vector-effect:non-scaling-stroke}
@@ -138,7 +136,6 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
 .lead .fig{border-right:1px solid var(--line);padding-right:clamp(16px,2.4vw,34px)}
 .lead .tb{padding:6px 0 18px}
 
-
 /* the two team projects are stacked, not side by side: with the detail they carry, each drawing needs the width */
 /* beside the drawing the text grows a little with the window, so both columns keep about the same height */
 @media(min-width:1200px){
@@ -148,61 +145,12 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
   .src{font-size:clamp(14px,.9vw,19px)}
 }
 
-/* path: dimension chain, title block, revision block, parts list */
-.chain .fig{padding-top:clamp(28px,3.4vw,48px)}
-.chain .dwg.h{max-width:1180px}
-.tblock{display:flex;flex-wrap:wrap;justify-content:flex-end;margin:0 calc(-1 * clamp(16px,2.4vw,34px));border-top:1px solid var(--line);font-size:13px}
-.tblock div{padding:10px clamp(14px,2vw,24px) 12px;border-left:1px solid var(--line)}
-.tblock div:first-child{border-left:0}
-.tblock dt{font-size:11px;letter-spacing:.1em;color:var(--quiet)}
-.tblock dd{font-weight:600}
-
-.split{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);column-gap:0}
-.split > section{padding:clamp(22px,2.6vw,34px) 0 clamp(26px,3vw,40px)}
-.revs-wrap{padding-right:clamp(20px,3vw,48px) !important;border-right:1px solid var(--line)}
-.parts-wrap{padding-left:clamp(20px,3vw,48px) !important}
-.lab{display:flex;align-items:center;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.08em}
-.rh{display:grid;grid-template-columns:28px 13ch 1fr;gap:16px;padding:6px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.1em;color:var(--quiet)}
-.rh.two{grid-template-columns:1fr auto}
-.revs{list-style:none;padding:0}
-.revs li{display:grid;grid-template-columns:28px 13ch 1fr;gap:16px;align-items:baseline;padding:18px 0 20px;border-bottom:1px solid var(--line)}
-.revs time{font-weight:600;font-size:15px;color:var(--muted)}
-.revs b{display:block;font-weight:700;font-size:clamp(17px,1.6vw,22px);line-height:1.25}
-.revs span{display:block;margin-top:4px;color:var(--muted);font-size:14px}
-.revs .notes{color:var(--quiet);font-size:13px}
-.revs .cur time{color:var(--fg)}
-/* the revision delta, drawn as a hollow hood triangle; the current one is filled */
-.dl{position:relative;display:block;width:18px;height:15px;align-self:start;margin-top:5px;background:var(--quiet);clip-path:polygon(50% 0,100% 100%,0 100%)}
-.dl::after{content:"";position:absolute;left:3px;right:3px;top:5px;bottom:1.5px;background:var(--bg);clip-path:polygon(50% 0,100% 100%,0 100%)}
-.cur .dl{background:var(--accent)}
-.cur .dl::after{display:none}
-
-.parts{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
-.parts .pri{grid-column:1 / -1}
-.parts li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:15px}
-.parts .pri{color:var(--fg);font-weight:700;font-size:clamp(18px,1.7vw,24px);padding:9px 0}
-.parts em{font-style:normal;font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--quiet)}
-.lang-lab{margin-top:clamp(28px,3vw,40px)}
-.langs{font-size:clamp(18px,1.8vw,24px);font-weight:600;letter-spacing:-.02em}
-
 @media(max-width:1299px){
   .lead .body{grid-template-columns:1fr}
   .lead .fig{border-right:0;padding-right:0;border-bottom:1px solid var(--line)}
   .lead .tb{grid-template-columns:1fr 1fr;column-gap:24px;padding-top:0}
   .lead .tb .wide{grid-column:1 / -1}
   .lead .tb .cell:nth-last-child(-n+2){border-bottom:0}
-}
-@media(max-width:899px){
-  .chain .dwg.h{display:none}
-  .chain .dwg.v{display:block}
-  .split{grid-template-columns:1fr}
-  .revs-wrap{padding-right:0 !important;border-right:0}
-  .parts-wrap{padding-left:0 !important;border-top:1px solid var(--line)}
-}
-@media(min-width:700px) and (max-width:899px){
-  .chain{display:grid;grid-template-columns:minmax(0,420px) 1fr;column-gap:24px}
-  .tblock{flex-direction:column;justify-content:flex-end;margin:0 calc(-1 * clamp(16px,2.4vw,34px)) 0 0;border-top:0;border-left:1px solid var(--line)}
-  .tblock div{border-left:0;border-top:1px solid var(--line)}
 }
 /* below 760px the drawings switch to their upright versions: the wide ones would drop under 10px text */
 @media(max-width:759px){
@@ -214,14 +162,16 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
   .dwg.v{display:block}
   .lead .tb{grid-template-columns:1fr}
   .tb .cell:nth-last-child(2){border-bottom:1px solid var(--line) !important}
-  .rh{display:none}
-  .revs li{grid-template-columns:24px 1fr;gap:4px 12px}
-  .revs li > div{grid-column:2}
-  .tblock{justify-content:flex-start}
   /* the tag moves under the name */
   .sh{flex-wrap:wrap;row-gap:10px}
   .sh .tag{margin:0 0 0 -12px;padding-left:12px}
 }
+
+/* ---------- privacy: running text on one sheet ---------- */
+.privacy .page{padding-top:clamp(18px,3.5vh,36px)}
+.prose{padding-bottom:clamp(28px,3vw,44px)}
+.prose > h3{margin-top:28px;font-size:13px;font-weight:600;letter-spacing:.08em;color:var(--muted)}
+.prose p{max-width:72ch;margin-top:8px;font-size:15px}
 
 /* ---------- foot ---------- */
 footer{margin-top:auto;padding:clamp(60px,8vw,110px) var(--pad) 0;overflow:hidden}
