@@ -9,6 +9,7 @@ enableGitInfo = true
 [params]
   role = "Backend developer"
   handle = "deadmade"
+  alternatename = "Manuel Schuelein"
   description = "Manuel Schülein, backend developer from Bavaria, Germany. APIs, business systems and developer tools; C# and .NET at work."
   avatarurl = "/images/pfp.webp"
   images = ["/images/og.png"]

@@ -23,6 +23,14 @@
 <link rel="icon" href="/icons/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="manifest" href="/icons/site.webmanifest">
+{{- if .IsHome }}
+{{- $sameAs := slice }}
+{{- range site.Menus.main }}{{ if hasPrefix .URL "https://" }}{{ $sameAs = $sameAs | append .URL }}{{ end }}{{ end }}
+{{- $person := dict "@type" "Person" "name" site.Title "alternateName" (slice site.Params.alternatename site.Params.handle) "url" .Permalink "image" (absURL site.Params.avatarurl) "jobTitle" site.Params.role "sameAs" $sameAs }}
+{{- $profile := dict "@type" "ProfilePage" "url" .Permalink "name" .Title "dateModified" .Lastmod "mainEntity" $person }}
+{{- $website := dict "@type" "WebSite" "name" site.Title "url" .Permalink }}
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@graph" (slice $website $profile) }}</script>
+{{- end }}
 {{- $css := resources.Concat "css/main.css" (slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/base.css") (resources.Get "css/path.css") (resources.Get "css/motion.css")) | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}">
 </head>

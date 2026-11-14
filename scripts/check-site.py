@@ -4,6 +4,7 @@
 Prints PASS/FAIL <check> <page>[: reason] per check and page; exits 1 on any FAIL.
 The checks are listed in docs/features/job-application-portfolio/plan.md, Task 1, and docs/features/seo/plan.md.
 """
+import json
 import os
 import re
 import shutil
@@ -39,7 +40,9 @@ class Page(HTMLParser):
         self.anchors, self.nav, self.go, self.current = [], [], [], []
         self.meta, self.images, self.content = Counter(), {}, {}
         self.foot, self.name, self.role = None, "", ""  # the footer's first span: "<name> · <role>"
+        self.h1, self.scripts, self.ld = None, [], []  # ld: the text of each application/ld+json script
         self.in_head = self.in_title = self.in_nav = self.in_go = self.in_foot = self.in_foot_span = False
+        self.in_h1 = self.in_ld = False
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -72,8 +75,16 @@ class Page(HTMLParser):
             self.in_foot = True
         elif tag == "span" and self.in_foot and self.foot is None:
             self.foot, self.in_foot_span = "", True
+        elif tag == "h1":
+            self.h1, self.in_h1 = "", True
+        elif tag == "script":
+            self.scripts.append((a.get("type") or "").strip().lower())
+            if self.scripts[-1] == "application/ld+json":
+                self.ld.append("")
+                self.in_ld = True
         elif tag == "a":
-            self.a = {"href": a.get("href"), "label": (a.get("aria-label") or "").strip(), "text": ""}
+            self.a = {"href": a.get("href"), "label": (a.get("aria-label") or "").strip(), "text": "",
+                      "cls": (a.get("class") or "").split()}
         if "src" in a:
             self.srcs.append(a["src"])
         if a.get("aria-current") == "page":
@@ -94,6 +105,11 @@ class Page(HTMLParser):
             self.in_foot_span = False
             name, _, role = self.foot.partition(" · ")
             self.name, self.role = name.strip(), role.strip()
+        elif tag == "h1" and self.in_h1:
+            self.in_h1 = False
+            self.h1 = " ".join(self.h1.split())
+        elif tag == "script":
+            self.in_ld = False
         elif tag == "a" and self.a is not None:
             self.anchors.append(self.a)
             if self.in_nav:
@@ -109,6 +125,10 @@ class Page(HTMLParser):
             self.a["text"] += data
         if self.in_foot_span:
             self.foot += data
+        if self.in_h1:
+            self.h1 += data
+        if self.in_ld:
+            self.ld[-1] += data
 
 
 def png_size(path):
@@ -205,6 +225,43 @@ def check_icon(out, p):
     check("icon", "/", problems + ["no PNG icon larger than 48x48"] * (not any(n > 48 for n in sides)))
 
 
+def check_data(out, p):
+    """The home page's JSON-LD says only what the page shows (Google's structured-data rule)."""
+    try:
+        doc = json.loads(p.ld[0]) if p.ld else None
+    except ValueError as e:
+        return check("data", "/", [f"the JSON-LD block is not JSON: {e}"])
+    if not isinstance(doc, dict):
+        return check("data", "/", ["no JSON-LD block on the home page" if doc is None else "the JSON-LD block is not an object"])
+    graph = doc.get("@graph") if isinstance(doc.get("@graph"), list) else []
+    nodes = {n.get("@type"): n for n in graph if isinstance(n, dict)}
+    site, page = nodes.get("WebSite", {}), nodes.get("ProfilePage", {})
+    person = page.get("mainEntity") if isinstance(page.get("mainEntity"), dict) else {}
+    home, mod, title = BASE + "/", lastmods(out).get(BASE + "/"), (p.titles or [""])[0].strip()
+    mark = next((a["text"].strip() for a in p.anchors if "mark" in a["cls"]), "")
+    img = (p.imgs or [{}])[0].get("src") or ""
+    alternate = tomllib.loads((ROOT / "hugo.toml").read_text(encoding="utf-8")).get("params", {}).get("alternatename")
+    job = person.get("jobTitle")
+    problems = [f"the home page shows no {k}" for k, v in (("<h1>", p.h1), ("<title>", title), ("mark", mark), ("<img>", img), ("role", p.role)) if not v]
+    problems += [f"@graph holds {sorted(map(str, nodes))} in {len(graph)} nodes, expected one WebSite and one ProfilePage"] * (
+        len(graph) != 2 or set(nodes) != {"WebSite", "ProfilePage"})
+    problems += [f"{key} is {found!r}, expected {want!r}" for key, found, want in (
+        ("@context", doc.get("@context"), "https://schema.org"),
+        ("WebSite name", site.get("name"), p.h1), ("WebSite url", site.get("url"), home),
+        ("ProfilePage url", page.get("url"), home), ("ProfilePage name", page.get("name"), title),
+        ("mainEntity @type", person.get("@type"), "Person"), ("Person name", person.get("name"), p.h1),
+        ("Person alternateName", person.get("alternateName"), [alternate, mark]), ("Person url", person.get("url"), home),
+        ("Person image", person.get("image"), BASE + img),
+        ("Person jobTitle, lowercased", job.lower() if isinstance(job, str) else job, p.role),
+        ("Person sameAs", person.get("sameAs"), [a["href"] for a in p.nav if (a["href"] or "").startswith("https://")]),
+    ) if found != want]
+    try:  # the same instant: a +00:00 commit is written Z in the JSON-LD and +00:00 in the sitemap
+        same = datetime.fromisoformat(page.get("dateModified")) == datetime.fromisoformat(mod)
+    except (TypeError, ValueError):
+        same = False
+    check("data", "/", problems + [f"ProfilePage dateModified is {page.get('dateModified')!r}, the sitemap lastmod for / is {mod}"] * (not same))
+
+
 def check_links(out, pages):
     sheets = set()
     for path, p in pages.items():
@@ -212,7 +269,11 @@ def check_links(out, pages):
         refs = [("src", s) for s in p.srcs] + [("link", x.get("href")) for x in p.links] + [("a", a["href"]) for a in p.anchors]
         refs += [("meta", v) for v in p.images.values()]
         problems = [m for kind, ref in refs if (m := ref_problem(out, kind, ref))]
-        check("links", path, problems + ["<script> present"] * ("<script" in raw.lower()) + ["names a font file"] * (".woff2" in raw))
+        scripts, allowed = raw.lower().count("<script"), 1 if path == "/" else 0  # the one JSON-LD block sits on the home page
+        problems += [f"<script type={t!r}> present" for t in p.scripts if t != "application/ld+json"]
+        problems += [f"{scripts} '<script' in the HTML, the parser saw {len(p.scripts)} scripts"] * (scripts != len(p.scripts))
+        problems += [f"{len(p.ld)} JSON-LD blocks, at most {allowed} allowed"] * (len(p.ld) > allowed)
+        check("links", path, problems + ["names a font file"] * (".woff2" in raw))
         sheets |= {urlparse(x["href"]).path for x in p.links if x.get("rel") == "stylesheet" and (x.get("href") or "").startswith("/")}
     for sheet in sorted(sheets):
         css = (out / sheet.lstrip("/")).read_text(encoding="utf-8")
@@ -223,8 +284,10 @@ def check_links(out, pages):
 def check_404(out):
     """The 404 page is served at any missing path: it must not be indexed, and its references must work from anywhere."""
     p = Page()
-    p.feed((out / "404.html").read_text(encoding="utf-8"))
+    raw = (out / "404.html").read_text(encoding="utf-8")
+    p.feed(raw)
     problems = [f"robots meta is {p.robots!r}, expected 'noindex'"] if p.robots != "noindex" else []
+    problems += ["<script> present"] * ("<script" in raw.lower())
     problems += ["canonical present"] * any(x.get("rel") == "canonical" for x in p.links)
     refs = [("src", s) for s in p.srcs] + [("link", x.get("href")) for x in p.links] + [("a", a["href"]) for a in p.anchors]
     check("404", "/404.html", problems + [m for kind, ref in refs if (m := ref_problem(out, kind, ref))])
@@ -311,6 +374,7 @@ def main():
             check_pages(out, pages)
             if "/" in pages:
                 check_icon(out, pages["/"])
+                check_data(out, pages["/"])
             check_links(out, pages)
             check_404(out)
             check_sitemap(out)
