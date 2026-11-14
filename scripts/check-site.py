@@ -37,8 +37,9 @@ class Page(HTMLParser):
         self.lang, self.a, self.robots = None, None, None
         self.titles, self.desc, self.links, self.srcs, self.imgs = [], [], [], [], []
         self.anchors, self.nav, self.go, self.current = [], [], [], []
-        self.meta, self.images = Counter(), {}
-        self.in_head = self.in_title = self.in_nav = self.in_go = False
+        self.meta, self.images, self.content = Counter(), {}, {}
+        self.foot, self.name, self.role = None, "", ""  # the footer's first span: "<name> · <role>"
+        self.in_head = self.in_title = self.in_nav = self.in_go = self.in_foot = self.in_foot_span = False
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -52,6 +53,7 @@ class Page(HTMLParser):
         elif tag == "meta":
             key = a.get("name") or a.get("property")
             self.meta[key] += 1
+            self.content[key] = a.get("content")
             if key in ("og:image", "twitter:image"):
                 self.images[key] = a.get("content")
             if key == "robots":
@@ -66,6 +68,10 @@ class Page(HTMLParser):
             self.in_nav = True
         elif tag == "ul":
             self.in_go = "go" in (a.get("class") or "").split()
+        elif tag == "footer":
+            self.in_foot = True
+        elif tag == "span" and self.in_foot and self.foot is None:
+            self.foot, self.in_foot_span = "", True
         elif tag == "a":
             self.a = {"href": a.get("href"), "label": (a.get("aria-label") or "").strip(), "text": ""}
         if "src" in a:
@@ -82,6 +88,12 @@ class Page(HTMLParser):
             self.in_nav = False
         elif tag == "ul":
             self.in_go = False
+        elif tag == "footer":
+            self.in_foot = False
+        elif tag == "span" and self.in_foot_span:
+            self.in_foot_span = False
+            name, _, role = self.foot.partition(" · ")
+            self.name, self.role = name.strip(), role.strip()
         elif tag == "a" and self.a is not None:
             self.anchors.append(self.a)
             if self.in_nav:
@@ -95,6 +107,19 @@ class Page(HTMLParser):
             self.titles[-1] += data
         if self.a is not None:
             self.a["text"] += data
+        if self.in_foot_span:
+            self.foot += data
+
+
+def png_size(path):
+    """(width, height) from a PNG's IHDR chunk; ValueError when the file is missing or not a PNG."""
+    if not path.is_file():
+        raise ValueError("is missing")
+    with path.open("rb") as f:
+        head = f.read(24)
+    if head[:8] != b"\x89PNG\r\n\x1a\n" or head[12:16] != b"IHDR":
+        raise ValueError("is not a PNG")
+    return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")
 
 
 def classify(ref):
@@ -124,7 +149,11 @@ def ref_problem(out, kind, ref):
         return f"{kind} {ref} names no file"
 
 
-def check_pages(pages):
+def check_pages(out, pages):
+    try:
+        og_size, og_problems = [str(n) for n in png_size(out / OG_IMAGE.lstrip("/"))], []
+    except ValueError as e:
+        og_size, og_problems = [], [f"{OG_IMAGE} {e}"]
     for path, p in pages.items():
         title = [t.strip() for t in p.titles]
         canonical = [x.get("href") for x in p.links if x.get("rel") == "canonical"]
@@ -134,10 +163,17 @@ def check_pages(pages):
         problems += [f"canonical is {canonical}"] if canonical != [BASE + path] else []
         check("head", path, problems + ["meta keywords present"] * bool(p.meta["keywords"])
               + [f"robots meta {p.robots!r} present"] * (p.robots is not None))
-        want = ["og:title", "og:description", "og:url", "og:image", "twitter:card", "twitter:image"]
+        want = ["og:title", "og:description", "og:url", "og:image", "og:image:width", "og:image:height", "og:image:alt",
+                "twitter:card", "twitter:image", "twitter:image:alt"]
+        alt = f"{p.name}, {p.role}"  # what the share image shows: the name over the role
         check("social", path, [f"{k} appears {p.meta[k]} times" for k in want if p.meta[k] != 1]
               + [f"{k} is {p.images.get(k)!r}, expected {BASE}{OG_IMAGE}" for k in ("og:image", "twitter:image")
-                 if p.images.get(k) != BASE + OG_IMAGE])
+                 if p.images.get(k) != BASE + OG_IMAGE]
+              + [f"og:url is {p.content.get('og:url')!r}, expected {BASE + path}"] * (p.content.get("og:url") != BASE + path)
+              + (og_problems or [f"{k} is {p.content.get(k)!r}, the file says {v}"
+                                 for k, v in zip(("og:image:width", "og:image:height"), og_size) if p.content.get(k) != v])
+              + [f"{k} is {p.content.get(k)!r}, expected {alt!r}" for k in ("og:image:alt", "twitter:image:alt")
+                 if p.content.get(k) != alt])
         bar = [a["text"].strip() for a in p.nav]
         problems = [f"bar reads {bar}"] if bar != BAR else []
         problems += [f"aria-current=page on {p.current}"] if [urlparse(h or "").path for h in p.current] != [path] else []
@@ -149,6 +185,24 @@ def check_pages(pages):
     for label, values in (("title", [t.strip() for p in pages.values() for t in p.titles]),
                           ("description", [d for p in pages.values() for d in p.desc])):
         check("head", "-", [f"{label} repeats: {v!r}" for v, n in Counter(values).items() if n > 1])
+
+
+def check_icon(out, p):
+    """Google shows a PNG icon (not the SVG), larger than 48x48; every PNG icon link's sizes must match its file."""
+    problems, sides = [], []
+    for link in p.links:
+        if link.get("rel") == "icon" and link.get("type") == "image/png":
+            href, sizes = link.get("href") or "", link.get("sizes") or ""
+            try:
+                size = png_size(out / urlparse(href).path.lstrip("/"))
+            except ValueError as e:
+                problems.append(f"{href} {e}")
+                continue
+            if sizes != f"{size[0]}x{size[1]}" or size[0] != size[1]:
+                problems.append(f"{href} says sizes={sizes!r}, the file is {size[0]}x{size[1]}")
+            else:
+                sides.append(size[0])
+    check("icon", "/", problems + ["no PNG icon larger than 48x48"] * (not any(n > 48 for n in sides)))
 
 
 def check_links(out, pages):
@@ -254,7 +308,9 @@ def main():
                 if (out / name).is_file():
                     pages[path] = Page()
                     pages[path].feed((out / name).read_text(encoding="utf-8"))
-            check_pages(pages)
+            check_pages(out, pages)
+            if "/" in pages:
+                check_icon(out, pages["/"])
             check_links(out, pages)
             check_404(out)
             check_sitemap(out)
