@@ -30,7 +30,7 @@ hugo.toml                  # site config, [params], [[menu.main]]
 content/_index.md          # home: title, description, lede (the introduction)
 content/projects.md        # projects page: three projects (name, tag, drawing, summary, what, stack, source)
 content/path.md            # path page: steps, toolkit, languages, hobbies
-content/now.md             # now page: rows (each line is inline Markdown, so it can link) and the updated date
+content/now.md             # now page: rows (each line is inline Markdown, so it can link); its "updated" month is now.md's last commit
 layouts/baseof.html        # html shell: head partial, top bar, footer
 layouts/{home,projects,path,now,404}.html
 layouts/_partials/head.html            # title, description, canonical, social tags, icons, stylesheet
@@ -50,6 +50,7 @@ scripts/                   # check-site.py, generate-favicons.py, generate-og-im
 - `[[menu.main]]` drives the top bar and the three links on the home page (entries with a `[menu.main.params] description`); order is `weight`. projects, path and now use `pageRef`; github, linkedin and mail use `url`
 - `[params]`: `role` (the footer, the page metadata and the share image; the home page says it in its paragraph, `lede` in `content/_index.md`), `handle` (the name in the bar and the footer), `description` (site default, used when a page has none), `images` (the share image), `avatarurl`, `avataralt`
 - Each page's `title` and `description` front matter become its `<title>`, meta description and sharing tags (Open Graph and Twitter card, `summary_large_image` with `params.images`)
+- `enableGitInfo` makes Git the source of page dates: the sitemap's `lastmod`, the now page's "updated" month and `article:modified_time` are the last commit of each page's content file. A page's date moves only when its content file is committed (edits to layouts or `hugo.toml` don't move it); CI checks out with `fetch-depth: 0` for this. Every build needs a Git checkout with its history and `git` on PATH: without `.git`, Hugo stops with `failed to load Git data`
 
 ## Fonts
 

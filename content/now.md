@@ -13,5 +13,4 @@ rows:
     text:
       - "Go deeper on ASP.NET Core and API design."
       - "Get to know Business Central inside out."
-updated: "November 2026"
 ---

@@ -4,6 +4,7 @@ locale = "en-US"
 DefaultContentLanguage = "en"
 disableKinds = ["taxonomy", "term", "RSS"]
 enableRobotsTXT = true
+enableGitInfo = true
 
 [params]
   role = "Backend developer"

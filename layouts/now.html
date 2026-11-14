@@ -6,7 +6,7 @@
   {{- range $i, $row := .Params.rows }}
   <article class="sheet lead topic">
     <i class="om" aria-hidden="true"></i>
-    <header class="sh"><h2><i class="tri"></i>{{ $row.label }}</h2>{{ if eq $i 0 }}<span class="tag">updated {{ $.Params.updated }}</span>{{ end }}</header>
+    <header class="sh"><h2><i class="tri"></i>{{ $row.label }}</h2>{{ if eq $i 0 }}{{ with $.Lastmod }}<span class="tag">updated {{ .Format "January 2006" }}</span>{{ end }}{{ end }}</header>
     <p>{{ range $j, $t := $row.text }}{{ if $j }}<br>{{ end }}{{ $t | markdownify }}{{ end }}</p>
   </article>
   {{- end }}

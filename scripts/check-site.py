@@ -12,6 +12,7 @@ import sys
 import tempfile
 import tomllib
 from collections import Counter
+from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -175,14 +176,32 @@ def check_404(out):
     check("404", "/404.html", problems + [m for kind, ref in refs if (m := ref_problem(out, kind, ref))])
 
 
+def lastmods(out):
+    """Each sitemap <loc> mapped to its <lastmod>, or None when the URL has none."""
+    sitemap = out / "sitemap.xml"
+    text = sitemap.read_text(encoding="utf-8") if sitemap.is_file() else ""
+    return {loc.group(1): (mod.group(1) if (mod := re.search(r"<lastmod>([^<]+)</lastmod>", url)) else None)
+            for url in re.findall(r"<url>(.*?)</url>", text, re.S) if (loc := re.search(r"<loc>([^<]+)</loc>", url))}
+
+
 def check_sitemap(out):
-    sitemap, robots = out / "sitemap.xml", out / "robots.txt"
-    locs = set(re.findall(r"<loc>([^<]+)</loc>", sitemap.read_text(encoding="utf-8"))) if sitemap.is_file() else set()
+    robots, dates = out / "robots.txt", lastmods(out)
     want = {BASE + p for p in PAGES}
     lines = robots.read_text(encoding="utf-8").splitlines() if robots.is_file() else []
-    check("sitemap", "-", ([f"sitemap lists {sorted(locs)}, expected {sorted(want)}"] if locs != want else [])
+    stamp = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})"  # RFC 3339, as Google reads lastmod
+    check("sitemap", "-", ([f"sitemap lists {sorted(dates)}, expected {sorted(want)}"] if set(dates) != want else [])
+          + [f"no lastmod for {url}" if mod is None else f"lastmod {mod} for {url} is not RFC 3339"
+             for url, mod in sorted(dates.items()) if mod is None or not re.fullmatch(stamp, mod)]
           + ([f"robots.txt lacks 'Sitemap: {BASE}/sitemap.xml'"] if f"Sitemap: {BASE}/sitemap.xml" not in lines else [])
           + [f"robots.txt says {line!r}" for line in lines if re.match(r"\s*disallow\s*:\s*\S", line, re.I)])
+
+
+def check_dates(out):
+    """The now page's "updated" month is the month of its Git date, as the sitemap gives it."""
+    mod, page = lastmods(out).get(BASE + "/now/"), out / PAGES["/now/"]
+    said = re.findall(r"updated ([A-Za-z]+ \d{4})", page.read_text(encoding="utf-8") if page.is_file() else "")
+    want = datetime.fromisoformat(mod).strftime("%B %Y") if mod else None  # %B is English: Python keeps the C locale for dates
+    check("dates", "/now/", [] if want and said == [want] else [f"now page says updated {said}, its sitemap lastmod is {mod}"])
 
 
 def check_host(out):
@@ -239,6 +258,7 @@ def main():
             check_links(out, pages)
             check_404(out)
             check_sitemap(out)
+            check_dates(out)
             check_host(out)
             check_seams(out)
     finally:
