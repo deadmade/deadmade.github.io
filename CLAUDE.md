@@ -4,20 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages. It has four pages: home (`/`), projects (`/projects/`), path (`/path/`) and now (`/now/`), plus a 404 page (`noindex`, no canonical). The layouts and the CSS are the repository's own; there is no theme. The text is English, and the page text lives in `content/` (front matter), not in the layouts.
+Manuel Schülein's personal website, built with Hugo and deployed to GitHub Pages at `https://manuelschuelein.de` (a custom domain held in the repository's Pages settings; `deadmade.github.io`, `www.` and `http://` redirect there). It has four pages: home (`/`), projects (`/projects/`), path (`/path/`) and now (`/now/`), plus a 404 page (`noindex`, no canonical). The layouts and the CSS are the repository's own; there is no theme. The text is English, and the page text lives in `content/` (front matter), not in the layouts.
 
 ## Technology Stack
 
 - **Hugo Extended** v0.166.0+ (CI pins 0.166.0); plain CSS, no Sass
 - **GitHub Actions** - CI/CD
-- **Python** - `scripts/check-site.py` (stdlib only), `scripts/generate-favicons.py` and `scripts/generate-og-image.py` (Pillow)
+- **Python** - `scripts/check-site.py` (stdlib only, Python 3.11+ for `tomllib`), `scripts/generate-favicons.py` and `scripts/generate-og-image.py` (Pillow)
 - **Nix flake** (`flake.nix`, `.envrc`) - dev shell with hugo + python (Pillow) and the commands `serve`, `check`, `gen-favicons`, `gen-og-image`
 
 ## Development Commands
 
 ```bash
 hugo server -D                                        # dev server at http://localhost:1313
-hugo --gc --minify --baseURL "https://deadmade.github.io/" -d <dir>   # the CI build, into a directory of your choice
+hugo --gc --minify --baseURL "https://manuelschuelein.de/" -d <dir>   # the CI build, into a directory of your choice
 python3 scripts/check-site.py                         # builds like CI and checks pages, metadata, links, bar, sitemap, motion
 python3 scripts/generate-favicons.py                  # regenerate static/icons/ (draws with static/fonts/)
 python3 scripts/generate-og-image.py                  # regenerate static/images/og.png (share image; colours from tokens.css, text from hugo.toml)
@@ -35,12 +35,12 @@ layouts/baseof.html        # html shell: head partial, top bar, footer
 layouts/{home,projects,path,now,404}.html
 layouts/_partials/head.html            # title, description, canonical, social tags, icons, stylesheet
 layouts/_partials/drawing-*.html       # the three project drawings (SVG), shapes and labels only
+layouts/robots.txt         # robots.txt template (enableRobotsTXT); its Sitemap line comes from baseURL
 assets/css/                # tokens.css (colours), fonts.css, base.css, path.css (body.path / body.now), motion.css (all motion, last); concatenated into one stylesheet
 static/fonts/              # IBM Plex Mono woff2 (400/600/700, latin subset, from @fontsource) + OFL license
 static/images/pfp.webp     # home page picture (params.avatarurl)
 static/images/og.png       # share image (params.images), generated
 static/icons/              # favicons + site.webmanifest (generated; must stay UTF-8)
-static/robots.txt
 scripts/                   # check-site.py, generate-favicons.py, generate-og-image.py
 ```
 
@@ -60,7 +60,7 @@ IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site
 - The CSS is plain CSS, not Sass: Hugo's built-in LibSass rejects `min()`/`max()` with mixed units (`px` with `vw`), which the styles use.
 - The accent colour is one line in `assets/css/tokens.css`. `scripts/generate-favicons.py` keeps its own `ACCENT_COLOR`, so a new accent also means editing that constant and rerunning the script; also rerun `scripts/generate-og-image.py` (it reads tokens.css itself).
 - There is no Impressum and no privacy page: the owner decided against both (November 2026).
-- `static/robots.txt` hard-codes the host in its Sitemap line; change it if a custom domain is added.
+- The host lives in three places that must agree: `hugo.toml`'s `baseURL` (local builds and `hugo server`), `BASE` in `scripts/check-site.py`, and the custom domain in the repository's Pages settings (CI passes it to the deploy build as `--baseURL` and to the check as `PAGES_BASE_URL`). A new domain means changing all three. `scripts/check-site.py` fails when `baseURL` or, in CI, the Pages address differs from `BASE`, on `deadmade.github.io` anywhere in the build, and on either host in `layouts/`, `content/` or `static/`.
 - No JavaScript and no external requests (fonts, analytics, embeds): `scripts/check-site.py` fails on a `<script>` or on a stylesheet, image or font reference that leaves the site.
 - A `pageRef` to a page that does not exist renders `href=""` without a warning; `scripts/check-site.py` catches it.
 - All motion lives in `assets/css/motion.css`, inside its one `prefers-reduced-motion: no-preference` block, last in the concatenation; `scripts/check-site.py` fails on motion text (animation, transition, keyframes, view transitions, `scroll-behavior`) before that block and on any text after it. Page transitions work in Chrome, Edge and Safari 18.2+ only.
@@ -71,4 +71,4 @@ IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site
 
 ## Deployment
 
-`.github/workflows/hugo.yml`: push to `main` → checkout → install Hugo → `python3 scripts/check-site.py` (a failing check stops the deploy) → `hugo --gc --minify` → deploy to GitHub Pages. There is no theme checkout.
+`.github/workflows/hugo.yml`: push to `main` → checkout → install Hugo → `python3 scripts/check-site.py` with `PAGES_BASE_URL` set to the Pages address (a failing check stops the deploy, also when that address is not `https://manuelschuelein.de`) → `hugo --gc --minify --baseURL <the Pages address>/` → deploy to GitHub Pages at `https://manuelschuelein.de`. There is no theme checkout.

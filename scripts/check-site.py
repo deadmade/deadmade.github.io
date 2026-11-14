@@ -2,20 +2,22 @@
 """Build the site as CI does and check the output: python3 scripts/check-site.py
 
 Prints PASS/FAIL <check> <page>[: reason] per check and page; exits 1 on any FAIL.
-The checks are listed in docs/features/job-application-portfolio/plan.md, Task 1.
+The checks are listed in docs/features/job-application-portfolio/plan.md, Task 1, and docs/features/seo/plan.md.
 """
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
-BASE = "https://deadmade.github.io"
+BASE = "https://manuelschuelein.de"
 PAGES = {"/": "index.html", "/projects/": "projects/index.html", "/path/": "path/index.html", "/now/": "now/index.html"}
 OG_IMAGE = "/images/og.png"  # params.images in hugo.toml; the file is static/images/og.png, drawn by scripts/generate-og-image.py
 BAR = ["projects", "path", "now", "github", "linkedin", "mail"]
@@ -179,7 +181,18 @@ def check_sitemap(out):
     want = {BASE + p for p in PAGES}
     lines = robots.read_text(encoding="utf-8").splitlines() if robots.is_file() else []
     check("sitemap", "-", ([f"sitemap lists {sorted(locs)}, expected {sorted(want)}"] if locs != want else [])
-          + ([f"robots.txt lacks 'Sitemap: {BASE}/sitemap.xml'"] if f"Sitemap: {BASE}/sitemap.xml" not in lines else []))
+          + ([f"robots.txt lacks 'Sitemap: {BASE}/sitemap.xml'"] if f"Sitemap: {BASE}/sitemap.xml" not in lines else [])
+          + [f"robots.txt says {line!r}" for line in lines if re.match(r"\s*disallow\s*:\s*\S", line, re.I)])
+
+
+def check_host(out):
+    """The build, hugo.toml and (in CI) the Pages address all name BASE; the check builds with --baseURL, so it reads the other two itself."""
+    problems = [f"old host in {f.relative_to(out).as_posix()}" for f in sorted(out.rglob("*")) if f.is_file() and b"deadmade.github.io" in f.read_bytes()]
+    base_url = tomllib.loads((ROOT / "hugo.toml").read_text(encoding="utf-8")).get("baseURL")
+    problems += [f"hugo.toml baseURL is {base_url}, expected {BASE}/"] * (base_url != BASE + "/")
+    pages = os.environ.get("PAGES_BASE_URL")  # set by CI to the address the deploy build uses
+    problems += [f"Pages address {pages} is not {BASE}"] * (pages is not None and pages.rstrip("/") != BASE)
+    check("host", "-", problems)
 
 
 def check_seams(out):
@@ -200,10 +213,11 @@ def check_seams(out):
                     break
             else:
                 problems.append(f"the no-preference block in {sheet.name} never closes")
-    for source in [ROOT / "hugo.toml", *sorted(f for d in ("layouts", "content") for f in (ROOT / d).rglob("*") if f.is_file())]:
-        text = source.read_text(encoding="utf-8", errors="ignore")
-        problems += [f"accent colour in {source.relative_to(ROOT)}"] * bool(re.search(r"F08BB4|FF544A", text, re.I))
-        problems += [f"site host in {source.relative_to(ROOT)}"] * (source.name != "hugo.toml" and "deadmade.github.io" in text)
+    for source in [ROOT / "hugo.toml", *sorted(f for d in ("layouts", "content", "static") for f in (ROOT / d).rglob("*") if f.is_file())]:
+        text, name = source.read_text(encoding="utf-8", errors="ignore"), source.relative_to(ROOT)
+        if name.parts[0] != "static":  # static/icons/favicon.svg carries the accent on purpose (scripts/generate-favicons.py)
+            problems += [f"accent colour in {name}"] * bool(re.search(r"F08BB4|FF544A", text, re.I))
+        problems += [f"site host in {name}"] * (source.name != "hugo.toml" and bool(re.search(r"deadmade\.github\.io|manuelschuelein\.de", text)))
     check("seams", "-", problems)
 
 
@@ -225,6 +239,7 @@ def main():
             check_links(out, pages)
             check_404(out)
             check_sitemap(out)
+            check_host(out)
             check_seams(out)
     finally:
         shutil.rmtree(out, ignore_errors=True)

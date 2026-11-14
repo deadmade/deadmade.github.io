@@ -1,8 +1,9 @@
-baseURL = "https://deadmade.github.io/"
+baseURL = "https://manuelschuelein.de/"
 title = "Manuel Schülein"
 locale = "en-US"
 DefaultContentLanguage = "en"
 disableKinds = ["taxonomy", "term", "RSS"]
+enableRobotsTXT = true
 
 [params]
   role = "Backend developer"
