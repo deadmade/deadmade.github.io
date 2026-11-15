@@ -16,13 +16,14 @@ from collections import Counter
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 BASE = "https://manuelschuelein.de"
 PAGES = {"/": "index.html", "/projects/": "projects/index.html", "/path/": "path/index.html", "/now/": "now/index.html"}
 OG_IMAGE = "/images/og.png"  # params.images in hugo.toml; the file is static/images/og.png, drawn by scripts/generate-og-image.py
 BAR = ["projects", "path", "now", "github", "linkedin", "mail"]
+OLD_HOST = r"(?<![^/]/)deadmade\.github\.io"  # the old host; in github.com/deadmade/deadmade.github.io it is the repository's name
 results = []
 
 
@@ -38,7 +39,7 @@ class Page(HTMLParser):
         self.lang, self.a, self.robots = None, None, None
         self.titles, self.desc, self.links, self.srcs, self.imgs = [], [], [], [], []
         self.anchors, self.nav, self.go, self.current = [], [], [], []
-        self.meta, self.images, self.content = Counter(), {}, {}
+        self.meta, self.content = Counter(), {}
         self.foot, self.name, self.role = None, "", ""  # the footer's first span: "<name> · <role>"
         self.h1, self.scripts, self.ld = None, [], []  # ld: the text of each application/ld+json script
         self.in_head = self.in_title = self.in_nav = self.in_go = self.in_foot = self.in_foot_span = False
@@ -57,8 +58,6 @@ class Page(HTMLParser):
             key = a.get("name") or a.get("property")
             self.meta[key] += 1
             self.content[key] = a.get("content")
-            if key in ("og:image", "twitter:image"):
-                self.images[key] = a.get("content")
             if key == "robots":
                 self.robots = a.get("content") or ""
             if key == "description":
@@ -187,8 +186,8 @@ def check_pages(out, pages):
                 "twitter:card", "twitter:image", "twitter:image:alt"]
         alt = f"{p.name}, {p.role}"  # what the share image shows: the name over the role
         check("social", path, [f"{k} appears {p.meta[k]} times" for k in want if p.meta[k] != 1]
-              + [f"{k} is {p.images.get(k)!r}, expected {BASE}{OG_IMAGE}" for k in ("og:image", "twitter:image")
-                 if p.images.get(k) != BASE + OG_IMAGE]
+              + [f"{k} is {p.content.get(k)!r}, expected {BASE}{OG_IMAGE}" for k in ("og:image", "twitter:image")
+                 if p.content.get(k) != BASE + OG_IMAGE]
               + [f"og:url is {p.content.get('og:url')!r}, expected {BASE + path}"] * (p.content.get("og:url") != BASE + path)
               + (og_problems or [f"{k} is {p.content.get(k)!r}, the file says {v}"
                                  for k, v in zip(("og:image:width", "og:image:height"), og_size) if p.content.get(k) != v])
@@ -225,7 +224,7 @@ def check_icon(out, p):
     check("icon", "/", problems + ["no PNG icon larger than 48x48"] * (not any(n > 48 for n in sides)))
 
 
-def check_data(out, p):
+def check_data(out, p, config):
     """The home page's JSON-LD says only what the page shows (Google's structured-data rule)."""
     try:
         doc = json.loads(p.ld[0]) if p.ld else None
@@ -234,37 +233,36 @@ def check_data(out, p):
     if not isinstance(doc, dict):
         return check("data", "/", ["no JSON-LD block on the home page" if doc is None else "the JSON-LD block is not an object"])
     graph = doc.get("@graph") if isinstance(doc.get("@graph"), list) else []
-    nodes = {n.get("@type"): n for n in graph if isinstance(n, dict)}
+    nodes = {str(n.get("@type")): n for n in graph if isinstance(n, dict)}  # str: a list-valued @type is one more mismatch
     site, page = nodes.get("WebSite", {}), nodes.get("ProfilePage", {})
     person = page.get("mainEntity") if isinstance(page.get("mainEntity"), dict) else {}
     home, mod, title = BASE + "/", lastmods(out).get(BASE + "/"), (p.titles or [""])[0].strip()
     mark = next((a["text"].strip() for a in p.anchors if "mark" in a["cls"]), "")
     img = (p.imgs or [{}])[0].get("src") or ""
-    alternate = tomllib.loads((ROOT / "hugo.toml").read_text(encoding="utf-8")).get("params", {}).get("alternatename")
-    job = person.get("jobTitle")
+    alternate = {k.lower(): v for k, v in config.get("params", {}).items()}.get("alternatename")  # Hugo reads param keys in any case
+    job, profiles = person.get("jobTitle"), person.get("sameAs")
     problems = [f"the home page shows no {k}" for k, v in (("<h1>", p.h1), ("<title>", title), ("mark", mark), ("<img>", img), ("role", p.role)) if not v]
-    problems += [f"@graph holds {sorted(map(str, nodes))} in {len(graph)} nodes, expected one WebSite and one ProfilePage"] * (
+    problems += ["hugo.toml sets no params.alternatename"] * (not alternate)
+    problems += [f"@graph holds {sorted(nodes)} in {len(graph)} nodes, expected one WebSite and one ProfilePage"] * (
         len(graph) != 2 or set(nodes) != {"WebSite", "ProfilePage"})
-    problems += [f"{key} is {found!r}, expected {want!r}" for key, found, want in (
-        ("@context", doc.get("@context"), "https://schema.org"),
-        ("WebSite name", site.get("name"), p.h1), ("WebSite url", site.get("url"), home),
-        ("ProfilePage url", page.get("url"), home), ("ProfilePage name", page.get("name"), title),
-        ("mainEntity @type", person.get("@type"), "Person"), ("Person name", person.get("name"), p.h1),
-        ("Person alternateName", person.get("alternateName"), [alternate, mark]), ("Person url", person.get("url"), home),
-        ("Person image", person.get("image"), BASE + img),
-        ("Person jobTitle, lowercased", job.lower() if isinstance(job, str) else job, p.role),
-        ("Person sameAs", person.get("sameAs"), [a["href"] for a in p.nav if (a["href"] or "").startswith("https://")]),
-    ) if found != want]
-    problems += [f"{name} has {key!r}, a key the check does not compare with the page" for name, node, keys in (
-        ("the block", doc, {"@context", "@graph"}), ("WebSite", site, {"@type", "name", "url"}),
-        ("ProfilePage", page, {"@type", "url", "name", "dateModified", "mainEntity"}),
-        ("Person", person, {"@type", "name", "alternateName", "url", "image", "jobTitle", "sameAs"}),
-    ) for key in node if key not in keys]
     try:  # the same instant: a +00:00 commit is written Z in the JSON-LD and +00:00 in the sitemap
         same = datetime.fromisoformat(page.get("dateModified")) == datetime.fromisoformat(mod)
     except (TypeError, ValueError):
         same = False
-    check("data", "/", problems + [f"ProfilePage dateModified is {page.get('dateModified')!r}, the sitemap lastmod for / is {mod}"] * (not same))
+    for name, node, want in (  # each node's keys, each with the value the page shows; any other key is a problem
+        ("the block", doc, {"@context": "https://schema.org", "@graph": graph}),
+        ("WebSite", site, {"@type": "WebSite", "name": p.h1, "url": home}),
+        ("ProfilePage", page, {"@type": "ProfilePage", "url": home, "name": title, "mainEntity": person,
+                               "dateModified": page.get("dateModified") if same else f"the instant of the sitemap lastmod for /, {mod}"}),
+        ("Person", {**person, "jobTitle": job.lower() if isinstance(job, str) else job,  # the role ignoring case, as G7 says
+                    "sameAs": [unquote(u) if isinstance(u, str) else u for u in profiles] if isinstance(profiles, list) else profiles},
+         {"@type": "Person", "name": p.h1, "alternateName": [alternate, mark], "url": home, "image": BASE + img, "jobTitle": p.role.lower(),
+          "sameAs": [unquote(a["href"]) for a in p.nav if (a["href"] or "").startswith("https://")]}),  # the href escapes a raw ü, the block doesn't
+    ):
+        problems += [f"{name} has {k!r}, a key the check does not compare with the page" if k not in want
+                     else f"{name} {k} is {node.get(k)!r}, expected {want[k]!r}"
+                     for k in sorted(node.keys() | want.keys()) if k not in want or node.get(k) != want[k]]
+    check("data", "/", problems)
 
 
 def check_links(out, pages):
@@ -272,7 +270,7 @@ def check_links(out, pages):
     for path, p in pages.items():
         raw = (out / PAGES[path]).read_text(encoding="utf-8")
         refs = [("src", s) for s in p.srcs] + [("link", x.get("href")) for x in p.links] + [("a", a["href"]) for a in p.anchors]
-        refs += [("meta", v) for v in p.images.values()]
+        refs += [("meta", p.content[k]) for k in ("og:image", "twitter:image") if k in p.content]
         problems = [m for kind, ref in refs if (m := ref_problem(out, kind, ref))]
         scripts, allowed = raw.lower().count("<script"), 1 if path == "/" else 0  # the one JSON-LD block sits on the home page
         problems += [f"<script type={t!r}> present" for t in p.scripts if t != "application/ld+json"]
@@ -319,17 +317,22 @@ def check_sitemap(out):
 
 
 def check_dates(out):
-    """The now page's "updated" month is the month of its Git date, as the sitemap gives it."""
+    """The now page's "updated" month is the month of its Git date, as the sitemap gives it, from a checkout with its history."""
     mod, page = lastmods(out).get(BASE + "/now/"), out / PAGES["/now/"]
     said = re.findall(r"updated ([A-Za-z]+ \d{4})", page.read_text(encoding="utf-8") if page.is_file() else "")
-    want = datetime.fromisoformat(mod).strftime("%B %Y") if mod else None  # %B is English: Python keeps the C locale for dates
-    check("dates", "/now/", [] if want and said == [want] else [f"now page says updated {said}, its sitemap lastmod is {mod}"])
+    try:
+        want = datetime.fromisoformat(mod).strftime("%B %Y")  # %B is English: Python keeps the C locale for dates
+    except (TypeError, ValueError):  # no lastmod, or one that isn't ISO (only a custom sitemap template writes one)
+        want = None
+    shallow = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--is-shallow-repository"], capture_output=True, text=True).stdout.strip()
+    check("dates", "/now/", ([] if want and said == [want] else [f"now page says updated {said}, its sitemap lastmod is {mod}"])
+          + ["the Git checkout is shallow, so every page gets the last commit's date (CI checks out with fetch-depth: 0)"] * (shallow == "true"))
 
 
-def check_host(out):
+def check_host(out, config):
     """The build, hugo.toml and (in CI) the Pages address all name BASE; the check builds with --baseURL, so it reads the other two itself."""
-    problems = [f"old host in {f.relative_to(out).as_posix()}" for f in sorted(out.rglob("*")) if f.is_file() and b"deadmade.github.io" in f.read_bytes()]
-    base_url = tomllib.loads((ROOT / "hugo.toml").read_text(encoding="utf-8")).get("baseURL")
+    problems = [f"old host in {f.relative_to(out).as_posix()}" for f in sorted(out.rglob("*")) if f.is_file() and re.search(OLD_HOST.encode(), f.read_bytes())]
+    base_url = config.get("baseurl")
     problems += [f"hugo.toml baseURL is {base_url}, expected {BASE}/"] * (base_url != BASE + "/")
     pages = os.environ.get("PAGES_BASE_URL")  # set by CI to the address the deploy build uses
     problems += [f"Pages address {pages} is not {BASE}"] * (pages is not None and pages.rstrip("/") != BASE)
@@ -354,11 +357,13 @@ def check_seams(out):
                     break
             else:
                 problems.append(f"the no-preference block in {sheet.name} never closes")
+    host = rf"{OLD_HOST}|{re.escape(urlparse(BASE).netloc)}"  # the old and the current host
+    mail = r"(?<![\w.+/-])[\w.+-]+@[\w-]+(?:\.[\w-]+)+"  # info@<host> is mail and is removed first; a URL's user@<host> follows a / and stays
     for source in [ROOT / "hugo.toml", *sorted(f for d in ("layouts", "content", "static") for f in (ROOT / d).rglob("*") if f.is_file())]:
         text, name = source.read_text(encoding="utf-8", errors="ignore"), source.relative_to(ROOT)
         if name.parts[0] != "static":  # static/icons/favicon.svg carries the accent on purpose (scripts/generate-favicons.py)
             problems += [f"accent colour in {name}"] * bool(re.search(r"F08BB4|FF544A", text, re.I))
-        problems += [f"site host in {name}"] * (source.name != "hugo.toml" and bool(re.search(r"deadmade\.github\.io|manuelschuelein\.de", text)))
+        problems += [f"site host in {name}"] * (source.name != "hugo.toml" and bool(re.search(host, re.sub(mail, "", text))))
     check("seams", "-", problems)
 
 
@@ -369,6 +374,7 @@ def main():
                               capture_output=True, text=True)
         check("build", "-", [f"hugo exited {done.returncode}: {(done.stdout + done.stderr).strip()[-600:]}"] if done.returncode else [])
         if done.returncode == 0:
+            config = {k.lower(): v for k, v in tomllib.loads((ROOT / "hugo.toml").read_text(encoding="utf-8")).items()}  # Hugo reads keys in any case
             files, want = {p.relative_to(out).as_posix() for p in out.rglob("*.html")}, {*PAGES.values(), "404.html"}
             check("files", "-", [f"html files are {sorted(files)}, expected {sorted(want)}"] if files != want else [])
             pages = {}
@@ -379,12 +385,12 @@ def main():
             check_pages(out, pages)
             if "/" in pages:
                 check_icon(out, pages["/"])
-                check_data(out, pages["/"])
+                check_data(out, pages["/"], config)
             check_links(out, pages)
             check_404(out)
             check_sitemap(out)
             check_dates(out)
-            check_host(out)
+            check_host(out, config)
             check_seams(out)
     finally:
         shutil.rmtree(out, ignore_errors=True)
