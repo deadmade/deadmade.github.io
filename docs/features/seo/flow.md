@@ -1,7 +1,7 @@
 ---
 flow: feature
-phase: finish
-now: Waiting for you: pick how the branch ends.
+phase: done
+now: Done: pushed job-application-portfolio to origin, with no PR; main, which deploys the site, is unchanged.
 ---
 
 # SEO: flow
