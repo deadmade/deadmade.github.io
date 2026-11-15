@@ -255,6 +255,11 @@ def check_data(out, p):
         ("Person jobTitle, lowercased", job.lower() if isinstance(job, str) else job, p.role),
         ("Person sameAs", person.get("sameAs"), [a["href"] for a in p.nav if (a["href"] or "").startswith("https://")]),
     ) if found != want]
+    problems += [f"{name} has {key!r}, a key the check does not compare with the page" for name, node, keys in (
+        ("the block", doc, {"@context", "@graph"}), ("WebSite", site, {"@type", "name", "url"}),
+        ("ProfilePage", page, {"@type", "url", "name", "dateModified", "mainEntity"}),
+        ("Person", person, {"@type", "name", "alternateName", "url", "image", "jobTitle", "sameAs"}),
+    ) for key in node if key not in keys]
     try:  # the same instant: a +00:00 commit is written Z in the JSON-LD and +00:00 in the sitemap
         same = datetime.fromisoformat(page.get("dateModified")) == datetime.fromisoformat(mod)
     except (TypeError, ValueError):
