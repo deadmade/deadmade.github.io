@@ -7,7 +7,7 @@ projects:
     tag: "built alone · Studienarbeit"
     drawing: fangtype
     summary: "fangtype: two round trips over LSP between VS Code and a language server. First, Python code goes to Jedi, which infers types. They come back as inlay hints, which the developer reviews. When the developer accepts a hint, a second request makes the server write the annotation with libcst and validate it with mypy. The edit comes back to VS Code as type annotations."
-    what: "A VS Code tool for Python type annotations. Designed, implemented and tested independently. Jedi and the project's own inference passes infer the types, and the editor shows them as hints. When the developer accepts one, the language server writes the annotation and mypy validates it; a rejected annotation is not written."
+    what: "An LSP server written in Python and a VS Code extension that show the types Jedi infers in Python code as inlay hints and insert them with a code action or, for a whole file, through a separate diff view."
     stack:
       - "Python"
       - "TypeScript"
@@ -22,7 +22,7 @@ projects:
     tag: "team build"
     drawing: rustlogger
     summary: "RustLogger: a Docker Compose stack. All containers log to syslog; an nginx load balancer spreads the logs over three collectors, which send them through a second nginx load balancer (API key, rate limit) to three forwarding API instances. A simulated sensor source, log-gen and log-sender, sends through the same load balancer. The API indexes through a HAProxy load balancer into a five-node Elasticsearch cluster: container logs into one index, sensor logs into another. Outside Docker, a terminal interface searches both through the API."
-    what: "A logging pipeline as a Docker Compose stack. Containers log to syslog, collectors forward the lines through nginx to an API that indexes them into a five-node Elasticsearch cluster. A simulated sensor source feeds a second index, and a terminal interface searches both through the API."
+    what: "A scalable and secure logging infrastructure in Rust. It collects logs from syslog, stores them in an Elasticsearch cluster and makes them searchable through a terminal interface."
     stack:
       - "Rust"
       - "Actix"

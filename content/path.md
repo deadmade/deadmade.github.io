@@ -7,6 +7,7 @@ steps:
     title: "Business Solution Developer"
     details:
       - "4SELLERS · full time · Rain, Bavaria"
+      - "Building the REST API gateway in C# and ASP.NET Core to connect the 4SELLERS ecosystem with Business Central"
   - years: "2023 – 2026"
     title: "Dual study, Computer Science"
     details:
@@ -15,7 +16,7 @@ steps:
   - years: "2022 – 2023"
     title: "University entrance qualification"
     details:
-      - "Donauwörth"
+      - "Hans-Leipelt-Schule · Donauwörth"
   - years: "2019 – 2022"
     title: "Apprenticeship, Application Development"
     details:
@@ -26,22 +27,20 @@ toolkit:
   others:
     - "ASP.NET Core"
     - "REST APIs"
-    - "ERP systems"
     - "Rust"
     - "Python"
     - "Docker"
     - "PostgreSQL"
     - "Git"
+    - "Claude"
 languages: "German · English"
 hobbies:
   - name: "NixOS"
     note: "my whole setup, declared"
-  - name: "strategy games"
-    note: "HOI4 · Victoria 3"
-  - name: "story games"
-    note: "Assassin's Creed"
-  - name: "tech books"
-    note: "and non-fiction"
+  - name: "homelab"
+    note: "self-hosted Matrix and CI runners"
+  - name: "video games"
+    note: "Hearts of Iron IV · Victoria 3 · Cyberpunk 2077"
   - name: "gym"
     note: "to balance the desk"
 ---

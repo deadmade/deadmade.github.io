@@ -34,7 +34,7 @@ enableGitInfo = true
   pageRef = "/now"
   weight = 30
   [menu.main.params]
-    description = "work, learning, priorities"
+    description = "work and side projects"
 
 [[menu.main]]
   name = "github"
