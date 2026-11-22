@@ -18,7 +18,7 @@ Manuel Schülein's personal website, built with Hugo and deployed to GitHub Page
 ```bash
 hugo server -D                                        # dev server at http://localhost:1313
 hugo --gc --minify --baseURL "https://manuelschuelein.de/" -d <dir>   # the CI build, into a directory of your choice
-python3 scripts/check-site.py                         # builds like CI and checks pages, metadata, links, bar, host, sitemap, dates, icon, JSON-LD, motion
+python3 scripts/check-site.py                         # builds like CI and checks pages, metadata, links, bar, host, sitemap, dates, icon, JSON-LD, motion, the drawings' runs
 python3 scripts/generate-favicons.py                  # regenerate static/icons/ (draws with static/fonts/)
 python3 scripts/generate-og-image.py                  # regenerate static/images/og.png (share image; colours from tokens.css, text from hugo.toml)
 ```
@@ -28,15 +28,18 @@ python3 scripts/generate-og-image.py                  # regenerate static/images
 ```
 hugo.toml                  # site config, [params], [[menu.main]]
 content/_index.md          # home: title, description, lede (the introduction)
-content/projects.md        # projects page: three projects (name, tag, drawing, summary, what, stack, source)
+content/projects.md        # projects page: three projects (name, tag, drawing, runkey, summary, what, stack, source); runbar (the stop / play words)
 content/path.md            # path page: steps, toolkit, languages, hobbies
 content/now.md             # now page: rows (each line is inline Markdown, so it can link); its "updated" month is now.md's last commit
 layouts/baseof.html        # html shell: head partial, top bar, footer
 layouts/{home,projects,path,now,404}.html
 layouts/_partials/head.html            # title, description, canonical, social tags, icons, JSON-LD (home page), stylesheet
-layouts/_partials/drawing-*.html       # the three project drawings (SVG), shapes and labels only
+layouts/_partials/drawing-*.html       # the three project drawings (SVG): shapes and labels, plus the run.html and runbar.html calls
+layouts/_partials/run.html            # a drawing's run layer (outlines and dots), from data/runs.toml
+layouts/_partials/runbar.html         # above each drawing: what the dot carries (runkey) and the stop / play switch
 layouts/robots.txt         # robots.txt template (enableRobotsTXT); its Sitemap line comes from baseURL
-assets/css/                # tokens.css (colours), fonts.css, base.css, path.css (body.path / body.now), motion.css (all motion, last); concatenated into one stylesheet
+data/runs.toml             # the drawings' runs: timing values, then per drawing its stops, spans and runs (hops with pauses), each shape and route twice (h wide, v upright)
+assets/css/                # tokens.css (colours), fonts.css, base.css, path.css (body.path / body.now), motion.css (all motion, last; a Go template that reads hugo.Data.runs); concatenated into one stylesheet
 static/fonts/              # IBM Plex Mono woff2 (400/600/700, latin subset, from @fontsource) + OFL license
 static/images/pfp.webp     # home page picture (params.avatarurl)
 static/images/og.png       # share image (params.images), generated
@@ -67,8 +70,9 @@ IBM Plex Mono is self-hosted on purpose (no Google Fonts: GDPR concern, the site
 - All motion lives in `assets/css/motion.css`, inside its one `prefers-reduced-motion: no-preference` block, last in the concatenation; `scripts/check-site.py` fails on motion text (animation, transition, keyframes, view transitions, `scroll-behavior`) before that block and on any text after it. Page transitions work in Chrome, Edge and Safari 18.2+ only.
 - The projects page's drawings move only through their run layers (owner-approved 2026-11-17) and must look the same at rest; the sheets have no motion; nothing inside a drawing may animate `transform` (it changed Chrome's rendering of the whole drawing at rest, 12,766 px). Its page transition is the browser's plain cross-fade: `main:not(:has(.dwg))` leaves it out of the `content` transition name. It has no visible headline (its `h1` is visually hidden); each project's name is lettered onto the rule above it. Naming its `main`, or leaving a finished `both` fill on the title, each changed how the drawings were painted at rest (measured in Chrome 154).
 - Checking motion in the browser tool misleads in four ways (probe says "no transition" on `127.0.0.1`, no frames before a screenshot, JPEG noise, tab state): read `docs/solutions/checking-motion-in-the-browser-tool.md` first.
-- Projects-page text, including each drawing's `summary` (the SVG `<title>`), lives in `content/projects.md`; the drawing partials hold only shapes and labels.
-- The projects page's design is owner-approved and must not change: edit its text in `content/projects.md`, and leave `layouts/projects.html`, the drawing partials and their CSS alone unless the owner asks for a redesign. The drawings' runs are the approved exception (2026-11-17): the run layers, `layouts/_partials/run.html`, `layouts/_partials/runbar.html` and `data/runs.toml`.
+- Projects-page text, including each drawing's `summary` (the SVG `<title>`) and the run words (`runkey`, `runbar`), lives in `content/projects.md`; the drawing partials hold only shapes and labels, plus the `run.html` and `runbar.html` calls.
+- A drawing's runs follow its arrows: `data/runs.toml` holds each hop's points and each stop's outline twice (wide and upright), copied from the drawing partial. Editing a drawing means updating its routes there; `scripts/check-site.py`'s `runs` check fails on a hop off its arrow or an outline off its component, on a run layer screen readers see or one not wired to its keyframes, and on an animation inside a drawing that changes anything but `opacity` and `stroke-dashoffset`. A bad stop name in a hop fails the build.
+- The projects page's design is owner-approved and must not change: edit its text in `content/projects.md`, and leave `layouts/projects.html`, the drawing partials and their CSS alone unless the owner asks for a redesign. The drawings' runs are the approved exception (2026-11-17): the run layers, `layouts/_partials/run.html`, `layouts/_partials/runbar.html`, `data/runs.toml`, and their CSS (the run and control rules in `base.css`, the run block in `motion.css`).
 
 ## Deployment
 
