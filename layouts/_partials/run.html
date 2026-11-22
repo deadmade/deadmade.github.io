@@ -1,0 +1,25 @@
+{{- /* One drawing's run layer, from data/runs.toml: an outline per stop and span, then a dot per hop.
+  Hidden in base.css; motion.css shows it and times it. Called with (dict "name" <drawing> "o" "h" or "v"). */ -}}
+{{- $d := index hugo.Data.runs.drawing .name -}}
+{{- if not $d }}{{ errorf "run.html: data/runs.toml has no drawing %q" .name }}{{ end -}}
+{{- $o := .o -}}
+{{- $outlines := slice -}}
+{{- range $d.stop }}{{ $outlines = $outlines | append (dict "cls" (printf "hl-%s" .id) "shape" (index . $o)) }}{{ end -}}
+{{- range $i, $s := $d.span }}{{ $outlines = $outlines | append (dict "cls" (printf "hl-span%d" $i) "shape" (index $s $o)) }}{{ end }}
+          <g class="run run-{{ .name }}-{{ $o }}" aria-hidden="true">
+{{- range $outlines }}{{ $s := .shape }}
+            <g class="hl {{ .cls }}">
+              {{- with $s.rect }}<rect x="{{ index . 0 }}" y="{{ index . 1 }}" width="{{ index . 2 }}" height="{{ index . 3 }}"/>{{ end }}
+              {{- with $s.polygon }}<polygon points="{{ . }}"/>{{ end }}
+              {{- with $s.path }}<path d="{{ . }}"/>{{ end }}
+              {{- with $s.text }}<text class="c" x="{{ index . 0 }}" y="{{ index . 1 }}">{{ index . 2 }}</text>{{ end -}}
+            </g>
+{{- end }}
+{{- $n := 0 }}
+{{- range $d.run }}{{ range .hops }}
+  {{- $dd := "" }}
+  {{- range $i, $p := index . $o }}{{ $c := "L" }}{{ if eq $i 0 }}{{ $c = "M" }}{{ end }}{{ $dd = printf "%s%s%v %v" $dd $c (index $p 0) (index $p 1) }}{{ end }}
+            <g class="pu pu-{{ $n }}"><path class="h2" d="{{ $dd }}" pathLength="1"/><path class="h1" d="{{ $dd }}" pathLength="1"/><path class="dot" d="{{ $dd }}" pathLength="1"/></g>
+  {{- $n = add $n 1 }}
+{{- end }}{{ end }}
+          </g>

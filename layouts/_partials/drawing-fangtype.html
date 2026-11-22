@@ -1,4 +1,5 @@
       <figure class="fig">
+{{ partial "runbar.html" . }}
         <svg class="dwg h" viewBox="0 12 708 338" role="img" aria-labelledby="f1t">
           <title id="f1t">{{ .summary }}</title>
           <text class="q" x="8" y="34">VS Code</text>
@@ -23,6 +24,7 @@
           <path class="ln" d="M104 240V176H220V134"/><polygon class="ah" points="215.5,134 220,126 224.5,134"/><text class="q" x="228" y="152">LSP</text>
           <path class="ln" d="M430 104H470V234"/><polygon class="ah" points="465.5,232 470,240 474.5,232"/><text class="q" x="478" y="176">LSP</text>
           <path class="ln" d="M620 240V134"/><polygon class="ah" points="615.5,134 620,126 624.5,134"/><text class="q" x="628" y="190">LSP</text>
+{{ partial "run.html" (dict "name" "fangtype" "o" "h") }}
         </svg>
 
         <svg class="dwg v" viewBox="0 0 340 312" role="img" aria-labelledby="f1v">
@@ -50,6 +52,7 @@
           <rect class="bx" x="200" y="250" width="128" height="44"/><text class="c" x="264" y="269">mypy</text><text class="q c" x="264" y="285">type validation</text>
           <path class="ln" d="M200 272H144"/><polygon class="ah" points="144,267.5 136,272 144,276.5"/><text class="q c" x="166" y="264">LSP</text>
           <rect class="bx" x="16" y="250" width="120" height="44"/><text class="c b" x="76" y="269">type</text><text class="c b" x="76" y="285">annotations</text>
+{{ partial "run.html" (dict "name" "fangtype" "o" "v") }}
         </svg>
 
         <figcaption class="legend">
