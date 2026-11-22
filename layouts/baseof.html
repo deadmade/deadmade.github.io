@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="{{ site.Language.Lang }}">
+{{ partial "head.html" . }}
+<body{{ block "bodyclass" . }}{{ end }}>
+
+<header class="bar">
+  <a class="mark" href="/"{{ if .IsHome }} aria-current="page"{{ end }}><i class="tri"></i>{{ site.Params.handle }}</a>
+  <nav>
+    {{- range site.Menus.main }}
+    <a href="{{ .URL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ .Name }}</a>
+    {{- end }}
+  </nav>
+</header>
+
+{{ block "main" . }}{{ end }}
+
+<footer class="plain">
+  <div class="foot"><span>{{ site.Title }} · {{ lower site.Params.role }}</span><span>github.com/{{ site.Params.handle }}</span></div>
+</footer>
+
+</body>
+</html>

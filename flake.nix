@@ -40,6 +40,16 @@
               help = "Generate favicons";
               command = "python3 scripts/generate-favicons.py";
             }
+            {
+              name = "gen-og-image";
+              help = "Generate the share image (static/images/og.png)";
+              command = "python3 scripts/generate-og-image.py";
+            }
+            {
+              name = "check";
+              help = "Build like CI and check the site";
+              command = "python3 scripts/check-site.py";
+            }
           ];
 
           env = [

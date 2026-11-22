@@ -1,0 +1,27 @@
+{{ define "bodyclass" }} class="home"{{ end }}
+
+{{ define "main" }}
+<main class="cover">
+  <div class="sheet">
+    <i class="ct" aria-hidden="true"></i>
+    <div class="plate">
+      <div class="intro">
+        <h1>{{ range $i, $w := split site.Title " " }}{{ if $i }} {{ end }}<span>{{ $w }}</span>{{ end }}</h1>
+        <p class="lede">{{ .Params.lede }}<span class="cursor" aria-hidden="true">_</span></p>
+      </div>
+      <figure class="pfp">
+        <div class="pfp-img"><img src="{{ site.Params.avatarurl }}" width="460" height="460" fetchpriority="high" alt="{{ site.Params.avataralt }}"></div>
+      </figure>
+    </div>
+
+    <ul class="go">
+      {{- range site.Menus.main }}
+      {{- if .Params.description }}
+      <li><a href="{{ .URL }}"><span class="lbl"><i class="tri r"></i>{{ .Name }}</span><span class="desc">{{ .Params.description }}</span></a></li>
+      {{- end }}
+      {{- end }}
+    </ul>
+    <i class="om" aria-hidden="true"></i>
+  </div>
+</main>
+{{ end }}

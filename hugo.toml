@@ -1,79 +1,52 @@
-baseURL = "https://deadmade.github.io/"
-locale = "de-DE"
+baseURL = "https://manuelschuelein.de/"
 title = "Manuel Schülein"
-theme = "hugo-coder"
-enableEmoji = true
-
-# DefaultContentLanguage
-DefaultContentLanguage = "de"
-hasCJKLanguage = false
-
-# Pagination
-[pagination]
-pagerSize = 10
-
-[markup.highlight]
-style = "monokai"
-
-  # Image Processing
-  [params.imageProcessing]
-    [params.imageProcessing.cover]
-      enabled = true
-    [params.imageProcessing.content]
-      enabled = true
+locale = "en-US"
+DefaultContentLanguage = "en"
+disableKinds = ["taxonomy", "term", "RSS"]
+enableRobotsTXT = true
+enableGitInfo = true
 
 [params]
-  author = "Manuel Schülein"
-  info = "Dualer Student Allgemeine Informatik"
-  description = "Manuel Schüleins Website"
-  keywords = "developer,informatik"
-  avatarurl = "images/avatar.jpg"
+  role = "Backend developer"
+  handle = "deadmade"
+  alternatename = "Manuel Schuelein"
+  description = "Manuel Schülein, backend developer from Bavaria, Germany. APIs, business systems and developer tools; C# and .NET at work."
+  avatarurl = "/images/pfp.webp"
+  images = ["/images/og.png"]
+  avataralt = "Profile picture: a hooded figure with a wide grin and one glowing red eye"
 
-  faviconSVG = "/icons/favicon.svg"
-  favicon_32 = "/icons/favicon-32x32.png"
-  favicon_16 = "/icons/favicon-16x16.png"
-  touchicon = "/icons/apple-touch-icon.png"
-  mask_icon = "/icons/safari-pinned-tab.svg"
-  mask_icon_color = "#1565c0"
-  manifest = "/icons/site.webmanifest"
+[[menu.main]]
+  name = "projects"
+  pageRef = "/projects"
+  weight = 10
+  [menu.main.params]
+    description = "three projects: one solo, two team builds"
 
-  since = 2025
+[[menu.main]]
+  name = "path"
+  pageRef = "/path"
+  weight = 20
+  [menu.main.params]
+    description = "apprenticeship, studies, work"
 
-  enableTwemoji = true
+[[menu.main]]
+  name = "now"
+  pageRef = "/now"
+  weight = 30
+  [menu.main.params]
+    description = "work and side projects"
 
-  colorScheme = "auto"
-  hidecolorschemetoggle = false
+[[menu.main]]
+  name = "github"
+  url = "https://github.com/deadmade"
+  weight = 40
 
-    customSCSS = ["scss/custom.scss"]
+[[menu.main]]
+  name = "linkedin"
+  url = "https://www.linkedin.com/in/manuel-sch%C3%BClein-408421247/"
+  weight = 50
 
-  # Social Menu
-  [[params.social]]
-    name = "GitHub"
-    icon = "fa-brands fa-github fa-2x"
-    url = "https://github.com/deadmade"
-    weight = 1
-  [[params.social]]
-    name = "LinkedIn"
-    icon = "fa-brands fa-linkedin fa-2x"
-    url = "https://www.linkedin.com/in/manuel-schülein-408421247"
-    weight = 2
-  [[params.social]]
-    name = "Email"
-    icon = "fa-regular fa-envelope fa-2x"
-    url = "mailto:info@manuelschuelein.de"
-    weight = 3
-  [[params.social]]
-    name = "Discord"
-    icon = "fa-brands fa-discord fa-2x"
-    url = "https://discord.com/users/819908750814347275"
-    weight = 4
-
-# Markup Configuration
-[markup]
-  [markup.goldmark]
-    [markup.goldmark.renderer]
-      unsafe = true
-  [markup.tableOfContents]
-    endLevel = 4
-    ordered = true
-    startLevel = 2
+[[menu.main]]
+  name = "mail"
+  url = "mailto:info@manuelschuelein.de"
+  weight = 60

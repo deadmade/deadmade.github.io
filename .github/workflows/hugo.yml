@@ -25,7 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          submodules: recursive
           fetch-depth: 0
 
       - name: Setup Pages
@@ -59,6 +58,11 @@ jobs:
           key: hugo-${{ github.run_id }}
           restore-keys:
             hugo-
+
+      - name: Check the site
+        env:
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: python3 scripts/check-site.py
 
       - name: Build the site
         run: |
