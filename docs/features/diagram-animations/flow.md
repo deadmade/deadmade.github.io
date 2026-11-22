@@ -1,7 +1,7 @@
 ---
 flow: feature
-phase: finish
-now: Waiting for you: pick how the branch ends.
+phase: done
+now: Done: merged into job-application-portfolio.
 ---
 
 # Diagram animations: flow
