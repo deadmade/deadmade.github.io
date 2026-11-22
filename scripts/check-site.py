@@ -426,11 +426,81 @@ def animation_names(body):
             if re.fullmatch(r"-?[A-Za-z_][\w-]*", t) and t.lower() not in ANIM_WORDS]
 
 
-def in_drawing(selector):
-    """True when a selector picks something inside a drawing; :not() and :has() only filter (main:not(:has(.dwg)) is the page)."""
-    while (s := re.sub(r":(?:not|has)\((?:[^()]|\([^()]*\))*\)", "", selector)) != selector:
+VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
+
+
+class Elements(HTMLParser):
+    """The built page's elements (tag, classes, id, parent, place among the parent's children); `drawn` lists every svg.dwg
+    and every element inside one."""
+
+    def __init__(self):
+        super().__init__()
+        self.open, self.drawn = [None], []
+
+    def handle_starttag(self, tag, attrs):
+        a, parent = dict(attrs), self.open[-1]
+        el = {"tag": tag, "cls": set((a.get("class") or "").split()), "id": a.get("id"), "parent": parent, "kids": []}
+        if parent:
+            el["i"] = len(parent["kids"])
+            parent["kids"].append(el)
+        if (tag == "svg" and "dwg" in el["cls"]) or (parent and parent.get("drawn")):
+            el["drawn"] = True
+            self.drawn.append(el)
+        if tag not in VOID:
+            self.open.append(el)
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        if tag not in VOID:
+            self.open.pop()
+
+    def handle_endtag(self, tag):
+        for i in range(len(self.open) - 1, 0, -1):
+            if self.open[i]["tag"] == tag:
+                del self.open[i:]
+                break
+
+
+def picks(el, comps, ops, i):
+    """Whether compound i of a selector (and the compounds and combinators before it) can match the element."""
+    tag, cls, ids = comps[i]
+    if (tag and el["tag"] != tag) or not cls <= el["cls"] or (ids and ids != {el["id"]}):
+        return False
+    if i == 0:
+        return True
+    if ops[i] == ">":
+        return el["parent"] is not None and picks(el["parent"], comps, ops, i - 1)
+    if ops[i] == " ":
+        up = el["parent"]
+        while up is not None:
+            if picks(up, comps, ops, i - 1):
+                return True
+            up = up["parent"]
+        return False
+    before = el["parent"]["kids"][:el["i"]] if el["parent"] else []
+    return any(picks(s, comps, ops, i - 1) for s in (before[-1:] if ops[i] == "+" else before))
+
+
+def reaches(selector, els):
+    """True when a rule's selector can pick one of els (a drawing or something in it). A pseudo-class, :not(), :has() or
+    attribute test counts as matching anything, which only widens what is picked; a selector that ends in a pseudo-element
+    picks no element (an SVG element has no ::before or ::after; ::view-transition-* hang off the root)."""
+    while (s := re.sub(r"(?<!:):[\w-]+\((?:[^()]|\([^()]*\))*\)", "*", selector)) != selector:
         selector = s
-    return any(c in ("dwg", "run", "pu", "hl") or c.startswith(("run-", "pu-", "hl-")) for c in re.findall(r"\.(-?[A-Za-z_][\w-]*)", selector))
+    selector = re.sub(r"\[[^\]]*\]|(?<!:):(?!:)[\w-]+", "*", selector)
+    for sel in re.split(r",(?![^()]*\))", selector):
+        comps, ops, op = [], [], None
+        for comb, space, comp in re.findall(r"\s*([>+~])\s*|(\s+)|([^\s>+~]+)", sel.strip()):
+            if comp:
+                tag = re.match(r"[A-Za-z][\w-]*", comp)
+                comps.append((tag[0].lower() if tag else None, set(re.findall(r"\.(-?[A-Za-z_][\w-]*)", comp)), set(re.findall(r"#([\w-]+)", comp))))
+                ops.append(op or " ")
+                op = None
+            else:
+                op = comb or op or " "
+        if comps and "::" not in sel and any(picks(el, comps, ops, len(comps) - 1) for el in els):
+            return True
+    return False
 
 
 def svg_elements(svg):
@@ -525,19 +595,22 @@ def check_runs(out):
                     pts = [tuple(map(float, p)) for p in hop.get(o, [])]
                     if len(pts) < 2 or not any(on_arrow(a, pts) for a in arrows):
                         problems.append(f"{name} {o} run {r} hop {n} ({hop.get('from')} to {hop.get('to')}) is not on one of the drawing's arrows")
+    built = out / PAGES["/projects/"]
+    html_text = built.read_text(encoding="utf-8") if built.is_file() else ""
+    tree = Elements()
+    tree.feed(html_text)
     css = "".join(f.read_text(encoding="utf-8") for f in sorted(out.rglob("*.css")))
     rules = list(css_rules(css))
     frames = {p.split()[1]: body for p, body in rules if p.startswith("@keyframes") and len(p.split()) > 1}
     animated = [(p, animation_names(body)) for p, body in rules if not p.startswith("@")]
     for p, body in rules:
-        if not p.startswith("@") and in_drawing(p):
+        if not p.startswith("@") and reaches(p, tree.drawn):
             problems += [f"{p} sets {k}" for k in props(body) if k in ("transform", "translate", "rotate", "scale", "offset") or k.startswith("offset-")]
             for a in animation_names(body):
                 bad = [k for k in props(frames.get(a, "")) if k not in ("opacity", "stroke-dashoffset", "animation-timing-function")]
                 problems += [f"{p} runs @keyframes {a}, which sets {', '.join(sorted(set(bad)))}"] * bool(bad)
     page = RunLayers()
-    built = out / PAGES["/projects/"]
-    page.feed(built.read_text(encoding="utf-8") if built.is_file() else "")
+    page.feed(html_text)
     problems += ["no drawings on the built projects page"] * (not page.svgs)
     for i, svg in enumerate(page.svgs):
         if len(svg["runs"]) != 1:

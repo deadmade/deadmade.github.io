@@ -31,6 +31,10 @@
 {{- $website := dict "@type" "WebSite" "name" site.Title "url" .Permalink }}
 <script type="application/ld+json">{{ dict "@context" "https://schema.org" "@graph" (slice $website $profile) }}</script>
 {{- end }}
-{{- $css := resources.Concat "css/main.css" (slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/base.css") (resources.Get "css/path.css") (resources.Get "css/motion.css" | resources.ExecuteAsTemplate "css/motion.css" .)) | minify | fingerprint }}
+{{- /* hugo server keeps a built resource by its name and doesn't rebuild motion.css when data/runs.toml changes, so there
+     both names carry the data's hash; a build keeps the plain names */}}
+{{- $v := "" }}{{ if hugo.IsServer }}{{ $v = printf ".%s" (hugo.Data.runs | jsonify | md5) }}{{ end }}
+{{- $motion := resources.Get "css/motion.css" | resources.ExecuteAsTemplate (printf "css/motion%s.css" $v) . }}
+{{- $css := resources.Concat (printf "css/main%s.css" $v) (slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/base.css") (resources.Get "css/path.css") $motion) | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}">
 </head>

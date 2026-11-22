@@ -1,7 +1,10 @@
 /* Motion for the site. Every rule that moves sits inside the one no-preference query below, so the base styles stay
    the finished, visible page: with reduced motion, or in a browser that ignores a rule, nothing is hidden.
    scripts/check-site.py fails on motion text before this query. The file is a Go template (head.html runs it) that reads
-   hugo.Data.runs: inside the projects page's drawings only their run layers move, and nothing here touches the sheets. */
+   hugo.Data.runs, the drawings' routes and timing (data/runs.toml): inside the projects page's drawings only their run
+   layers move, nothing here touches the sheets, and that page's look is otherwise owner-approved and frozen. Inside a
+   drawing only opacity and stroke-dashoffset animate, never transform: one moving transform on any of its elements
+   changed how Chrome painted the whole drawing at rest (12,766 px), and the site check fails on one. */
 @media (prefers-reduced-motion: no-preference){
   :root{--ease:cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}}
