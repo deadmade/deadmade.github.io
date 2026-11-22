@@ -27,6 +27,7 @@ projects:
   - name: "RustLogger"
     tag: "team build"
     drawing: rustlogger
+    runkey: "a log line"
     summary: "RustLogger: a Docker Compose stack. All containers log to syslog; an nginx load balancer spreads the logs over three collectors, which send them through a second nginx load balancer (API key, rate limit) to three forwarding API instances. A simulated sensor source, log-gen and log-sender, sends through the same load balancer. The API indexes through a HAProxy load balancer into a five-node Elasticsearch cluster: container logs into one index, sensor logs into another. Outside Docker, a terminal interface searches both through the API."
     what: "A logging pipeline as a Docker Compose stack. Containers log to syslog, collectors forward the lines through nginx to an API that indexes them into a five-node Elasticsearch cluster. A simulated sensor source feeds a second index, and a terminal interface searches both through the API."
     stack:
@@ -41,6 +42,7 @@ projects:
   - name: "IsoPrüfi"
     tag: "team build"
     drawing: isopruefi
+    runkey: "a reading or a request"
     summary: "IsoPrüfi: Arduino devices on the north and south sides of the building measure the indoor temperature, buffer readings on an SD card while offline, and publish over MQTT to an external broker. In Docker, a .NET MQTT receiver worker stores the readings in InfluxDB. A second .NET worker pulls the outdoor temperature from a weather API, Open-Meteo or Bright Sky, into InfluxDB. A REST API reads InfluxDB and keeps users and settings in PostgreSQL. A React front end, served by nginx, calls the REST API. Each service runs twice behind Traefik."
     what: "A system that tests how well a building is insulated by comparing indoor and outdoor temperature. Arduino devices on the north and south sides measure inside, a weather API supplies outside, and the readings are recorded and evaluated even when parts of the system fail."
     stack:

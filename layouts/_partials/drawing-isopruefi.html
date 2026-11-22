@@ -1,4 +1,5 @@
         <figure class="fig">
+{{ partial "runbar.html" . }}
           <svg class="dwg h" viewBox="0 12 730 276" role="img" aria-labelledby="f3t">
             <title id="f3t">{{ .summary }}</title>
             <text class="q" x="6" y="62">indoor</text>
@@ -28,6 +29,7 @@
             <rect class="bx" x="606" y="132" width="110" height="44"/><text class="c" x="661" y="151">REST API</text><text class="c" x="661" y="168">×2</text>
             <path class="ln" d="M661 176V202"/><polygon class="ah" points="656.5,202 661,210 665.5,202"/>
             <rect class="bx" x="606" y="210" width="110" height="44"/><text class="c" x="661" y="236">PostgreSQL</text>
+{{ partial "run.html" (dict "name" "isopruefi" "o" "h") }}
           </svg>
           <svg class="dwg v" viewBox="0 0 340 516" role="img" aria-labelledby="f3v">
             <title id="f3v">{{ .summary }}</title>
@@ -52,6 +54,7 @@
             <path class="ln" d="M186 410H162"/><polygon class="ah" points="162,405.5 154,410 162,414.5"/>
             <path class="ln" d="M84 432V452"/><polygon class="ah" points="79.5,452 84,460 88.5,452"/>
             <rect class="bx" x="14" y="460" width="140" height="40"/><text class="c" x="84" y="485">PostgreSQL</text>
+{{ partial "run.html" (dict "name" "isopruefi" "o" "v") }}
           </svg>
         <figcaption class="legend">
           <span><svg viewBox="0 0 22 14" aria-hidden="true"><rect class="bx" x="1" y="1" width="20" height="12"/></svg>named component</span>

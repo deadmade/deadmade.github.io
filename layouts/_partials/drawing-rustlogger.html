@@ -1,4 +1,5 @@
         <figure class="fig">
+{{ partial "runbar.html" . }}
           <svg class="dwg h" viewBox="0 12 700 316" role="img" aria-labelledby="f2t">
             <title id="f2t">{{ .summary }}</title>
             <text class="q" x="8" y="34">Docker (docker compose)</text>
@@ -45,6 +46,7 @@
             <path class="ln" d="M343 218V264"/><polygon class="ah" points="338.5,264 343,272 347.5,264"/><text class="q e" x="335" y="262">inspect</text>
             <rect class="bx" x="288" y="272" width="110" height="48"/><text class="c" x="343" y="292">terminal</text><text class="c" x="343" y="310">interface</text>
             <text class="q e" x="280" y="300">cargo run</text>
+{{ partial "run.html" (dict "name" "rustlogger" "o" "h") }}
           </svg>
           <svg class="dwg v" viewBox="0 0 340 566" role="img" aria-labelledby="f2v">
             <title id="f2v">{{ .summary }}</title>
@@ -84,6 +86,7 @@
             <rect class="bx" x="24" y="482" width="80" height="44"/><text class="c" x="64" y="501">container</text><text class="c" x="64" y="518">logs</text>
             <rect class="bx" x="144" y="482" width="80" height="44"/><text class="c" x="184" y="501">sensor</text><text class="c" x="184" y="518">logs</text>
             <text class="q c" x="124" y="543">5 nodes</text>
+{{ partial "run.html" (dict "name" "rustlogger" "o" "v") }}
           </svg>
         <figcaption class="legend">
           <span><svg viewBox="0 0 22 14" aria-hidden="true"><rect class="bx" x="1" y="1" width="20" height="12"/></svg>named component</span>

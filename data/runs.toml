@@ -11,6 +11,7 @@ fade = 0.2                          # the dot fades in and out
 light = 0.25                        # a stop lights
 unlight = 0.4                       # a stop goes dark
 start = 1.0                         # a run's first stop alone, before the dot leaves
+between = 1.5                       # nothing lit, between two runs of one drawing
 rest = 4.5                          # nothing lit, after the last run
 delay = 1.2                         # before the first run after the page loads
 tip = -0.996                        # the dot's end: a zero-length dash exactly at the path's end is not drawn
@@ -75,4 +76,146 @@ hops = [
   { from = "accept", to = "libcst", wait = 0.6, h = [[430, 104], [470, 104], [470, 240]], v = [[126, 168], [200, 168]] },
   { from = "libcst", to = "mypy", wait = 0.6, h = [[516, 262], [574, 262]], v = [[264, 192], [264, 250]] },
   { from = "mypy", to = "ann", wait = 1.1, h = [[620, 240], [620, 126]], v = [[200, 272], [136, 272]] },
+]
+
+# RustLogger: a container's log line, then a simulated sensor's, through the load balancers into Elasticsearch
+[[drawing.rustlogger.stop]]
+id = "containers"
+h = { rect = [8, 82, 84, 40] }
+v = { rect = [14, 34, 100, 40] }
+
+[[drawing.rustlogger.stop]]
+id = "lb1"
+h = { rect = [142, 92, 26, 20] }
+v = { rect = [51, 94, 26, 20] }
+
+[[drawing.rustlogger.stop]]
+id = "collector"
+h = { rect = [205, 80, 88, 44] }
+v = { rect = [24, 152, 80, 44] }
+
+[[drawing.rustlogger.stop]]
+id = "lb2"
+h = { rect = [330, 82, 26, 136] }
+v = { rect = [14, 254, 220, 24] }
+
+[[drawing.rustlogger.stop]]
+id = "api"
+h = { rect = [391, 80, 88, 44] }
+v = { rect = [64, 332, 120, 52] }
+
+[[drawing.rustlogger.stop]]
+id = "haproxy"
+h = { rect = [514, 82, 26, 136] }
+v = { rect = [14, 414, 220, 24] }
+
+[[drawing.rustlogger.stop]]
+id = "clogs"
+h = { rect = [579, 82, 100, 40] }
+v = { rect = [24, 482, 80, 44] }
+
+[[drawing.rustlogger.stop]]
+id = "slogs"
+h = { rect = [579, 178, 100, 40] }
+v = { rect = [144, 482, 80, 44] }
+
+[[drawing.rustlogger.stop]]
+id = "loggen"
+h = { rect = [8, 178, 84, 40] }
+v = { rect = [134, 34, 100, 40] }
+
+[[drawing.rustlogger.stop]]
+id = "logsender"
+h = { rect = [124, 178, 96, 40] }
+v = { rect = [134, 92, 100, 32] }
+
+# a container's log line; upright, the syslog arrow runs through the first load balancer, so it is two hops
+[[drawing.rustlogger.run]]
+hops = [
+  { from = "containers", to = "lb1", wait = 0.4, h = [[92, 102], [142, 102]], v = [[64, 74], [64, 94]] },
+  { from = "lb1", to = "collector", wait = 0.6, h = [[168, 102], [205, 102]], v = [[64, 114], [64, 152]] },
+  { from = "collector", to = "lb2", wait = 0.4, h = [[293, 102], [330, 102]], v = [[64, 196], [64, 254]] },
+  { from = "lb2", to = "api", wait = 0.6, h = [[356, 102], [391, 102]], v = [[124, 278], [124, 330]] },
+  { from = "api", to = "haproxy", wait = 0.4, h = [[479, 102], [514, 102]], v = [[124, 384], [124, 414]] },
+  { from = "haproxy", to = "clogs", wait = 1.1, h = [[540, 102], [579, 102]], v = [[64, 438], [64, 480]] },
+]
+
+# a simulated sensor's log line
+[[drawing.rustlogger.run]]
+hops = [
+  { from = "loggen", to = "logsender", wait = 0.6, h = [[92, 198], [124, 198]], v = [[184, 74], [184, 90]] },
+  { from = "logsender", to = "lb2", wait = 0.4, h = [[220, 198], [330, 198]], v = [[184, 124], [184, 254]] },
+  { from = "lb2", to = "api", wait = 0.6, h = [[356, 102], [391, 102]], v = [[124, 278], [124, 330]] },
+  { from = "api", to = "haproxy", wait = 0.4, h = [[479, 102], [514, 102]], v = [[124, 384], [124, 414]] },
+  { from = "haproxy", to = "slogs", wait = 1.1, h = [[540, 198], [579, 198]], v = [[184, 438], [184, 480]] },
+]
+
+# IsoPrüfi: an indoor reading, an outdoor reading, then a request from the front end
+[[drawing.isopruefi.stop]]
+id = "arduino"
+h = { rect = [6, 70, 120, 48] }
+v = { rect = [14, 24, 140, 72] }
+
+[[drawing.isopruefi.stop]]
+id = "broker"
+h = { rect = [166, 70, 100, 48] }
+v = { rect = [14, 138, 140, 44] }
+
+[[drawing.isopruefi.stop]]
+id = "receiver"
+h = { rect = [306, 70, 120, 48] }
+v = { rect = [14, 228, 140, 48] }
+
+[[drawing.isopruefi.stop]]
+id = "weatherapi"
+h = { rect = [6, 190, 120, 48] }
+v = { rect = [186, 24, 140, 72] }
+
+[[drawing.isopruefi.stop]]
+id = "weatherworker"
+h = { rect = [306, 190, 120, 48] }
+v = { rect = [186, 228, 140, 48] }
+
+[[drawing.isopruefi.stop]]
+id = "influx"
+h = { rect = [460, 70, 100, 168] }
+v = { rect = [14, 304, 312, 40] }
+
+[[drawing.isopruefi.stop]]
+id = "react"
+h = { rect = [606, 62, 110, 44] }
+v = { rect = [186, 388, 140, 44] }
+
+[[drawing.isopruefi.stop]]
+id = "rest"
+h = { rect = [606, 132, 110, 44] }
+v = { rect = [14, 388, 140, 44] }
+
+[[drawing.isopruefi.stop]]
+id = "pg"
+h = { rect = [606, 210, 110, 44] }
+v = { rect = [14, 460, 140, 40] }
+
+# an indoor reading
+[[drawing.isopruefi.run]]
+hops = [
+  { from = "arduino", to = "broker", wait = 0.6, h = [[126, 94], [166, 94]], v = [[84, 96], [84, 138]] },
+  { from = "broker", to = "receiver", wait = 0.6, h = [[266, 94], [306, 94]], v = [[84, 182], [84, 228]] },
+  { from = "receiver", to = "influx", wait = 0.6, h = [[426, 94], [460, 94]], v = [[84, 276], [84, 304]] },
+  { from = "influx", to = "rest", wait = 1.1, h = [[560, 154], [606, 154]], v = [[84, 344], [84, 388]] },
+]
+
+# an outdoor reading
+[[drawing.isopruefi.run]]
+hops = [
+  { from = "weatherapi", to = "weatherworker", wait = 0.6, h = [[126, 214], [306, 214]], v = [[256, 96], [256, 228]] },
+  { from = "weatherworker", to = "influx", wait = 0.6, h = [[426, 214], [460, 214]], v = [[256, 276], [256, 304]] },
+  { from = "influx", to = "rest", wait = 1.1, h = [[560, 154], [606, 154]], v = [[84, 344], [84, 388]] },
+]
+
+# a request from the front end
+[[drawing.isopruefi.run]]
+hops = [
+  { from = "react", to = "rest", wait = 0.6, h = [[661, 106], [661, 132]], v = [[186, 410], [154, 410]] },
+  { from = "rest", to = "pg", wait = 1.1, h = [[661, 176], [661, 210]], v = [[84, 432], [84, 460]] },
 ]

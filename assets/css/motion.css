@@ -87,6 +87,7 @@
     {{- /* the timeline: when each dot travels (a to b), and when each stop lights (open) and goes dark (close) */}}
     {{- $t := 0.0 }}{{ $dots := slice }}{{ $ev := slice }}
     {{- range $k, $r := $d.run }}
+      {{- if $k }}{{ $t = add $t $tm.between }}{{ end }}
       {{- $at := (index $r.hops 0).from }}
       {{- $ev = $ev | append (dict "id" $at "open" true "at" $t) }}
       {{- $t = add $t $tm.start }}
