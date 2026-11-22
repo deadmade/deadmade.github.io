@@ -3,10 +3,12 @@
 
 Prints PASS/FAIL <check> <page>[: reason] per check and page; exits 1 on any FAIL.
 The checks are listed in docs/features/job-application-portfolio/plan.md, Task 1, docs/features/seo/plan.md and
-docs/features/diagram-animations/plan.md (Task 4).
+docs/features/diagram-animations/plan.md (Task 4); the runs check has grown since, and CLAUDE.md's Gotchas say what it
+fails on.
 """
 import html
 import json
+import math
 import os
 import re
 import shutil
@@ -369,80 +371,81 @@ def check_seams(out):
     check("seams", "-", problems)
 
 
-class RunLayers(HTMLParser):
-    """Each drawing (svg.dwg) of the built projects page, with its run layers (g.run) and their g.pu and g.hl classes."""
-
-    def __init__(self):
-        super().__init__()
-        self.svgs, self.gs, self.in_dwg = [], [], False
-
-    def handle_starttag(self, tag, attrs):
-        a = dict(attrs)
-        cls = (a.get("class") or "").split()
-        if tag == "svg" and "dwg" in cls:
-            self.svgs.append({"cls": " ".join(cls), "runs": []})
-            self.in_dwg, self.gs = True, []
-        elif tag == "g" and self.in_dwg:
-            self.gs.append(cls)
-            if "run" in cls:
-                self.svgs[-1]["runs"].append({"cls": " ".join(cls), "hidden": a.get("aria-hidden") == "true", "pu": [], "hl": []})
-            for kind in ("pu", "hl"):
-                if kind in cls and any("run" in g for g in self.gs[:-1]):
-                    self.svgs[-1]["runs"][-1][kind] += [c for c in cls if c.startswith(kind + "-")]
-
-    def handle_endtag(self, tag):
-        if tag == "svg":
-            self.in_dwg = False
-        elif tag == "g" and self.in_dwg and self.gs:
-            self.gs.pop()
+def scope_root(prelude):
+    """The root selector of an @scope prelude, read to its matching parenthesis; * when it has none (or an unbalanced one),
+    which reads it wide; None for any other at-rule."""
+    if not prelude.startswith("@scope"):
+        return None
+    m = re.match(r"@scope\s*\(", prelude)
+    depth, i = 1, m.end() if m else 0
+    while m and i < len(prelude) and depth:
+        depth += (prelude[i] == "(") - (prelude[i] == ")")
+        i += 1
+    return prelude[m.end():i - 1] if m and depth == 0 else "*"
 
 
-def css_rules(css):
-    """(prelude, body) of each rule in minified CSS, looking inside @media and @supports; @keyframes come whole."""
+def css_rules(css, around=()):
+    """(prelude, body, the at-rules around it) of each rule in minified CSS, looking inside every at-rule that holds rules;
+    @keyframes come whole."""
     i = 0
     while (j := css.find("{", i)) >= 0:
         prelude, depth, k = css[i:j].rsplit(";", 1)[-1].strip(), 1, j + 1
         while depth:
             depth += (css[k] == "{") - (css[k] == "}")
             k += 1
-        if prelude.startswith(("@media", "@supports", "@layer", "@container")):
-            yield from css_rules(css[j + 1:k - 1])
+        if prelude.startswith("@") and "{" in css[j + 1:k - 1] and not re.match(r"@(-\w+-)?keyframes\b", prelude):
+            if (root := scope_root(prelude)) and (own := own_declarations(css[j + 1:k - 1])):
+                yield root, own, around  # an @scope's own declarations style its root
+            yield from css_rules(css[j + 1:k - 1], around + (prelude,))
+        elif root := scope_root(prelude):
+            yield root, css[j + 1:k - 1], around  # an @scope's own declarations style its root
         else:
-            yield prelude, css[j + 1:k - 1]
+            yield prelude, css[j + 1:k - 1], around
         i = k
 
 
+def own_declarations(body):
+    """The declarations of a block that also holds rules: its text outside the nested blocks, less their preludes."""
+    top, depth = [], 0
+    for ch in body:
+        depth += (ch == "{") - (ch == "}")
+        top.append("\0" if ch == "{" and depth == 1 else ch if depth == 0 and ch != "}" else "")
+    pieces = "".join(top).split("\0")
+    return ";".join(x for x in [q.rsplit(";", 1)[0] if ";" in q else "" for q in pieces[:-1]] + pieces[-1:] if x.strip(" ;"))
+
+
 def props(body):
-    return re.findall(r"(?:^|[;{])\s*([\w-]+)\s*:", body)
+    """The property names a rule body or keyframes block sets, without a vendor prefix."""
+    return [re.sub(r"^-(?:webkit|moz|ms|o)-", "", k) for k in re.findall(r"(?:^|[;{])\s*([\w-]+)\s*:", body)]
 
 
-ANIM_WORDS = {"none", "linear", "ease", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end", "infinite", "normal", "reverse",
-              "alternate", "alternate-reverse", "forwards", "backwards", "both", "running", "paused", "initial", "inherit", "unset"}
+ANIMATION = r"(?:^|;)\s*(?:-\w+-)?animation(?:-name)?\s*:\s*([^;]*)"
 
 
 def animation_names(body):
-    values = re.findall(r"(?:^|;)\s*animation(?:-name)?\s*:\s*([^;]*)", body)
-    return [t for v in values for t in re.sub(r"[\w-]+\([^)]*\)", " ", v).replace(",", " ").split()
-            if re.fullmatch(r"-?[A-Za-z_][\w-]*", t) and t.lower() not in ANIM_WORDS]
+    """Every word of the rule's animation and animation-name values (a keyframes name among them)."""
+    values = re.findall(ANIMATION, body)
+    return [t.strip("\"'") for v in values for t in re.sub(r"[\w-]+\([^)]*\)", " ", v).replace(",", " ").split()]
 
 
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 
 
 class Elements(HTMLParser):
-    """The built page's elements (tag, classes, id, parent, place among the parent's children); `drawn` lists every svg.dwg
-    and every element inside one."""
+    """The built page's elements (tag, attributes, classes, id, parent, place among the parent's children, text inside);
+    `all` lists them in order, `drawn` every svg.dwg and every element inside one."""
 
     def __init__(self):
         super().__init__()
-        self.open, self.drawn = [None], []
+        self.open, self.all, self.drawn = [None], [], []
 
     def handle_starttag(self, tag, attrs):
         a, parent = dict(attrs), self.open[-1]
-        el = {"tag": tag, "cls": set((a.get("class") or "").split()), "id": a.get("id"), "parent": parent, "kids": []}
+        el = {"tag": tag, "a": a, "cls": set((a.get("class") or "").split()), "id": a.get("id"), "parent": parent, "kids": [], "text": ""}
         if parent:
             el["i"] = len(parent["kids"])
             parent["kids"].append(el)
+        self.all.append(el)
         if (tag == "svg" and "dwg" in el["cls"]) or (parent and parent.get("drawn")):
             el["drawn"] = True
             self.drawn.append(el)
@@ -454,6 +457,10 @@ class Elements(HTMLParser):
         if tag not in VOID:
             self.open.pop()
 
+    def handle_data(self, data):
+        for el in self.open[1:]:
+            el["text"] += data
+
     def handle_endtag(self, tag):
         for i in range(len(self.open) - 1, 0, -1):
             if self.open[i]["tag"] == tag:
@@ -461,10 +468,19 @@ class Elements(HTMLParser):
                 break
 
 
+def under(el):
+    """Every element inside el, in order."""
+    for kid in el["kids"]:
+        yield kid
+        yield from under(kid)
+
+
 def picks(el, comps, ops, i):
     """Whether compound i of a selector (and the compounds and combinators before it) can match the element."""
-    tag, cls, ids = comps[i]
+    tag, cls, ids, nodwg = comps[i]
     if (tag and el["tag"] != tag) or not cls <= el["cls"] or (ids and ids != {el["id"]}):
+        return False
+    if nodwg and any(e["tag"] == "svg" and "dwg" in e["cls"] for e in under(el)):
         return False
     if i == 0:
         return True
@@ -483,8 +499,10 @@ def picks(el, comps, ops, i):
 
 def reaches(selector, els):
     """True when a rule's selector can pick one of els (a drawing or something in it). A pseudo-class, :not(), :has() or
-    attribute test counts as matching anything, which only widens what is picked; a selector that ends in a pseudo-element
-    picks no element (an SVG element has no ::before or ::after; ::view-transition-* hang off the root)."""
+    attribute test counts as matching anything, which only widens what is picked, except :not(:has(.dwg)), the site's way to
+    leave the projects page out, which is read as written; a selector that ends in a pseudo-element picks no element (an SVG
+    element has no ::before or ::after; ::view-transition-* hang off the root)."""
+    selector = selector.replace(":not(:has(.dwg))", "%nodwg")
     while (s := re.sub(r"(?<!:):[\w-]+\((?:[^()]|\([^()]*\))*\)", "*", selector)) != selector:
         selector = s
     selector = re.sub(r"\[[^\]]*\]|(?<!:):(?!:)[\w-]+", "*", selector)
@@ -493,12 +511,28 @@ def reaches(selector, els):
         for comb, space, comp in re.findall(r"\s*([>+~])\s*|(\s+)|([^\s>+~]+)", sel.strip()):
             if comp:
                 tag = re.match(r"[A-Za-z][\w-]*", comp)
-                comps.append((tag[0].lower() if tag else None, set(re.findall(r"\.(-?[A-Za-z_][\w-]*)", comp)), set(re.findall(r"#([\w-]+)", comp))))
+                comps.append((tag[0].lower() if tag else None, set(re.findall(r"\.(-?[A-Za-z_][\w-]*)", comp)), set(re.findall(r"#([\w-]+)", comp)), "%nodwg" in comp))
                 ops.append(op or " ")
                 op = None
             else:
                 op = comb or op or " "
         if comps and "::" not in sel and any(picks(el, comps, ops, len(comps) - 1) for el in els):
+            return True
+    return False
+
+
+def reaches_in(p, around, els):
+    """reaches() for a rule inside @scope (root) blocks: what it picks must also be, or sit inside, what each root picks.
+    A rule that names :scope or & keeps the wide reading."""
+    roots = [r for a in around if (r := scope_root(a))]
+    if not roots or re.search(r":scope|&", p):
+        return reaches(p, els)
+    for el in (e for e in els if reaches(p, [e])):
+        chain, up = [], el
+        while up is not None:
+            chain.append(up)
+            up = up["parent"]
+        if all(reaches(r, chain) for r in roots):
             return True
     return False
 
@@ -547,16 +581,60 @@ def on_arrow(arrow, pts):
                for (p, a), (q, b) in zip(zip(pts, pos), zip(pts[1:], pos[1:])) for v, c in corners if a < c < b)
 
 
+def bounds(shape):
+    """The box (x0, y0, x1, y1) around a stop's rect or polygon, or None (also for a malformed one)."""
+    try:
+        if "rect" in shape:
+            x, y, w, h = map(float, shape["rect"])
+            return x, y, x + w, y + h
+        p = [float(v) for v in re.findall(r"-?\d*\.?\d+", shape["polygon"])]
+        return min(p[0::2]), min(p[1::2]), max(p[0::2]), max(p[1::2])
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def ring(p, d):
+    """The polygon p (x and y in turn) grown by d units: each vertex where its two edges meet once moved d outward."""
+    pts = list(zip(p[0::2], p[1::2]))
+    edges = list(zip(pts, pts[1:] + pts[:1]))
+    turn = 1 if sum(ax * by - bx * ay for (ax, ay), (bx, by) in edges) > 0 else -1
+    lines = []
+    for (ax, ay), (bx, by) in edges:
+        n = (turn * (by - ay) / math.dist((ax, ay), (bx, by)), -turn * (bx - ax) / math.dist((ax, ay), (bx, by)))
+        lines.append((*n, n[0] * ax + n[1] * ay + d))
+    return [((c1 * y2 - c2 * y1) / (x1 * y2 - y1 * x2), (x1 * c2 - x2 * c1) / (x1 * y2 - y1 * x2))
+            for (x1, y1, c1), (x2, y2, c2) in zip(lines[-1:] + lines[:-1], lines)]
+
+
+SHAPE_FORMS = {"rect": "[x, y, width, height]", "polygon": '"x,y x,y x,y"', "path": 'a string, "M x y H x V y"', "text": '[x, y, "label"]'}
+
+
+def malformed(shape):
+    """How a stop's or span's shape in data/runs.toml is written in the wrong form, so the checks after it don't trip on it."""
+    if not isinstance(shape, dict):
+        return [f"its shape {shape!r} is not a table"]
+    num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)  # noqa: E731
+    ok = {"rect": lambda v: isinstance(v, list) and len(v) == 4 and all(map(num, v)),
+          "polygon": lambda v: isinstance(v, str) and len(re.findall(r"-?\d*\.?\d+", v)) in range(6, 10 ** 4, 2),
+          "path": lambda v: isinstance(v, str),
+          "text": lambda v: isinstance(v, list) and len(v) == 3 and num(v[0]) and num(v[1]) and isinstance(v[2], str)}
+    return [f"its {k} = {v!r} is not written as {SHAPE_FORMS[k]}" for k, v in shape.items() if k in ok and not ok[k](v)]
+
+
 def shape_matches(shape, els):
     def nums(s):
         return [float(x) for x in re.findall(r"-?\d*\.?\d+", s)]
     def has(tag, cls, ok):
         return any(t == tag and cls in a.get("class", "").split() and ok(a, txt) for t, a, txt in els)
-    def centroid(p):
-        return sum(p[0::2]) / len(p[0::2]), sum(p[1::2]) / len(p[1::2])
+    def grown(drawn, p):
+        try:
+            r = ring(drawn, 4)
+        except ZeroDivisionError:  # a repeated or collinear vertex
+            return False
+        return len(p) == 2 * len(r) and all(any(abs(x - p[2 * j]) <= .1 and abs(y - p[2 * j + 1]) <= .1 for j in range(len(r))) for x, y in r)
     found = {"rect": lambda r: has("rect", "bx", lambda a, _: [float(a.get(k, "nan")) for k in ("x", "y", "width", "height")] == [float(v) for v in r]),
              "polygon": lambda p: has("polygon", "st", lambda a, _: nums(a.get("points", "")) == nums(p)) or has(
-                 "polygon", "acc", lambda a, _: max(abs(u - v) for u, v in zip(centroid(nums(a.get("points", ""))), centroid(nums(p)))) <= 1),
+                 "polygon", "acc", lambda a, _: grown(nums(a.get("points", "")), nums(p))),
              "path": lambda d: has("path", "ln", lambda a, _: a.get("d") == d),
              "text": lambda t: any(tag == "text" and [float(a.get("x", "nan")), float(a.get("y", "nan"))] == [float(t[0]), float(t[1])]
                                    and html.unescape(txt) == t[2] for tag, a, txt in els)}
@@ -565,8 +643,10 @@ def shape_matches(shape, els):
 
 
 def check_runs(out):
-    """The runs (data/runs.toml): routes on their drawing's arrows, outlines on its components, every layer hidden from screen
-    readers and wired to its keyframes, and nothing inside a drawing animated beyond opacity and dash offset."""
+    """The runs (data/runs.toml): routes on their drawing's arrows from stop to stop, outlines on its components, every layer
+    hidden from screen readers and wired to its keyframes, the layers and their switches behind the gate, one switch per
+    drawing that says its words, nothing inside a drawing moved beyond fill and stroke opacity and dash offset, and nothing
+    in a projects sheet or what holds it moved but the run layers."""
     problems = []
     data = tomllib.loads((ROOT / "data" / "runs.toml").read_text(encoding="utf-8"))
     for name, d in data.get("drawing", {}).items():
@@ -576,6 +656,12 @@ def check_runs(out):
             if o not in svgs:
                 problems.append(f"{name}: no {o} drawing in {partial.relative_to(ROOT)}")
                 continue
+            src = re.sub(r"\{\{-?\s*/\*.*?\*/\s*-?\}\}", "", svgs[o], flags=re.S)
+            calls = [(a.get("name"), a.get("o")) for a in (dict(re.findall(r'"([\w-]+)"\s+"([^"]*)"', m))
+                                                             for m in re.findall(r'partial\s+"run\.html"\s+\(dict\s+([^)]*)\)', src))]
+            problems += [f"{name} {o}: its drawing draws the runs {calls}, expected [('{name}', '{o}')]" if calls and all(None not in c for c in calls) else
+                         f"{name} {o}: its drawing has no run.html call the check can read; write it as "
+                         f"{{{{ partial \"run.html\" (dict \"name\" \"{name}\" \"o\" \"{o}\") }}}}"] * (calls != [(name, o)])
             els = svg_elements(svgs[o])
             arrows = []
             for (tag, a, _), nxt in zip(els, els[1:]):
@@ -586,45 +672,143 @@ def check_runs(out):
                     elif nxt[0] == "polygon" and "ah" in nxt[1].get("class", "").split():
                         tip = re.findall(r"-?\d*\.?\d+", nxt[1].get("points", ""))[2:4]
                         arrows.append(pts + [(float(tip[0]), float(tip[1]))])
+            boxes = {}
             for s in d.get("stop", []):
-                problems += [f"{name} {o} stop {s.get('id')}: {p}" for p in shape_matches(s.get(o, {}), els)]
+                shape = s.get(o, {})
+                bad = malformed(shape)
+                problems += [f"{name} {o} stop {s.get('id')}: {p}" for p in bad or shape_matches(shape, els)]
+                keys = sorted(shape) if isinstance(shape, dict) else []
+                problems += [f"{name} {o} stop {s.get('id')}: its shape has {keys}, expected one rect or one polygon"] * (
+                    len(keys) != 1 or not {"rect", "polygon"} >= set(keys))
+                boxes[s.get("id")] = None if bad else bounds(shape)
             for i, s in enumerate(d.get("span", [])):
-                problems += [f"{name} {o} span {i} ({s.get('first')} to {s.get('last')}): {p}" for p in shape_matches(s.get(o, {}), els)]
+                shape, ends = s.get(o, {}), [boxes.get(s.get("first")), boxes.get(s.get("last"))]
+                bad = malformed(shape)
+                problems += [f"{name} {o} span {i} ({s.get('first')} to {s.get('last')}): {p}" for p in bad or shape_matches(shape, els)]
+                if bad or None in ends:
+                    continue  # the shape's or the stop's own message says what is wrong
+                pts = (arrow_points(shape.get("path", "")) or []) + ([tuple(map(float, shape["text"][:2]))] if "text" in shape else [])
+                far = [q for q in pts if not (min(b[0] for b in ends) - 48 <= q[0] <= max(b[2] for b in ends) + 48
+                                              and min(b[1] for b in ends) - 48 <= q[1] <= max(b[3] for b in ends) + 48)]
+                problems += [f"{name} {o} span {i}: its shape reaches {q}, more than 48 units from its stops' boxes {ends}" for q in far[:1]]
             for r, run in enumerate(d.get("run", []), 1):
                 for n, hop in enumerate(run.get("hops", []), 1):
                     pts = [tuple(map(float, p)) for p in hop.get(o, [])]
                     if len(pts) < 2 or not any(on_arrow(a, pts) for a in arrows):
                         problems.append(f"{name} {o} run {r} hop {n} ({hop.get('from')} to {hop.get('to')}) is not on one of the drawing's arrows")
+                    # it leaves its stop's edge and ends on the next one's; 3 units of slack, as some upright tips end 2 short
+                    for word, end, stop in (("starts", pts[:1], hop.get("from")), ("ends", pts[-1:], hop.get("to"))):
+                        b = boxes.get(stop)  # None: the stop's own message says what is wrong with its shape
+                        if end and b and not (b[0] - 3 <= end[0][0] <= b[2] + 3 and b[1] - 3 <= end[0][1] <= b[3] + 3):
+                            problems.append(f"{name} {o} run {r} hop {n} {word} at {end[0]}, off {stop}'s box {b}")
     built = out / PAGES["/projects/"]
     html_text = built.read_text(encoding="utf-8") if built.is_file() else ""
     tree = Elements()
     tree.feed(html_text)
-    css = "".join(f.read_text(encoding="utf-8") for f in sorted(out.rglob("*.css")))
+    # what the stylesheet check below can't read: a style attribute in a drawing, a <style> block, an SVG animation tag
+    problems += [f"a {el['tag']} on the projects page has a style attribute" for el in tree.all if "style" in el["a"]]
+    problems += [f"the projects page has a <{el['tag']}> element" for el in tree.all if el["tag"] in ("style", "animate", "animatetransform", "animatemotion", "set")]
+    css = "".join(f.read_text(encoding="utf-8") for f in sorted(out.rglob("*")) if f.is_file() and f.suffix.lower() == ".css")
+    # CSS the reading below can't follow fails instead of passing unread
+    bare, strings = re.sub(r'"[^"]*"|\'[^\']*\'', "", css), re.findall(r'"[^"]*"|\'[^\']*\'', css)
+    unreadable = (["a backslash (a CSS escape)"] * ("\\" in css) + ["@import"] * ("@import" in css.lower()) + ["unbalanced braces"] * (
+        bare.count("{") != bare.count("}")) + ["a quoted string with a brace in it"] * any("{" in q or "}" in q for q in strings))
+    if unreadable:
+        check("runs", "-", problems + [f"the stylesheet has {u}, which the check can't read" for u in unreadable])
+        return
     rules = list(css_rules(css))
-    frames = {p.split()[1]: body for p, body in rules if p.startswith("@keyframes") and len(p.split()) > 1}
-    animated = [(p, animation_names(body)) for p, body in rules if not p.startswith("@")]
-    for p, body in rules:
-        if not p.startswith("@") and reaches(p, tree.drawn):
-            problems += [f"{p} sets {k}" for k in props(body) if k in ("transform", "translate", "rotate", "scale", "offset") or k.startswith("offset-")]
+    problems += [f"{p} holds nested rules" for p, body, _ in rules if not p.startswith("@") and "{" in body]
+    frames = {}
+    for p, body, _ in rules:
+        if name := re.match(r"@(?:-\w+-)?keyframes\s+(\S+)", p):
+            frames[name[1].strip("\"'")] = frames.get(name[1].strip("\"'"), "") + body
+    animated = [(p, animation_names(body)) for p, body, _ in rules if not p.startswith("@")]
+    for p, body, around in rules:
+        if not p.startswith("@") and reaches_in(p, around, tree.drawn):
+            problems += [f"{p} sets {k}" for k in props(body) if k in ("transform", "translate", "rotate", "scale", "offset") or k.startswith(("offset-", "transition", "view-transition"))]
+            for v in re.findall(ANIMATION, body):
+                fns = sorted({f + "()" for f in re.findall(r"([\w-]+)\(", v) if f.lower() not in ("cubic-bezier", "steps", "linear")})
+                kws = sorted({t for t in re.split(r"[\s,]+", v.lower()) if t in ("inherit", "unset", "revert", "revert-layer")})
+                problems += [f"{p} uses {', '.join(fns + kws)} in its animation, which the check can't follow"] * bool(fns + kws)
+                problems += [f"{p} sets an animation with !important, which the stop rule can't end"] * bool(re.search(r"!\s*important", v, re.I))
             for a in animation_names(body):
-                bad = [k for k in props(frames.get(a, "")) if k not in ("opacity", "stroke-dashoffset", "animation-timing-function")]
+                # an opacity animation, even on the run layers alone, changed how Chrome painted the drawings at rest on HiDPI screens
+                bad = [k for k in props(frames.get(a, "")) if k not in ("fill-opacity", "stroke-opacity", "stroke-dashoffset", "animation-timing-function")]
                 problems += [f"{p} runs @keyframes {a}, which sets {', '.join(sorted(set(bad)))}"] * bool(bad)
-    page = RunLayers()
-    page.feed(html_text)
-    problems += ["no drawings on the built projects page"] * (not page.svgs)
-    for i, svg in enumerate(page.svgs):
-        if len(svg["runs"]) != 1:
-            problems.append(f"drawing {i + 1} ({svg['cls']}) has {len(svg['runs'])} run layers, expected 1")
+    in_runs = {id(e) for g in tree.all if g["tag"] == "g" and "run" in g["cls"] for e in [g, *under(g)]}
+    still = [e for a in tree.all if a["tag"] == "article" and "sheet" in a["cls"] for e in [a, *under(a)] if id(e) not in in_runs]
+    for svg in (e for e in tree.drawn if e["tag"] == "svg"):
+        up = svg["parent"]
+        while up is not None:
+            still += [up] * all(up is not a for a in still)
+            up = up["parent"]
+    for p, body, around in rules:
+        if not p.startswith("@") and reaches_in(p, around, still):
+            moves = sorted({k for k in props(body) if k.startswith(("transition", "view-transition"))})
+            moves += ["animation"] * any(v.strip().lower() != "none" for v in re.findall(ANIMATION, body))
+            problems += [f"{p} sets {', '.join(moves)} on a projects sheet or what holds it, where only the run layers move"] * bool(moves)
+    # the runs and their switches show only on screen, with motion allowed and where :has() works, so a switch can always stop them
+    gate = ("@media(prefers-reduced-motion:no-preference)", "@media screen", "@supports selector(:has(*))")
+    for rule in (".dwg .run{display:inline}", ".runbar{display:flex}", ".fig:has(input:checked) .run{display:none}", ".fig:has(input:checked) .run *{animation:none}"):
+        where = [around for p, body, around in rules if f"{p}{{{body}}}" == rule]
+        problems += [f"{rule} is in the stylesheet {len(where)} times, expected once"] * (len(where) != 1)
+        problems += [f"{rule} is not inside {''.join(g + '{' for g in gate)}"] * (len(where) == 1 and where[0] != gate)
+    hide = ".dwg .run,.runbar{display:none}"
+    for need in (hide, ".dwg .hl{fill-opacity:0;stroke-opacity:0}", ".dwg .pu{stroke-opacity:0}"):
+        problems += [f"{need} (base.css) is not in the stylesheet once, outside every at-rule"] * ([a for p, b, a in rules if f"{p}{{{b}}}" == need] != [()])
+    shown = [e for e in tree.all if "runbar" in e["cls"] or (e["tag"] == "g" and "run" in e["cls"])]
+    for p, body, around in rules:
+        decls = re.findall(r"(?:^|;)\s*([\w-]+)\s*:\s*([^;]*)", body)
+        if not p.startswith("@") and reaches_in(p, around, shown) and any(k == "all" for k, _ in decls):
+            problems.append(f"{p} sets all on a run layer or a switch, which can show it")
+        if not p.startswith("@") and reaches_in(p, around, shown) and any(k == "display" and re.sub(r"!\s*important", "", v, flags=re.I).strip().lower() != "none" for k, v in decls):
+            problems += [f"{p}{{{body}}} shows a run layer or a switch, which only the gate's two rules may"] * (f"{p}{{{body}}}" not in (".dwg .run{display:inline}", ".runbar{display:flex}") or around != gate)
+    svgs = [el for el in tree.drawn if el["tag"] == "svg" and "dwg" in el["cls"]]
+    problems += ["no drawings on the built projects page"] * (not svgs)
+    for i, svg in enumerate(svgs):
+        layers = [g for g in under(svg) if g["tag"] == "g" and "run" in g["cls"]]
+        if len(layers) != 1:
+            problems.append(f"drawing {i + 1} ({svg['a'].get('class')}) has {len(layers)} run layers, expected 1")
             continue
-        layer = svg["runs"][0]
-        run = (re.search(r"\brun-[\w-]+-[hv]\b", layer["cls"]) or [f"drawing {i + 1}"])[0]
-        problems += [f"{run} is not aria-hidden"] * (not layer["hidden"])
-        problems += [f"{run} has no {kind} groups" for kind in ("pu", "hl") if not layer[kind]]
-        want = {c: [f"{run}-pu{c[3:]}", f"{run}-po{c[3:]}"] for c in layer["pu"]} | {c: [f"{run}-{c[3:]}"] for c in layer["hl"]}
+        layer = layers[0]
+        run = next((c for c in sorted(layer["cls"]) if re.fullmatch(r"run-[\w-]+-[hv]", c)), f"drawing {i + 1}")
+        problems += [f"{run} is not aria-hidden"] * (layer["a"].get("aria-hidden") != "true")
+        groups = {kind: sorted(c for g in under(layer) if g["tag"] == "g" and kind in g["cls"] for c in g["cls"] if c.startswith(kind + "-"))
+                  for kind in ("pu", "hl")}
+        problems += [f"{run} has no {kind} groups" for kind, found in groups.items() if not found]
+        want = {c: [f"{run}-pu{c[3:]}", f"{run}-po{c[3:]}"] for c in groups["pu"]} | {c: [f"{run}-{c[3:]}"] for c in groups["hl"]}
         for c, names in want.items():
             wired = {a for p, names_ in animated if re.search(rf"\.{re.escape(run)}\s+\.{re.escape(c)}(?![\w-])", p) for a in names_}
             problems += [f"{run} .{c} is not wired to @keyframes {a}" for a in names if a not in frames or a not in wired]
         problems += [f"@keyframes {a} animates nothing in {run}" for a in frames if a.startswith(run + "-") and a not in {x for v in want.values() for x in v}]
+    # every drawing has its stop / play switch, named with the words it shows (WCAG 2.2.2 and 2.5.3), under a key that says something
+    for i, svg in enumerate(svgs, 1):
+        fig = svg["parent"]
+        while fig is not None and fig["tag"] != "figure":
+            fig = fig["parent"]
+        problems += [f"drawing {i} is not inside a figure.fig, which holds its switch and which the stop rules read"] * (fig is None or "fig" not in fig["cls"])
+    figs = [f for f in tree.all if f["tag"] == "figure" and "fig" in f["cls"] and any(e["tag"] == "svg" and "dwg" in e["cls"] for e in under(f))]
+    for n, fig in enumerate(figs, 1):
+        bars = [e for e in under(fig) if "runbar" in e["cls"]]
+        boxes = [e for e in under(fig) if e["tag"] == "input" and e["a"].get("type") == "checkbox"]
+        if len(bars) != 1 or len(boxes) != 1 or all(boxes[0] is not e for e in under(bars[0])):
+            problems.append(f"figure {n} has {len(bars)} run bars and {len(boxes)} switches, expected one switch in its one run bar")
+            continue
+        chain, up = [], boxes[0]
+        while up is not None:
+            chain.append(up)
+            up = up["parent"]
+        marks = sorted({k for e in chain for k in ("disabled", "hidden", "inert") if k in e["a"]})
+        problems += [f"figure {n}: its switch or what holds it is marked {', '.join(marks)}"] * bool(marks)
+        holder = next((e for e in chain if e["tag"] == "label"), None)
+        problems += [f"figure {n}: its switch is not inside a label, so its words don't toggle it"] * (holder is None)
+        label = (boxes[0]["a"].get("aria-label") or "").lower()
+        for kind in ("on", "off"):
+            words = [e["text"].strip() for e in under(bars[0]) if kind in e["cls"]]
+            problems += [f"figure {n}: its {kind} word sits outside the switch's label, so it doesn't toggle it"] * bool(
+                holder and words and not any(kind in e["cls"] for e in under(holder)))
+            problems += [f"figure {n}: the switch's name \"{label}\" does not contain its {kind} word {words}"] * (len(words) != 1 or not words[0] or words[0].lower() not in label)
+        problems += [f"figure {n}: the run's key is empty"] * (not "".join(e["text"] for e in under(bars[0]) if "lg-run" in e["cls"]).strip())
     check("runs", "-", problems)
 
 
@@ -633,7 +817,9 @@ def main():
     try:
         done = subprocess.run(["hugo", "-s", str(ROOT), "--minify", "--panicOnWarning", "--baseURL", BASE + "/", "-d", str(out)],
                               capture_output=True, text=True)
-        check("build", "-", [f"hugo exited {done.returncode}: {(done.stdout + done.stderr).strip()[-600:]}"] if done.returncode else [])
+        log = (done.stdout + done.stderr).strip()
+        errors = [line.strip() for line in log.splitlines() if line.lstrip().startswith("ERROR") and len(line) < 300]
+        check("build", "-", [f"hugo exited {done.returncode}: {' '.join(errors)} ... {log[-600:]}"] if done.returncode else [])
         if done.returncode == 0:
             config = {k.lower(): v for k, v in tomllib.loads((ROOT / "hugo.toml").read_text(encoding="utf-8")).items()}  # Hugo reads keys in any case
             files, want = {p.relative_to(out).as_posix() for p in out.rglob("*.html")}, {*PAGES.values(), "404.html"}

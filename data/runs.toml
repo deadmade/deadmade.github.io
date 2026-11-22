@@ -5,7 +5,7 @@
 # A shape is the component's outline from its drawing partial: rect = [x, y, width, height], polygon, path or text.
 
 [timing]
-speed = 175.0                       # user units per second, before easing
+speed = 175.0                       # a hop takes 1.25 x its length / speed seconds, and at least 0.45 (motion.css)
 ease = "cubic-bezier(.45,0,.3,1)"   # the dot's travel along one hop
 fade = 0.2                          # the dot fades in and out
 light = 0.25                        # a stop lights
@@ -13,7 +13,7 @@ unlight = 0.4                       # a stop goes dark
 start = 1.0                         # a run's first stop alone, before the dot leaves
 between = 1.5                       # nothing lit, between two runs of one drawing
 rest = 4.5                          # nothing lit, after the last run
-delay = 1.2                         # before the first run after the page loads
+delay = 1.2                         # before the first run, after the page loads and again after each play
 tip = -0.996                        # the dot's end: a zero-length dash exactly at the path's end is not drawn
 leave = 0.15                        # a stop starts to go dark this long after its dot leaves
 land = 0.08                         # a stop starts to light this long before its dot lands
