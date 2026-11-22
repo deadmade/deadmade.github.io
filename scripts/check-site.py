@@ -2,8 +2,10 @@
 """Build the site as CI does and check the output: python3 scripts/check-site.py
 
 Prints PASS/FAIL <check> <page>[: reason] per check and page; exits 1 on any FAIL.
-The checks are listed in docs/features/job-application-portfolio/plan.md, Task 1, and docs/features/seo/plan.md.
+The checks are listed in docs/features/job-application-portfolio/plan.md, Task 1, docs/features/seo/plan.md and
+docs/features/diagram-animations/plan.md (Task 4).
 """
+import html
 import json
 import os
 import re
@@ -359,12 +361,198 @@ def check_seams(out):
                 problems.append(f"the no-preference block in {sheet.name} never closes")
     host = rf"{OLD_HOST}|{re.escape(urlparse(BASE).netloc)}"  # the old and the current host
     mail = r"(?<![\w.+/-])[\w.+-]+@[\w-]+(?:\.[\w-]+)+"  # info@<host> is mail and is removed first; a URL's user@<host> follows a / and stays
-    for source in [ROOT / "hugo.toml", *sorted(f for d in ("layouts", "content", "static") for f in (ROOT / d).rglob("*") if f.is_file())]:
+    for source in [ROOT / "hugo.toml", *sorted(f for d in ("layouts", "content", "static", "data") for f in (ROOT / d).rglob("*") if f.is_file())]:
         text, name = source.read_text(encoding="utf-8", errors="ignore"), source.relative_to(ROOT)
         if name.parts[0] != "static":  # static/icons/favicon.svg carries the accent on purpose (scripts/generate-favicons.py)
             problems += [f"accent colour in {name}"] * bool(re.search(r"F08BB4|FF544A", text, re.I))
         problems += [f"site host in {name}"] * (source.name != "hugo.toml" and bool(re.search(host, re.sub(mail, "", text))))
     check("seams", "-", problems)
+
+
+class RunLayers(HTMLParser):
+    """Each drawing (svg.dwg) of the built projects page, with its run layers (g.run) and their g.pu and g.hl classes."""
+
+    def __init__(self):
+        super().__init__()
+        self.svgs, self.gs, self.in_dwg = [], [], False
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        cls = (a.get("class") or "").split()
+        if tag == "svg" and "dwg" in cls:
+            self.svgs.append({"cls": " ".join(cls), "runs": []})
+            self.in_dwg, self.gs = True, []
+        elif tag == "g" and self.in_dwg:
+            self.gs.append(cls)
+            if "run" in cls:
+                self.svgs[-1]["runs"].append({"cls": " ".join(cls), "hidden": a.get("aria-hidden") == "true", "pu": [], "hl": []})
+            for kind in ("pu", "hl"):
+                if kind in cls and any("run" in g for g in self.gs[:-1]):
+                    self.svgs[-1]["runs"][-1][kind] += [c for c in cls if c.startswith(kind + "-")]
+
+    def handle_endtag(self, tag):
+        if tag == "svg":
+            self.in_dwg = False
+        elif tag == "g" and self.in_dwg and self.gs:
+            self.gs.pop()
+
+
+def css_rules(css):
+    """(prelude, body) of each rule in minified CSS, looking inside @media and @supports; @keyframes come whole."""
+    i = 0
+    while (j := css.find("{", i)) >= 0:
+        prelude, depth, k = css[i:j].rsplit(";", 1)[-1].strip(), 1, j + 1
+        while depth:
+            depth += (css[k] == "{") - (css[k] == "}")
+            k += 1
+        if prelude.startswith(("@media", "@supports", "@layer", "@container")):
+            yield from css_rules(css[j + 1:k - 1])
+        else:
+            yield prelude, css[j + 1:k - 1]
+        i = k
+
+
+def props(body):
+    return re.findall(r"(?:^|[;{])\s*([\w-]+)\s*:", body)
+
+
+ANIM_WORDS = {"none", "linear", "ease", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end", "infinite", "normal", "reverse",
+              "alternate", "alternate-reverse", "forwards", "backwards", "both", "running", "paused", "initial", "inherit", "unset"}
+
+
+def animation_names(body):
+    values = re.findall(r"(?:^|;)\s*animation(?:-name)?\s*:\s*([^;]*)", body)
+    return [t for v in values for t in re.sub(r"[\w-]+\([^)]*\)", " ", v).replace(",", " ").split()
+            if re.fullmatch(r"-?[A-Za-z_][\w-]*", t) and t.lower() not in ANIM_WORDS]
+
+
+def in_drawing(selector):
+    """True when a selector picks something inside a drawing; :not() and :has() only filter (main:not(:has(.dwg)) is the page)."""
+    while (s := re.sub(r":(?:not|has)\((?:[^()]|\([^()]*\))*\)", "", selector)) != selector:
+        selector = s
+    return any(c in ("dwg", "run", "pu", "hl") or c.startswith(("run-", "pu-", "hl-")) for c in re.findall(r"\.(-?[A-Za-z_][\w-]*)", selector))
+
+
+def svg_elements(svg):
+    """(tag, attributes, text) of each path, polygon, rect and text in a drawing's source, in order."""
+    return [(m[1], dict(re.findall(r'([\w-]+)="([^"]*)"', m[2])), (m[3] or "").strip())
+            for m in re.finditer(r"<(path|polygon|rect|text)\b([^>]*?)/?>(?:([^<]*)</text>)?", svg)]
+
+
+def arrow_points(d):
+    """The vertices of an authored path.ln (absolute M, H and V only); None if it uses anything else."""
+    tokens, pts = re.findall(r"[A-Za-z]|-?\d*\.?\d+", d), []
+    while tokens:
+        c = tokens.pop(0)
+        try:
+            if c == "M":
+                pts.append((float(tokens.pop(0)), float(tokens.pop(0))))
+            elif c in "HV" and pts:
+                v = float(tokens.pop(0))
+                pts.append((v, pts[-1][1]) if c == "H" else (pts[-1][0], v))
+            else:
+                return None
+        except (IndexError, ValueError):
+            return None
+    return pts
+
+
+def along(arrow, p):
+    """How far along the arrow (an axis-parallel polyline) a point lies, or None if it is off it."""
+    done = 0.0
+    for (ax, ay), (bx, by) in zip(arrow, arrow[1:]):
+        if min(ax, bx) - 1e-6 <= p[0] <= max(ax, bx) + 1e-6 and min(ay, by) - 1e-6 <= p[1] <= max(ay, by) + 1e-6 and (ax == bx or ay == by):
+            return done + abs(p[0] - ax) + abs(p[1] - ay)
+        done += abs(bx - ax) + abs(by - ay)
+    return None
+
+
+def on_arrow(arrow, pts):
+    """A hop's points lie on the arrow, in its direction, and between two of them the arrow runs straight."""
+    pos = [along(arrow, p) for p in pts]
+    if None in pos or any(b <= a for a, b in zip(pos, pos[1:])):
+        return False
+    corners = list(zip(arrow, [along(arrow, v) for v in arrow]))
+    return all(abs((v[0] - p[0]) * (q[1] - p[1]) - (v[1] - p[1]) * (q[0] - p[0])) < 1e-6
+               for (p, a), (q, b) in zip(zip(pts, pos), zip(pts[1:], pos[1:])) for v, c in corners if a < c < b)
+
+
+def shape_matches(shape, els):
+    def nums(s):
+        return [float(x) for x in re.findall(r"-?\d*\.?\d+", s)]
+    def has(tag, cls, ok):
+        return any(t == tag and cls in a.get("class", "").split() and ok(a, txt) for t, a, txt in els)
+    def centroid(p):
+        return sum(p[0::2]) / len(p[0::2]), sum(p[1::2]) / len(p[1::2])
+    found = {"rect": lambda r: has("rect", "bx", lambda a, _: [float(a.get(k, "nan")) for k in ("x", "y", "width", "height")] == [float(v) for v in r]),
+             "polygon": lambda p: has("polygon", "st", lambda a, _: nums(a.get("points", "")) == nums(p)) or has(
+                 "polygon", "acc", lambda a, _: max(abs(u - v) for u, v in zip(centroid(nums(a.get("points", ""))), centroid(nums(p)))) <= 1),
+             "path": lambda d: has("path", "ln", lambda a, _: a.get("d") == d),
+             "text": lambda t: any(tag == "text" and [float(a.get("x", "nan")), float(a.get("y", "nan"))] == [float(t[0]), float(t[1])]
+                                   and html.unescape(txt) == t[2] for tag, a, txt in els)}
+    return [f"its {k} {shape[k]} matches no {k} of the drawing" if k in found else f"unknown shape {k}" for k in shape
+            if k not in found or not found[k](shape[k])]
+
+
+def check_runs(out):
+    """The runs (data/runs.toml): routes on their drawing's arrows, outlines on its components, every layer hidden from screen
+    readers and wired to its keyframes, and nothing inside a drawing animated beyond opacity and dash offset."""
+    problems = []
+    data = tomllib.loads((ROOT / "data" / "runs.toml").read_text(encoding="utf-8"))
+    for name, d in data.get("drawing", {}).items():
+        partial = ROOT / "layouts" / "_partials" / f"drawing-{name}.html"
+        svgs = {m[1]: m[0] for m in re.finditer(r'<svg class="dwg ([hv])"[\s\S]*?</svg>', partial.read_text(encoding="utf-8"))} if partial.is_file() else {}
+        for o in ("h", "v"):
+            if o not in svgs:
+                problems.append(f"{name}: no {o} drawing in {partial.relative_to(ROOT)}")
+                continue
+            els = svg_elements(svgs[o])
+            arrows = []
+            for (tag, a, _), nxt in zip(els, els[1:]):
+                if tag == "path" and "ln" in a.get("class", "").split():
+                    pts = arrow_points(a.get("d", ""))
+                    if pts is None:
+                        problems.append(f"{name} {o}: cannot read path d=\"{a.get('d')}\"")
+                    elif nxt[0] == "polygon" and "ah" in nxt[1].get("class", "").split():
+                        tip = re.findall(r"-?\d*\.?\d+", nxt[1].get("points", ""))[2:4]
+                        arrows.append(pts + [(float(tip[0]), float(tip[1]))])
+            for s in d.get("stop", []):
+                problems += [f"{name} {o} stop {s.get('id')}: {p}" for p in shape_matches(s.get(o, {}), els)]
+            for i, s in enumerate(d.get("span", [])):
+                problems += [f"{name} {o} span {i} ({s.get('first')} to {s.get('last')}): {p}" for p in shape_matches(s.get(o, {}), els)]
+            for r, run in enumerate(d.get("run", []), 1):
+                for n, hop in enumerate(run.get("hops", []), 1):
+                    pts = [tuple(map(float, p)) for p in hop.get(o, [])]
+                    if len(pts) < 2 or not any(on_arrow(a, pts) for a in arrows):
+                        problems.append(f"{name} {o} run {r} hop {n} ({hop.get('from')} to {hop.get('to')}) is not on one of the drawing's arrows")
+    css = "".join(f.read_text(encoding="utf-8") for f in sorted(out.rglob("*.css")))
+    rules = list(css_rules(css))
+    frames = {p.split()[1]: body for p, body in rules if p.startswith("@keyframes") and len(p.split()) > 1}
+    animated = [(p, animation_names(body)) for p, body in rules if not p.startswith("@")]
+    for p, body in rules:
+        if not p.startswith("@") and in_drawing(p):
+            problems += [f"{p} sets {k}" for k in props(body) if k in ("transform", "translate", "rotate", "scale", "offset") or k.startswith("offset-")]
+            for a in animation_names(body):
+                bad = [k for k in props(frames.get(a, "")) if k not in ("opacity", "stroke-dashoffset", "animation-timing-function")]
+                problems += [f"{p} runs @keyframes {a}, which sets {', '.join(sorted(set(bad)))}"] * bool(bad)
+    page = RunLayers()
+    built = out / PAGES["/projects/"]
+    page.feed(built.read_text(encoding="utf-8") if built.is_file() else "")
+    problems += ["no drawings on the built projects page"] * (not page.svgs)
+    for i, svg in enumerate(page.svgs):
+        if len(svg["runs"]) != 1:
+            problems.append(f"drawing {i + 1} ({svg['cls']}) has {len(svg['runs'])} run layers, expected 1")
+            continue
+        layer = svg["runs"][0]
+        run = (re.search(r"\brun-[\w-]+-[hv]\b", layer["cls"]) or [f"drawing {i + 1}"])[0]
+        problems += [f"{run} is not aria-hidden"] * (not layer["hidden"])
+        problems += [f"{run} has no {kind} groups" for kind in ("pu", "hl") if not layer[kind]]
+        want = {c: [f"{run}-pu{c[3:]}", f"{run}-po{c[3:]}"] for c in layer["pu"]} | {c: [f"{run}-{c[3:]}"] for c in layer["hl"]}
+        for c, names in want.items():
+            wired = {a for p, names_ in animated if re.search(rf"\.{re.escape(run)}\s+\.{re.escape(c)}(?![\w-])", p) for a in names_}
+            problems += [f"{run} .{c} is not wired to @keyframes {a}" for a in names if a not in frames or a not in wired]
+        problems += [f"@keyframes {a} animates nothing in {run}" for a in frames if a.startswith(run + "-") and a not in {x for v in want.values() for x in v}]
+    check("runs", "-", problems)
 
 
 def main():
@@ -392,6 +580,7 @@ def main():
             check_dates(out)
             check_host(out, config)
             check_seams(out)
+            check_runs(out)
     finally:
         shutil.rmtree(out, ignore_errors=True)
     for name, page, reason in results:
