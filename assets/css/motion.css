@@ -75,6 +75,9 @@
   @media screen{@supports selector(:has(*)){
     .dwg .run{display:inline}
     .runbar{display:flex}
+    /* the upright drawings have labels along their top edge, so the control (a 32px row) gets a line of its own above
+       them; the wide ones keep their space (base.css switches at 760px) */
+    @media(max-width:759px){.lead .fig{padding-top:calc(clamp(22px,3vw,40px) + 32px)}}
     /* stop shows the plain drawing; play starts the run again from the beginning. Hiding alone doesn't do it: Chrome keeps
        a hidden group's animations running (play resumed mid-run) and Safari's engine never restarted them, so stop also ends them */
     .fig:has(input:checked) .run{display:none}

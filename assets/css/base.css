@@ -123,7 +123,8 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
 /* above the drawing's top right corner: what the dot carries, and the stop / play switch */
 .fig{position:relative}
 .runbar{position:absolute;right:0;top:0;align-items:center;gap:20px;font-size:12px;color:var(--quiet)}
-@media(min-width:1300px){.lead .runbar{right:clamp(16px,2.4vw,34px)}}
+/* it ends where the drawing does: past the column's padding, and past its max-width on very wide screens */
+@media(min-width:1300px){.lead .runbar{right:max(clamp(16px,2.4vw,34px),100% - 1400px)}}
 .lg-run{display:inline-flex;align-items:center;gap:8px}
 .lg-run svg{height:14px;width:auto;overflow:visible}
 .lg-run .dot{fill:var(--accent)}
@@ -184,6 +185,8 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
 @media(max-width:759px){
   .lead .dwg.h{display:none}
   .lead .dwg.v{display:block}
+  /* the control ends where the upright drawing does (its max-width, above), not at the sheet's edge */
+  .lead .runbar{right:max(0px,100% - 400px)}
 }
 @media(max-width:700px){
   .dwg.h{display:none}
