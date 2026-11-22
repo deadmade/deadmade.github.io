@@ -2,10 +2,16 @@
 title: "Projects — Manuel Schülein"
 description: "Three projects drawn as architecture diagrams: fangtype, a VS Code tool for Python type annotations, and the team builds RustLogger and IsoPrüfi."
 layout: projects
+# the switch above each drawing while it runs: its two visible words and its accessible name (it contains both words)
+runbar:
+  stop: "stop"
+  play: "play"
+  name: "stop or play the animation"
 projects:
   - name: "fangtype"
     tag: "built alone · Studienarbeit"
     drawing: fangtype
+    runkey: "a request"
     summary: "fangtype: two round trips over LSP between VS Code and a language server. First, Python code goes to Jedi, which infers types. They come back as inlay hints, which the developer reviews. When the developer accepts a hint, a second request makes the server write the annotation with libcst and validate it with mypy. The edit comes back to VS Code as type annotations."
     what: "A VS Code tool for Python type annotations. Designed, implemented and tested independently. Jedi and the project's own inference passes infer the types, and the editor shows them as hints. When the developer accepts one, the language server writes the annotation and mypy validates it; a rejected annotation is not written."
     stack:

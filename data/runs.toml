@@ -1,0 +1,78 @@
+# The drawings' runs: a dot carries a request hop by hop along the arrows, lighting the stop it reaches.
+# layouts/_partials/run.html draws each run layer from this file, and assets/css/motion.css (a template) times it.
+# Each stop, span and hop gives its shape or points twice: h for the wide drawing, v for the upright one.
+# A hop's points run from the leaving component's edge to the arrowhead's tip, on the drawing's own arrow.
+# A shape is the component's outline from its drawing partial: rect = [x, y, width, height], polygon, path or text.
+
+[timing]
+speed = 175.0                       # user units per second, before easing
+ease = "cubic-bezier(.45,0,.3,1)"   # the dot's travel along one hop
+fade = 0.2                          # the dot fades in and out
+light = 0.25                        # a stop lights
+unlight = 0.4                       # a stop goes dark
+start = 1.0                         # a run's first stop alone, before the dot leaves
+rest = 4.5                          # nothing lit, after the last run
+delay = 1.2                         # before the first run after the page loads
+tip = -0.996                        # the dot's end: a zero-length dash exactly at the path's end is not drawn
+leave = 0.15                        # a stop starts to go dark this long after its dot leaves
+land = 0.08                         # a stop starts to light this long before its dot lands
+
+# fangtype: Python code to Jedi, back as inlay hints, the developer reviews and accepts, libcst writes, mypy checks
+[[drawing.fangtype.stop]]
+id = "code"
+h = { rect = [24, 82, 104, 44] }
+v = { rect = [16, 38, 120, 36] }
+
+[[drawing.fangtype.stop]]
+id = "jedi"
+h = { rect = [24, 240, 104, 44] }
+v = { rect = [200, 40, 128, 84] }
+
+[[drawing.fangtype.stop]]
+id = "hints"
+h = { rect = [168, 82, 104, 44] }
+v = { rect = [16, 86, 120, 36] }
+
+[[drawing.fangtype.stop]]
+id = "review"
+h = { polygon = "316,86 342,104 316,122" }
+v = { polygon = "26,150 52,168 26,186" }
+
+# a ring 4 units outside the filled accept triangle
+[[drawing.fangtype.stop]]
+id = "accept"
+h = { polygon = "400.0,78.4 437.0,104.0 400.0,129.6" }
+v = { polygon = "96.0,142.4 133.0,168.0 96.0,193.6" }
+
+[[drawing.fangtype.stop]]
+id = "libcst"
+h = { rect = [424, 240, 92, 44] }
+v = { rect = [200, 148, 128, 44] }
+
+[[drawing.fangtype.stop]]
+id = "mypy"
+h = { rect = [574, 240, 92, 44] }
+v = { rect = [200, 250, 128, 44] }
+
+[[drawing.fangtype.stop]]
+id = "ann"
+h = { rect = [552, 82, 136, 44] }
+v = { rect = [16, 250, 120, 44] }
+
+# the developer's bracket and label stay lit from review through accept
+[[drawing.fangtype.span]]
+first = "review"
+last = "accept"
+h = { path = "M316 78V70H430V78", text = [373, 62, "developer"] }
+v = { path = "M26 214V220H126V214", text = [76, 236, "developer"] }
+
+[[drawing.fangtype.run]]
+hops = [
+  { from = "code", to = "jedi", wait = 0.6, h = [[50, 126], [50, 240]], v = [[136, 56], [200, 56]] },
+  { from = "jedi", to = "hints", wait = 0.6, h = [[104, 240], [104, 176], [220, 176], [220, 126]], v = [[200, 104], [136, 104]] },
+  { from = "hints", to = "review", wait = 1.7, h = [[272, 104], [316, 104]], v = [[26, 122], [26, 150]] },
+  { from = "review", to = "accept", wait = 0.7, h = [[342, 104], [404, 104]], v = [[52, 168], [100, 168]] },
+  { from = "accept", to = "libcst", wait = 0.6, h = [[430, 104], [470, 104], [470, 240]], v = [[126, 168], [200, 168]] },
+  { from = "libcst", to = "mypy", wait = 0.6, h = [[516, 262], [574, 262]], v = [[264, 192], [264, 250]] },
+  { from = "mypy", to = "ann", wait = 1.1, h = [[620, 240], [620, 126]], v = [[200, 272], [136, 272]] },
+]

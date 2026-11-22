@@ -109,6 +109,34 @@ h1,h2,h3,p,ul,ol,dl,dd{margin:0}
 .dwg .ah{fill:var(--quiet)}
 /* the drawings fill their column; the cap only matters on screens wider than about 2000px */
 .lead .dwg.h{max-width:1400px}
+/* the runs (layouts/_partials/run.html, data/runs.toml): hidden here, so at rest and with reduced motion every drawing
+   is exactly the plain one; motion.css shows them. The dot is a zero-length round dash with two halos, moved along its hop */
+.dwg .run,.runbar{display:none}
+.dwg .hl{opacity:0}
+.dwg .hl > *{fill:none;stroke:var(--accent);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dwg .hl text{stroke:none;fill:var(--accent)}
+.dwg .pu{opacity:0;stroke-dashoffset:0}
+.dwg .pu path{fill:none;stroke:var(--accent);stroke-linecap:round;stroke-dasharray:0 2}
+.dwg .pu .dot{stroke-width:6}
+.dwg .pu .h1{stroke-width:12;stroke-opacity:.25}
+.dwg .pu .h2{stroke-width:19;stroke-opacity:.07}
+/* above the drawing's top right corner: what the dot carries, and the stop / play switch */
+.fig{position:relative}
+.runbar{position:absolute;right:0;top:0;align-items:center;gap:20px;font-size:12px;color:var(--quiet)}
+@media(min-width:1300px){.lead .runbar{right:clamp(16px,2.4vw,34px)}}
+.lg-run{display:inline-flex;align-items:center;gap:8px}
+.lg-run svg{height:14px;width:auto;overflow:visible}
+.lg-run .dot{fill:var(--accent)}
+.lg-run .halo{fill:var(--accent);opacity:.25}
+.runctl{display:inline-flex;align-items:center;padding:6px 4px;margin-right:-4px;cursor:pointer;user-select:none}
+.runctl:hover{color:var(--fg)}
+.runctl input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.runctl .lbl{display:inline-flex;align-items:center;gap:7px}
+.runctl .lbl::before{content:"";width:7px;height:7px;background:currentColor}
+.runctl input:checked + .lbl::before{width:7px;height:8px;background:var(--accent);clip-path:polygon(0 0,100% 50%,0 100%)}
+.runctl .off,.runctl input:checked + .lbl .on{display:none}
+.runctl input:checked + .lbl .off{display:inline}
+.runctl input:focus-visible + .lbl{outline:1px solid var(--accent);outline-offset:4px}
 
 .legend{display:flex;flex-wrap:wrap;gap:6px 24px;margin-top:clamp(18px,2.4vw,30px);font-size:12px;color:var(--quiet)}
 .legend span{display:inline-flex;align-items:center;gap:8px}

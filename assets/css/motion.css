@@ -1,6 +1,7 @@
 /* Motion for the site. Every rule that moves sits inside the one no-preference query below, so the base styles stay
    the finished, visible page: with reduced motion, or in a browser that ignores a rule, nothing is hidden.
-   scripts/check-site.py fails on motion text before this query. Nothing here touches the projects page's drawings or sheets. */
+   scripts/check-site.py fails on motion text before this query. The file is a Go template (head.html runs it) that reads
+   hugo.Data.runs: inside the projects page's drawings only their run layers move, and nothing here touches the sheets. */
 @media (prefers-reduced-motion: no-preference){
   :root{--ease:cubic-bezier(.2,.7,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}}
@@ -68,4 +69,78 @@
   body.path .log li:nth-child(2){animation-delay:.08s}
   body.path .log li:nth-child(3){animation-delay:.16s}
   body.path .log li:nth-child(4){animation-delay:.24s}
+
+  /* ---- projects: each drawing's runs, timed from data/runs.toml (layouts/_partials/run.html draws them) ----
+     screen only, so a printed page keeps the plain drawings; and only where :has() works, so the switch can always stop them */
+  @media screen{@supports selector(:has(*)){
+    .dwg .run{display:inline}
+    .runbar{display:flex}
+    /* stop shows the plain drawing; play starts the run again from the beginning. Hiding alone doesn't do it: Chrome keeps
+       a hidden group's animations running (play resumed mid-run) and Safari's engine never restarted them, so stop also ends them */
+    .fig:has(input:checked) .run{display:none}
+    .fig:has(input:checked) .run *{animation:none}
+{{- $tm := hugo.Data.runs.timing }}
+{{- range $name, $d := hugo.Data.runs.drawing }}
+  {{- $ids := slice }}{{ range $d.stop }}{{ $ids = $ids | append .id }}{{ end }}
+  {{- range $o := slice "h" "v" }}
+    {{- $run := printf "run-%s-%s" $name $o }}
+    {{- /* the timeline: when each dot travels (a to b), and when each stop lights (open) and goes dark (close) */}}
+    {{- $t := 0.0 }}{{ $dots := slice }}{{ $ev := slice }}
+    {{- range $k, $r := $d.run }}
+      {{- $at := (index $r.hops 0).from }}
+      {{- $ev = $ev | append (dict "id" $at "open" true "at" $t) }}
+      {{- $t = add $t $tm.start }}
+      {{- range $j, $h := $r.hops }}
+        {{- if not (and (in $ids $h.from) (in $ids $h.to)) }}{{ errorf "data/runs.toml: %s run %d hop %d goes from %q to %q, and one of them is not a stop" $name (add $k 1) (add $j 1) $h.from $h.to }}{{ end }}
+        {{- if ne $h.from $at }}{{ errorf "data/runs.toml: %s run %d hop %d starts at %q, but the hop before it ends at %q" $name (add $k 1) (add $j 1) $h.from $at }}{{ end }}
+        {{- if not (and $h.h $h.v) }}{{ errorf "data/runs.toml: %s run %d hop %d needs points for both drawings, h and v" $name (add $k 1) (add $j 1) }}{{ end }}
+        {{- $pts := index $h $o }}{{ $L := 0.0 }}{{ $p := index $pts 0 }}
+        {{- range after 1 $pts }}{{ $L = add $L (math.Abs (sub (index . 0) (index $p 0))) (math.Abs (sub (index . 1) (index $p 1))) }}{{ $p = . }}{{ end }}
+        {{- /* a long arrow takes longer, a short one never less than 0.45s */}}
+        {{- $dur := math.Max 0.45 (div (mul 1.25 $L) $tm.speed) }}
+        {{- $dots = $dots | append (dict "a" $t "b" (add $t $dur)) }}
+        {{- $ev = $ev | append (dict "id" $h.from "open" false "at" (add $t $tm.leave)) }}
+        {{- $t = add $t $dur }}
+        {{- $ev = $ev | append (dict "id" $h.to "open" true "at" (sub $t $tm.land)) }}
+        {{- $t = add $t $h.wait }}{{ $at = $h.to }}
+      {{- end }}
+      {{- $ev = $ev | append (dict "id" $at "open" false "at" $t) }}
+      {{- $t = add $t $tm.unlight }}
+    {{- end }}
+    {{- $cycle := add $t $tm.rest }}
+    {{- $every := printf "%.3fs linear %vs infinite" $cycle $tm.delay }}
+    {{- /* a stop is lit from its dot's landing to its leaving; a span from landing at its first stop to leaving its last */}}
+    {{- $outlines := slice }}
+    {{- range $d.stop }}
+      {{- if not (and .h .v) }}{{ errorf "data/runs.toml: %s stop %q needs a shape for both drawings, h and v" $name .id }}{{ end }}
+      {{- $outlines = $outlines | append (dict "key" .id "first" .id "last" .id) }}
+    {{- end }}
+    {{- range $i, $s := $d.span }}
+      {{- if not (and (in $ids $s.first) (in $ids $s.last)) }}{{ errorf "data/runs.toml: %s span %d runs from %q to %q, and one of them is not a stop" $name (add $i 1) $s.first $s.last }}{{ end }}
+      {{- if not (and $s.h $s.v) }}{{ errorf "data/runs.toml: %s span %d needs a shape for both drawings, h and v" $name (add $i 1) }}{{ end }}
+      {{- $outlines = $outlines | append (dict "key" (printf "span%d" $i) "first" $s.first "last" $s.last) }}
+    {{- end }}
+    {{- range $outlines }}{{ $ol := . }}{{ $opens := slice }}{{ $closes := slice }}
+      {{- range $ev }}
+        {{- if and .open (eq .id $ol.first) }}{{ $opens = $opens | append .at }}{{ end }}
+        {{- if and (not .open) (eq .id $ol.last) }}{{ $closes = $closes | append .at }}{{ end }}
+      {{- end }}
+      {{- $fr := "0%{opacity:0}" }}
+      {{- range $i, $a := $opens }}{{ $b := index $closes $i }}
+        {{- if gt $a 0.0 }}{{ $fr = printf "%s%.3f%%{opacity:0}" $fr (mul 100.0 (div $a $cycle)) }}{{ end }}
+        {{- $fr = printf "%s%.3f%%{opacity:1}%.3f%%{opacity:1}%.3f%%{opacity:0}" $fr (mul 100.0 (div (add $a $tm.light) $cycle)) (mul 100.0 (div $b $cycle)) (mul 100.0 (div (add $b $tm.unlight) $cycle)) }}
+      {{- end }}
+    .{{ $run }} .hl-{{ $ol.key }}{animation:{{ $run }}-{{ $ol.key }} {{ $every }}}
+    @keyframes {{ $run }}-{{ $ol.key }}{ {{- $fr }}100%{opacity:0}}
+    {{- end }}
+    {{- /* a dot: one eased travel along its hop, and its own fade in and out (fading out from just before it lands) */}}
+    {{- range $n, $p := $dots }}
+      {{- $a := mul 100.0 (div $p.a $cycle) }}{{ $b := mul 100.0 (div $p.b $cycle) }}
+    .{{ $run }} .pu-{{ $n }}{animation:{{ $run }}-pu{{ $n }} {{ printf "%.3f" $cycle }}s {{ $tm.delay }}s infinite,{{ $run }}-po{{ $n }} {{ $every }}}
+    @keyframes {{ $run }}-pu{{ $n }}{0%{stroke-dashoffset:0}{{ printf "%.3f" $a }}%{stroke-dashoffset:0;animation-timing-function:{{ $tm.ease }}}{{ printf "%.3f" $b }}%{stroke-dashoffset:{{ $tm.tip }}}100%{stroke-dashoffset:{{ $tm.tip }}}}
+    @keyframes {{ $run }}-po{{ $n }}{0%{opacity:0}{{ printf "%.3f%%{opacity:0}%.3f%%{opacity:1}%.3f%%{opacity:1}%.3f%%{opacity:0}" $a (mul 100.0 (div (add $p.a $tm.fade) $cycle)) (mul 100.0 (div (sub $p.b 0.05) $cycle)) (mul 100.0 (div (add (sub $p.b 0.05) $tm.fade) $cycle)) }}100%{opacity:0}}
+    {{- end }}
+  {{- end }}
+{{- end }}
+  }}
 }

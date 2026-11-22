@@ -1,0 +1,4 @@
+{{- /* Above a drawing, while motion runs: what the dot carries (the project's runkey) and the stop / play switch.
+  Hidden in base.css; motion.css shows it. Called with the project. */ -}}
+{{- $w := (site.GetPage "/projects").Params.runbar }}
+        <div class="runbar"><span class="lg-run" aria-hidden="true"><svg viewBox="0 0 14 14"><circle class="halo" cx="7" cy="7" r="6"/><circle class="dot" cx="7" cy="7" r="3"/></svg>{{ .runkey }}</span><label class="runctl"><input type="checkbox" aria-label="{{ $w.name }}"><span class="lbl" aria-hidden="true"><span class="on">{{ $w.stop }}</span><span class="off">{{ $w.play }}</span></span></label></div>

@@ -31,6 +31,6 @@
 {{- $website := dict "@type" "WebSite" "name" site.Title "url" .Permalink }}
 <script type="application/ld+json">{{ dict "@context" "https://schema.org" "@graph" (slice $website $profile) }}</script>
 {{- end }}
-{{- $css := resources.Concat "css/main.css" (slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/base.css") (resources.Get "css/path.css") (resources.Get "css/motion.css")) | minify | fingerprint }}
+{{- $css := resources.Concat "css/main.css" (slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/base.css") (resources.Get "css/path.css") (resources.Get "css/motion.css" | resources.ExecuteAsTemplate "css/motion.css" .)) | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}">
 </head>
